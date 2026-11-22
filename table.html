@@ -64,6 +64,30 @@ main>header,.filters{flex:none}
 thead th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
 @media(max-width:640px){main{padding-top:10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}}
 @media(max-height:470px){body{height:auto;overflow:auto}main{height:auto}.table-scroll{min-height:170px;max-height:60dvh}}
+
+.brand{text-transform:none;letter-spacing:0;font-weight:600}
+nav a:hover,input:hover,.school-filters button:hover{border-color:var(--muted)}
+nav a[aria-current]{background:#263243;border-color:#657b97}
+#status{font-variant-numeric:tabular-nums;width:auto}
+.filter-footer{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mobile-sort{display:none!important}
+td a{font-weight:500}
+td a:focus-visible{outline-offset:1px}
+.table-scroll{scroll-padding-top:64px}
+@media(max-width:640px){
+  main{padding-inline:12px}
+  header{align-items:center;gap:8px;margin-bottom:8px}
+  .filters{gap:8px}
+  .filters>label:first-child{flex-basis:100%}
+  .school-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:0;overflow:visible}
+  .school-filters button{font-size:.78rem;padding-inline:2px;min-width:0}
+  .school-filters button:last-child{grid-column:span 2}
+  .mobile-sort{display:flex!important;align-items:center;gap:4px!important;flex:none}
+  .mobile-sort select{width:auto;max-width:53vw;font-size:.82rem;min-height:44px;padding-inline:8px}
+  .filter-footer{gap:4px}
+  th,td{padding-inline:8px}
+  td small{margin-top:2px;line-height:1.35}
+}
 </style>
 </head>
 <body><main>
@@ -71,7 +95,15 @@ thead th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
 <nav aria-label="Roster views"><a href="tree.html">Tree</a><a href="table.html" aria-current="page">Table</a></nav></header>
 <div class="filters"><label>Search members<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label>
 <div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
-<p id="status" aria-live="polite"></p></div>
+<div class="filter-footer"><p id="status" aria-live="polite"></p>
+<label class="mobile-sort">Sort<select id="mobileSort">
+<option value="crossing:1">Oldest class first</option><option value="crossing:-1">Newest class first</option>
+<option value="member:1">Member A to Z</option><option value="member:-1">Member Z to A</option>
+<option value="school:1">School A to Z</option><option value="school:-1">School Z to A</option>
+<option value="big:1">Big Brother A to Z</option><option value="big:-1">Big Brother Z to A</option>
+<option value="lineage:1">Lineage A to Z</option><option value="lineage:-1">Lineage Z to A</option>
+<option value="founder:1">Founder A to Z</option><option value="founder:-1">Founder Z to A</option>
+</select></label></div></div>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table">
 <table aria-label="Members and Big Brother connections"><thead><tr>
 <th scope="col"><button type="button" data-sort="member">Member</button></th>
@@ -138,16 +170,26 @@ function compareMembers(a,b){
     : collator.compare(sortValues[sortColumn](a),sortValues[sortColumn](b));
   return sortDirection*order||collator.compare(records[a][3],records[b][3]);
 }
+const mobileSort=document.getElementById('mobileSort');
+function applySort(column,direction){
+  sortColumn=column;
+  sortDirection=direction;
+  document.querySelector('th[aria-sort]')?.removeAttribute('aria-sort');
+  document.querySelector('[data-sort="'+column+'"]').closest('th')
+    .setAttribute('aria-sort',direction===1?'ascending':'descending');
+  mobileSort.value=column+':'+direction;
+  drawMembers();
+}
 for(const button of document.querySelectorAll('[data-sort]')){
   button.addEventListener('click',()=>{
     const column=button.dataset.sort;
-    sortDirection=column===sortColumn?-sortDirection:1;
-    sortColumn=column;
-    document.querySelector('th[aria-sort]')?.removeAttribute('aria-sort');
-    button.closest('th').setAttribute('aria-sort',sortDirection===1?'ascending':'descending');
-    drawMembers();
+    applySort(column,column===sortColumn?-sortDirection:1);
   });
 }
+mobileSort.addEventListener('change',()=>{
+  const [column,direction]=mobileSort.value.split(':');
+  applySort(column,Number(direction));
+});
 function addMember(cell,id,showLine=false){
   if(id===null){cell.textContent='Founder';return;}
   const link=document.createElement('a');
@@ -204,7 +246,7 @@ function drawMembers(){
   }
   members.replaceChildren(body);
   tableScroll.scrollTop=0;
-  status.textContent=filtered.length===0?'No matching members':filtered.length+' of '+records.length+' members';
+  status.textContent=filtered.length===0?'No matches. Try another name or school.':filtered.length===records.length?records.length+' members':filtered.length+' of '+records.length+' members';
 }
 query.addEventListener('input',drawMembers);
 drawMembers();
