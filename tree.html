@@ -83,7 +83,12 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 @media(max-width:700px) and (max-height:540px){
   header .stats,#caption,.diagram-key{display:none}
 }
-.brand{text-decoration:none}.brand:hover{text-decoration:underline}.brand:focus-visible{outline:2px solid var(--focus);outline-offset:3px}</style></head>
+.brand{text-decoration:none}.brand:hover{text-decoration:underline}.brand:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+#founderList{display:grid;gap:6px;padding:8px 10px;overflow:auto;flex:1;min-height:0;align-content:start}
+#founderList button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;min-height:46px}
+#founderList button span{color:var(--muted);font-size:.85rem;text-align:right}
+#founderList h2{margin:0 0 3px;font-size:1rem}
+</style></head>
 <body><main>
 <header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
 <section aria-label="Lineage explorer">
@@ -100,6 +105,7 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 <button type="button" id="parent" hidden></button><button type="button" id="mode">Full branch</button>
 </div>
 <p id="caption" aria-live="polite"></p>
+<div id="founderList" hidden><h2>Choose a founder</h2></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
 <div class="diagram-key" aria-label="Diagram key"><span><i></i>Same-school link</span><span><i class="change"></i>School change</span><span><i class="ancestry"></i>Path to founder</span></div>
 </section></main>
@@ -121,7 +127,9 @@ const nodesById=new Map();
 const pick=id=>document.getElementById(id);
 const select=pick('branch'), canvas=pick('canvas'), svg=canvas.querySelector('svg');
 const caption=pick('caption'), matches=pick('matches'), query=pick('query');
-const OVERVIEW=-1, UNRESOLVED=-2;
+const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
+const phone=matchMedia('(max-width:700px)');
+const founderList=pick('founderList');
 let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0];
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
@@ -130,8 +138,20 @@ const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidt
   .on('zoom',event=>{scene.attr('transform',event.transform);pick('zoom').textContent=Math.round(event.transform.k*100)+'%';});
 drawing.call(zoom).on('dblclick.zoom',null);
 const member=pick('member'), parentButton=pick('parent'), modeButton=pick('mode');
+if(phone.matches) select.add(new Option('Choose a founder',FOUNDERS));
 select.add(new Option('Full organization',OVERVIEW));
-for(const id of rootIds) select.add(new Option(records[id][0]+' · '+records[id][3],id));
+for(const id of rootIds){
+  select.add(new Option(records[id][0]+' · '+records[id][3],id));
+  const card=document.createElement('button');
+  card.type='button';
+  const line=document.createElement('strong');
+  line.textContent=records[id][0];
+  const name=document.createElement('span');
+  name.textContent=records[id][3];
+  card.append(line,name);
+  card.addEventListener('click',()=>mark(id,true));
+  founderList.append(card);
+}
 if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
 const NODE_WIDTH=206, NODE_HEIGHT=67;
 const orientation=pick('orientation');
@@ -227,10 +247,16 @@ function fit(){
   drawing.call(zoom.transform,d3.zoomIdentity.translate((w-dimensions[0]*scale)/2,(h-dimensions[1]*scale)/2).scale(scale));
 }
 function describe(){
+  const choosing=branch===FOUNDERS;
+  founderList.hidden=!choosing;
+  canvas.hidden=choosing;
+  document.querySelector('.diagram-key').hidden=choosing;
+  document.querySelector('.zoom-controls').hidden=choosing;
   member.hidden=selected===null;
-  pick('overview').hidden=branch===OVERVIEW;
+  pick('overview').hidden=choosing||(!phone.matches&&branch===OVERVIEW);
+  pick('overview').textContent=phone.matches?'All founders':'Full organization';
   if(selected===null){
-    caption.textContent='Full organization. Search or choose a branch to read names.';
+    caption.textContent=choosing?'Select a founder or search for a member.':'Full organization. Search or choose a branch to read names.';
     return;
   }
   const [line,parent,,actual]=records[selected];
@@ -252,17 +278,19 @@ function show(id){
   if(id>=0){full=false;mark(id,false);return;}
   branch=id;selected=null;full=false;select.value=String(id);
   query.value='';matches.replaceChildren();
-  draw();describe();fit();
+  describe();
+  if(branch!==FOUNDERS){draw();fit();}
 }
 function mark(id,moveFocus){
   const target=rootOf(id);
   if(target!==branch) full=false;
   branch=target;selected=id;select.value=String(branch);
   matches.replaceChildren();
-  draw();describe();focusNode(id,moveFocus);
+  describe();draw();focusNode(id,moveFocus);
 }
 select.addEventListener('change',()=>show(Number(select.value)));
 orientation.addEventListener('change',()=>{
+  if(branch===FOUNDERS) return;
   draw();
   if(selected===null) fit();
   else focusNode(selected);
@@ -280,7 +308,7 @@ canvas.addEventListener('keydown',event=>{
   const step=48/d3.zoomTransform(svg).k;
   drawing.call(zoom.translateBy,direction[0]*step,direction[1]*step);
 });
-pick('overview').addEventListener('click',()=>{show(OVERVIEW);query.focus();});
+pick('overview').addEventListener('click',()=>{show(phone.matches?FOUNDERS:OVERVIEW);query.focus();});
 query.addEventListener('input',()=>matches.replaceChildren());
 query.addEventListener('keydown',event=>{if(event.key==='Escape') matches.replaceChildren();});
 pick('find').addEventListener('submit',event=>{
@@ -302,6 +330,6 @@ pick('find').addEventListener('submit',event=>{
     result.addEventListener('click',()=>mark(id,true));matches.append(result);
   }
 });
-show(OVERVIEW);
+show(phone.matches?FOUNDERS:OVERVIEW);
 new ResizeObserver(()=>{if(branch===OVERVIEW) fit();}).observe(canvas);
 </script></body></html>
