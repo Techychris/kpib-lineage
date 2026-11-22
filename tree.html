@@ -122,6 +122,20 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 .view-tabs [aria-current]{border-color:var(--accent)}
 .view-tabs a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 @media(max-width:700px){.view-tabs [aria-current]{display:none}.view-tabs a{min-height:44px;padding-inline:7px}.tools input{min-width:0}}
+
+#connections{position:absolute;right:12px;bottom:44px;background:var(--panel);z-index:1}
+main>section{position:relative}
+#connectionsPanel{width:min(500px,calc(100% - 24px));max-height:80dvh;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:16px}
+#connectionsPanel::backdrop{background:#06080ab8}
+.connections-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.connections-head h2{margin:0;font-size:1.2rem}
+#connectionsMeta{color:var(--muted);margin:4px 0}
+#connectionsBody h3{font-size:.95rem;margin:16px 0 6px}
+#connectionsBody ol,#connectionsBody ul{padding-inline-start:24px;margin:0}
+#connectionsBody li{margin-block:4px}
+#connectionsBody button{width:100%;text-align:left;min-height:44px}
+#connectionsBody small{display:block;color:var(--muted)}
+@media(max-width:700px){#connections{bottom:max(12px,env(safe-area-inset-bottom));min-height:44px}#connectionsPanel{margin:auto auto 8px}}
 </style></head>
 <body><main>
 <header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
@@ -149,6 +163,12 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 <p id="caption" aria-live="polite"></p>
 <div id="founderList" hidden><h2>Choose a founder</h2></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
+<button type="button" id="connections" hidden>Connections</button>
+<dialog id="connectionsPanel" aria-labelledby="connectionsTitle">
+  <div class="connections-head"><h2 id="connectionsTitle">Connections</h2><form method="dialog"><button autofocus>Close</button></form></div>
+  <p id="connectionsMeta"></p>
+  <div id="connectionsBody"></div>
+</dialog>
 <div class="diagram-key" aria-label="Diagram key"><span><i></i>Same-school link</span><span><i class="change"></i>School change</span><span><i class="ancestry"></i>Path to founder</span></div>
 </section></main>
 <script src="d3.min.js"></script>
@@ -170,6 +190,8 @@ const caption=pick('caption'), matches=pick('matches'), query=pick('query');
 const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
 const phone=matchMedia('(max-width:700px)');
 const founderList=pick('founderList');
+const connectionsButton=pick('connections');
+const connectionsPanel=pick('connectionsPanel');
 const viewToggle=pick('viewToggle');
 const memberPanel=pick('member');
 const viewControls=pick('viewControls');
@@ -325,6 +347,7 @@ function describe(){
   document.querySelector('.diagram-key').hidden=choosing;
   document.querySelector('.zoom-controls').hidden=choosing;
   member.hidden=selected===null;
+  connectionsButton.hidden=selected===null;
   pick('overview').hidden=choosing||(!phone.matches&&branch===OVERVIEW);
   pick('overview').textContent=phone.matches?'All founders':'Full organization';
   if(selected===null){
@@ -340,6 +363,49 @@ function describe(){
   modeButton.textContent=full?'Focus on member':'Full branch';
   caption.textContent=full?'Full founder branch. Drag to pan. Pinch or use the zoom controls.':'Showing the path to the founder and this member’s direct connections. Drag to pan. Pinch or use the zoom controls.';
 }
+function openConnections(){
+  const id=selected;
+  if(id===null) return;
+  const [line,,,name]=records[id];
+  pick('connectionsTitle').textContent=name;
+  pick('connectionsMeta').textContent=[line,schoolOf(id),...crossings[id]].join(' · ');
+  const content=pick('connectionsBody');
+  content.replaceChildren();
+  function addGroup(title,ids,ordered,empty){
+    const heading=document.createElement('h3');
+    heading.textContent=title;
+    content.append(heading);
+    if(!ids.length){
+      const message=document.createElement('p');
+      message.textContent=empty;
+      content.append(message);
+      return;
+    }
+    const list=document.createElement(ordered?'ol':'ul');
+    for(const relation of ids){
+      const item=document.createElement('li');
+      const link=document.createElement('button');
+      link.type='button';
+      link.textContent=records[relation][3];
+      const detail=document.createElement('small');
+      detail.textContent=records[relation][0]+' · '+schoolOf(relation);
+      link.append(detail);
+      link.addEventListener('click',()=>{
+        connectionsPanel.close();
+        mark(relation,true);
+      });
+      item.append(link);
+      list.append(item);
+    }
+    content.append(list);
+  }
+  addGroup('Direct connections',children[id],false,'No direct connections recorded.');
+  const ancestry=founderPath(id).reverse().slice(1);
+  addGroup('Path back to the founder',ancestry,true,'This member is a founder.');
+  closeView();
+  connectionsPanel.showModal();
+}
+connectionsButton.addEventListener('click',openConnections);
 function focusNode(id,moveFocus=false){
   const node=nodesById.get(id);
   if(!node) return;
