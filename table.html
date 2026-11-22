@@ -45,9 +45,9 @@ th:nth-child(1){width:25%}th:nth-child(2){width:18%}th:nth-child(3){width:22%}th
 th:nth-child(1){width:21%}th:nth-child(2){width:14%}th:nth-child(3){width:19%}th:nth-child(4){width:17%}th:nth-child(5){width:13%}th:nth-child(6){width:16%}
 th button{display:flex;align-items:center;gap:5px;padding:0;min-height:34px;width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer}
 th button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-th button::after{content:"↕";color:var(--muted)}
-th[aria-sort="ascending"] button::after{content:"↑";color:var(--accent)}
-th[aria-sort="descending"] button::after{content:"↓";color:var(--accent)}
+th button::after{content:"";display:inline-block;flex:none;width:7px;height:9px;background:var(--muted);clip-path:polygon(50% 0,100% 40%,0 40%,0 60%,100% 60%,50% 100%)}
+th[aria-sort="ascending"] button::after{background:var(--accent);clip-path:polygon(50% 20%,100% 75%,0 75%)}
+th[aria-sort="descending"] button::after{background:var(--accent);clip-path:polygon(0 25%,100% 25%,50% 80%)}
 .crossing-note{display:none}
 @media(max-width:640px){
  th.crossing,td.crossing{display:none}
@@ -64,9 +64,9 @@ th[aria-sort="descending"] button::after{content:"↓";color:var(--accent)}
 <div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
 <p id="status" aria-live="polite"></p></div>
 <table aria-label="Members and Big Brother connections"><thead><tr>
-<th scope="col" aria-sort="ascending"><button type="button" data-sort="member">Member</button></th>
+<th scope="col"><button type="button" data-sort="member">Member</button></th>
 <th scope="col"><button type="button" data-sort="school">School</button></th>
-<th scope="col" class="crossing"><button type="button" data-sort="crossing">Crossing</button></th>
+<th scope="col" class="crossing" aria-sort="ascending"><button type="button" data-sort="crossing">Crossing</button></th>
 <th scope="col"><button type="button" data-sort="big">Big Brother</button></th>
 <th scope="col" class="lineage"><button type="button" data-sort="lineage">Lineage</button></th>
 <th scope="col" class="ancestor"><button type="button" data-sort="founder">Founder</button></th>
@@ -118,7 +118,7 @@ const sortValues={
   lineage:id=>records[lineageStart[id]][0],
   founder:id=>records[founders[id]][3],
 };
-let sortColumn='member', sortDirection=1;
+let sortColumn='crossing', sortDirection=1;
 const collator=new Intl.Collator(undefined,{sensitivity:'base',numeric:true});
 function compareMembers(a,b){
   const order=sortColumn==='crossing'
