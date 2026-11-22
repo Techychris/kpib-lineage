@@ -55,6 +55,34 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 #canvas{flex:1;min-height:0;height:auto;border-radius:0;border-inline:0}
 .diagram-key{margin:0;padding:6px 16px}
 @media(max-width:700px){header{padding:8px 12px}.tools{padding:6px 12px;gap:6px}.diagram-key{gap:4px 12px}}
+
+@media(max-width:700px){
+  main>section{position:relative}
+  header{padding:7px 10px}
+  header>div{gap:2px 8px}
+  .brand{font-size:.72rem}
+  .stats{font-size:.75rem;gap:8px}
+  .tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 8px;padding:7px 10px;border-inline:0}
+  .tools>label,.search label{min-width:0;gap:3px;font-size:.8rem}
+  .tools select{width:100%;min-width:0}
+  .search{grid-column:1/-1;order:-1}
+  .search input{font-size:16px}
+  .tools button,.tools input,.tools select{min-height:44px}
+  .zoom-controls{grid-column:1/-1;gap:5px}
+  .zoom-controls button{min-width:44px}
+  #overview{grid-column:1/-1;justify-self:start;margin:0}
+  #matches{position:absolute;z-index:1;top:69px;left:10px;right:10px;max-height:min(45dvh,280px);overflow:auto;overscroll-behavior:contain;box-shadow:0 8px 24px #0008;border:1px solid var(--line);border-radius:7px}
+  #matches button{width:100%;min-height:44px}
+  #caption{font-size:.8rem;padding:4px 10px}
+  .context{gap:5px 8px;padding:6px 10px}
+  .context strong{font-size:1rem}
+  .context .meta{font-size:.8rem}
+  .context button{min-height:44px}
+  .diagram-key{font-size:.75rem;gap:4px 10px;padding:6px 10px max(6px,env(safe-area-inset-bottom))}
+}
+@media(max-width:700px) and (max-height:540px){
+  header .stats,#caption,.diagram-key{display:none}
+}
 </style></head>
 <body><main>
 <header><div><p class="brand">Kappa Pi Beta</p><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
@@ -97,7 +125,7 @@ const OVERVIEW=-1, UNRESOLVED=-2;
 let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0];
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
-const zoom=d3.zoom().scaleExtent([0.04,3]).extent(()=>[[0,0],[canvas.clientWidth,canvas.clientHeight]])
+const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidth,canvas.clientHeight]])
   .filter(event=>!event.button&&(event.type!=='mousedown'||!event.target.closest('.node')))
   .on('zoom',event=>{scene.attr('transform',event.transform);pick('zoom').textContent=Math.round(event.transform.k*100)+'%';});
 drawing.call(zoom).on('dblclick.zoom',null);
@@ -195,14 +223,14 @@ function draw(){
 }
 function fit(){
   const w=canvas.clientWidth,h=canvas.clientHeight;
-  const scale=Math.max(.04,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
+  const scale=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
   drawing.call(zoom.transform,d3.zoomIdentity.translate((w-dimensions[0]*scale)/2,(h-dimensions[1]*scale)/2).scale(scale));
 }
 function describe(){
   member.hidden=selected===null;
   pick('overview').hidden=branch===OVERVIEW;
   if(selected===null){
-    caption.textContent='Full organization. Select a member or search by name.';
+    caption.textContent='Full organization. Search or choose a branch to read names.';
     return;
   }
   const [line,parent,,actual]=records[selected];
@@ -212,7 +240,7 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.textContent=full?'Focus on member':'Full branch';
-  caption.textContent=full?'Full founder branch. Drag to pan or scroll to zoom.':'Showing the path to the founder and this member’s direct connections. Drag to pan or scroll to zoom.';
+  caption.textContent=full?'Full founder branch. Drag to pan. Pinch or use the zoom controls.':'Showing the path to the founder and this member’s direct connections. Drag to pan. Pinch or use the zoom controls.';
 }
 function focusNode(id,moveFocus=false){
   const node=nodesById.get(id);
@@ -254,6 +282,7 @@ canvas.addEventListener('keydown',event=>{
 });
 pick('overview').addEventListener('click',()=>{show(OVERVIEW);query.focus();});
 query.addEventListener('input',()=>matches.replaceChildren());
+query.addEventListener('keydown',event=>{if(event.key==='Escape') matches.replaceChildren();});
 pick('find').addEventListener('submit',event=>{
   event.preventDefault();
   const normalize=value=>value.normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
