@@ -101,6 +101,21 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
   #viewControls label{min-width:0}
   #matches{top:62px;z-index:3}
 }
+
+.mobile-home,.menu-key{display:none}
+@media(max-width:700px){
+  .diagram-open header,.diagram-open #caption,.diagram-open .diagram-key{display:none!important}
+  .tools{padding:3px 6px;gap:4px}
+  .tools .search{gap:3px}
+  #viewToggle,.tools .search button{padding-inline:8px}
+  #viewControls{max-height:calc(100dvh - 58px);overflow:auto;overscroll-behavior:contain}
+  #viewControls .context{padding:7px 0;border:0;border-top:1px solid var(--line)}
+  #viewControls .context strong,#viewControls .context .meta{width:100%}
+  .mobile-home,.menu-key{display:block}
+  .mobile-home{color:var(--ink);min-height:38px;display:flex;align-items:center}
+  .menu-key{font-size:.8rem;color:var(--muted)}
+  #matches{top:52px}
+}
 </style></head>
 <body><main>
 <header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
@@ -109,18 +124,21 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 <form class="search" id="find"><label>Member name<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label><button>Search</button></form>
 <button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden>View</button>
 <div id="viewControls">
+<a class="mobile-home" href="./">Home</a>
 <label>Branch<select id="branch"></select></label>
 <label>Layout<select id="orientation"><option value="horizontal">Horizontal</option><option value="vertical" selected>Top-down</option></select></label>
 <div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="fit">Fit diagram</button></div>
 <button type="button" id="overview" hidden>Full organization</button>
 
-</div>
-</div>
-<div id="matches" aria-live="polite"></div>
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
 <button type="button" id="parent" hidden></button><button type="button" id="mode">Full branch</button>
 </div>
+<div class="menu-key">Dashed links mark school changes.</div>
+</div>
+</div>
+<div id="matches" aria-live="polite"></div>
+<div id="desktopMember"></div>
 <p id="caption" aria-live="polite"></p>
 <div id="founderList" hidden><h2>Choose a founder</h2></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
@@ -148,9 +166,14 @@ const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
 const phone=matchMedia('(max-width:700px)');
 const founderList=pick('founderList');
 const viewToggle=pick('viewToggle');
+const memberPanel=pick('member');
+const viewControls=pick('viewControls');
+const desktopMember=pick('desktopMember');
 const closeView=()=>viewToggle.setAttribute('aria-expanded','false');
 function syncView(){
   viewToggle.hidden=!phone.matches;
+  if(phone.matches) viewControls.insertBefore(memberPanel,viewControls.querySelector('.menu-key'));
+  else desktopMember.append(memberPanel);
   closeView();
 }
 syncView();
@@ -287,6 +310,7 @@ function fit(){
 }
 function describe(){
   const choosing=branch===FOUNDERS;
+  document.body.classList.toggle('diagram-open',!choosing);
   founderList.hidden=!choosing;
   canvas.hidden=choosing;
   document.querySelector('.diagram-key').hidden=choosing;
