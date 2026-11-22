@@ -121,6 +121,7 @@ td a:focus-visible{outline-offset:1px}
 const query=document.getElementById('query');
 const schoolFilters=document.getElementById('schools');
 let activeSchool=null;
+const rosterStateKey='kpib-roster-view';
 const members=document.getElementById('members');
 const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
@@ -190,6 +191,22 @@ mobileSort.addEventListener('change',()=>{
   const [column,direction]=mobileSort.value.split(':');
   applySort(column,Number(direction));
 });
+function rememberRoster(){
+  try{
+    sessionStorage.setItem(rosterStateKey,JSON.stringify({query:query.value,school:activeSchool,column:sortColumn,direction:sortDirection,scroll:tableScroll.scrollTop}));
+  }catch{}
+}
+function restoreRoster(){
+  let previous;
+  try{previous=JSON.parse(sessionStorage.getItem(rosterStateKey));}catch{}
+  if(!previous||typeof previous.query!=='string'){drawMembers();return;}
+  query.value=previous.query;
+  activeSchool=Number.isInteger(previous.school)&&previous.school>=0&&previous.school<campuses.length?previous.school:null;
+  Array.from(schoolFilters.children).forEach((button,index)=>button.setAttribute('aria-pressed',String(index===(activeSchool===null?0:activeSchool+1))));
+  const column=previous.column==='crossing'||Object.hasOwn(sortValues,previous.column)?previous.column:'crossing';
+  applySort(column,previous.direction===-1?-1:1);
+  if(Number.isFinite(previous.scroll)) tableScroll.scrollTop=previous.scroll;
+}
 function addMember(cell,id,showLine=false){
   if(id===null){cell.textContent='Founder';return;}
   const link=document.createElement('a');
@@ -249,6 +266,7 @@ function drawMembers(){
   status.textContent=filtered.length===0?'No matches. Try another name or school.':filtered.length===records.length?records.length+' members':filtered.length+' of '+records.length+' members';
 }
 query.addEventListener('input',drawMembers);
-drawMembers();
+document.addEventListener('click',event=>{if(event.target.closest('a[href^="tree.html"]')) rememberRoster();});
+restoreRoster();
 </script>
 </body></html>
