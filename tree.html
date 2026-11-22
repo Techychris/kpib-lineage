@@ -88,16 +88,33 @@ main>section{display:flex;flex-direction:column;flex:1;min-height:0}
 #founderList button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;min-height:46px}
 #founderList button span{color:var(--muted);font-size:.85rem;text-align:right}
 #founderList h2{margin:0 0 3px;font-size:1rem}
+
+#viewControls{display:contents}
+@media(max-width:700px){
+  .tools{display:flex;align-items:center;position:relative;z-index:2}
+  .tools .search{width:auto;flex:1;min-width:0}
+  .search label{font-size:0}
+  .search input{font-size:16px}
+  #viewToggle{flex:none}
+  #viewControls{display:none;position:absolute;top:100%;right:10px;z-index:2;width:min(285px,calc(100vw - 20px));padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px #0008}
+  #viewToggle[aria-expanded="true"]+#viewControls{display:grid;gap:9px}
+  #viewControls label{min-width:0}
+  #matches{top:62px;z-index:3}
+}
 </style></head>
 <body><main>
 <header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
 <section aria-label="Lineage explorer">
 <div class="tools">
+<form class="search" id="find"><label>Member name<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label><button>Search</button></form>
+<button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden>View</button>
+<div id="viewControls">
 <label>Branch<select id="branch"></select></label>
 <label>Layout<select id="orientation"><option value="horizontal">Horizontal</option><option value="vertical" selected>Top-down</option></select></label>
-<form class="search" id="find"><label>Member name<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label><button>Search</button></form>
 <div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="fit">Fit diagram</button></div>
 <button type="button" id="overview" hidden>Full organization</button>
+
+</div>
 </div>
 <div id="matches" aria-live="polite"></div>
 <div id="member" class="context" hidden>
@@ -130,6 +147,28 @@ const caption=pick('caption'), matches=pick('matches'), query=pick('query');
 const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
 const phone=matchMedia('(max-width:700px)');
 const founderList=pick('founderList');
+const viewToggle=pick('viewToggle');
+const closeView=()=>viewToggle.setAttribute('aria-expanded','false');
+function syncView(){
+  viewToggle.hidden=!phone.matches;
+  closeView();
+}
+syncView();
+phone.addEventListener('change',syncView);
+viewToggle.addEventListener('click',()=>{
+  const opening=viewToggle.getAttribute('aria-expanded')!=='true';
+  if(opening) matches.replaceChildren();
+  viewToggle.setAttribute('aria-expanded',String(opening));
+});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&viewToggle.getAttribute('aria-expanded')==='true'){
+    closeView();
+    viewToggle.focus();
+  }
+});
+document.addEventListener('pointerdown',event=>{
+  if(!event.target.closest('.tools')) closeView();
+});
 let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0];
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
@@ -288,8 +327,9 @@ function mark(id,moveFocus){
   matches.replaceChildren();
   describe();draw();focusNode(id,moveFocus);
 }
-select.addEventListener('change',()=>show(Number(select.value)));
+select.addEventListener('change',()=>{closeView();show(Number(select.value));});
 orientation.addEventListener('change',()=>{
+  closeView();
   if(branch===FOUNDERS) return;
   draw();
   if(selected===null) fit();
@@ -308,12 +348,13 @@ canvas.addEventListener('keydown',event=>{
   const step=48/d3.zoomTransform(svg).k;
   drawing.call(zoom.translateBy,direction[0]*step,direction[1]*step);
 });
-pick('overview').addEventListener('click',()=>{show(phone.matches?FOUNDERS:OVERVIEW);query.focus();});
+pick('overview').addEventListener('click',()=>{closeView();show(phone.matches?FOUNDERS:OVERVIEW);query.focus();});
 query.addEventListener('input',()=>matches.replaceChildren());
 query.addEventListener('keydown',event=>{if(event.key==='Escape') matches.replaceChildren();});
 pick('find').addEventListener('submit',event=>{
   event.preventDefault();
   const normalize=value=>value.normalize('NFD').replace(/\p{M}/gu,'').toLocaleLowerCase().replace(/[^\p{L}\p{N}]+/gu,' ').trim();
+  closeView();
   const term=normalize(query.value);
   matches.replaceChildren();
   if(!term)return;
