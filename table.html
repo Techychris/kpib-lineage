@@ -55,6 +55,15 @@ th[aria-sort="descending"] button::after{background:var(--accent);clip-path:poly
  th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(4){width:33%}
  th button{min-height:44px}
 }
+
+body{height:100dvh;overflow:hidden}
+main{height:100%;display:flex;flex-direction:column;padding-bottom:12px}
+main>header,.filters{flex:none}
+.table-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior-y:contain;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;scrollbar-gutter:stable}
+.table-scroll:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+thead th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
+@media(max-width:640px){main{padding-top:10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}}
+@media(max-height:470px){body{height:auto;overflow:auto}main{height:auto}.table-scroll{min-height:170px;max-height:60dvh}}
 </style>
 </head>
 <body><main>
@@ -63,6 +72,7 @@ th[aria-sort="descending"] button::after{background:var(--accent);clip-path:poly
 <div class="filters"><label>Search members<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label>
 <div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
 <p id="status" aria-live="polite"></p></div>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table">
 <table aria-label="Members and Big Brother connections"><thead><tr>
 <th scope="col"><button type="button" data-sort="member">Member</button></th>
 <th scope="col"><button type="button" data-sort="school">School</button></th>
@@ -71,6 +81,7 @@ th[aria-sort="descending"] button::after{background:var(--accent);clip-path:poly
 <th scope="col" class="lineage"><button type="button" data-sort="lineage">Lineage</button></th>
 <th scope="col" class="ancestor"><button type="button" data-sort="founder">Founder</button></th>
 </tr></thead><tbody id="members"></tbody></table>
+</div>
 </main>
 <script src="lineage-data.js?v=crossing"></script>
 <script>
@@ -79,6 +90,7 @@ const query=document.getElementById('query');
 const schoolFilters=document.getElementById('schools');
 let activeSchool=null;
 const members=document.getElementById('members');
+const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
 const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
 for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
@@ -191,6 +203,7 @@ function drawMembers(){
     body.append(row);
   }
   members.replaceChildren(body);
+  tableScroll.scrollTop=0;
   status.textContent=filtered.length===0?'No matching members':filtered.length+' of '+records.length+' members';
 }
 query.addEventListener('input',drawMembers);
