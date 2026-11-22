@@ -220,7 +220,7 @@ for(const id of rootIds){
   founderList.append(card);
 }
 if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
-const NODE_WIDTH=206, NODE_HEIGHT=67;
+const NODE_WIDTH=206, NODE_HEIGHT=104;
 const orientation=pick('orientation');
 const names=id=>id===OVERVIEW?['Kappa Pi Beta','']:id===UNRESOLVED?['Unmatched branches','']:[records[id][0],records[id][3]];
 function rootOf(id){
@@ -233,7 +233,7 @@ function founderPath(id){
   return path.reverse();
 }
 function positionTree(hierarchy,vertical,overview){
-  const spacing=vertical?[NODE_WIDTH+30,155]:[88,overview?260:400];
+  const spacing=vertical?[NODE_WIDTH+30,185]:[125,overview?260:400];
   d3.tree().nodeSize(spacing)(hierarchy);
   const nodes=hierarchy.descendants();
   const minBreadth=d3.min(nodes,d=>d.x);
@@ -290,21 +290,25 @@ function draw(){
     const item=enter.append('g').attr('class','node');
     item.append('title');
     item.append('rect').attr('width',NODE_WIDTH).attr('height',NODE_HEIGHT).attr('y',-NODE_HEIGHT/2).attr('rx',9);
-    item.append('text').attr('class','name').attr('x',12).attr('y',-11);
-    item.append('text').attr('class','member-name').attr('x',12).attr('y',6);
-    item.append('text').attr('class','school').attr('x',12).attr('y',23);
+    item.append('text').attr('class','name').attr('x',12).attr('y',-29);
+    item.append('text').attr('class','member-name').attr('x',12).attr('y',-12);
+    item.append('text').attr('class','school').attr('x',12).attr('y',5);
+    item.append('text').attr('class','school semester').attr('x',12).attr('y',22);
+    item.append('text').attr('class','school cohort').attr('x',12).attr('y',39);
     return item;
   }).attr('transform',d=>'translate('+d.left+','+d.centerY+')')
     .attr('class',d=>'node'+(d.data===branch?' root':'')+(d.data===selected?' selected':'')+(ancestry.has(d.data)?' on-path':''))
     .attr('tabindex',d=>d.data>=0?0:null).attr('role',d=>d.data>=0?'button':null)
-    .attr('aria-label',d=>names(d.data).filter(Boolean).join(' · '))
+    .attr('aria-label',d=>[...names(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '))
     .on('click',(event,d)=>{if(!event.defaultPrevented&&d.data>=0) mark(d.data,true);})
     .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();mark(d.data,true);}});
-  cards.select('title').text(d=>[...names(d.data),schoolOf(d.data)].filter(Boolean).join(' · '));
+  cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
   cards.select('.name').text(d=>short(names(d.data)[0],23));
   cards.select('.member-name').text(d=>short(names(d.data)[1],29));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
+  cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
+  cards.select('.cohort').text(d=>short(crossings[d.data]?.[1]??'',29));
   nodesById.clear();
   cards.each(function(d){nodesById.set(d.data,{element:this,x:d.left+NODE_WIDTH/2,y:d.centerY});});
 }
@@ -330,7 +334,7 @@ function describe(){
   const [line,parent,,actual]=records[selected];
   pick('memberName').textContent=actual;
   const count=children[selected].length;
-  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+count+' direct '+(count===1?'connection':'connections');
+  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' direct '+(count===1?'connection':'connections');
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.textContent=full?'Focus on member':'Full branch';
