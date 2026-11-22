@@ -27,24 +27,59 @@ td a{display:inline-block;text-decoration-color:#6e849e;text-underline-offset:3p
 td a:hover{color:var(--accent)}td small{display:block;color:var(--muted);margin-top:3px}
 tbody tr:nth-child(even){background:#111927}
 @media(max-width:640px){header{margin-bottom:10px}.filters{padding:8px}.filters label:nth-child(2){flex:1 1 130px}.filters label:first-child{flex:1 1 155px}th,td{padding:8px 6px;font-size:.82rem}th:nth-child(1){width:40%}th:nth-child(2){width:26%}th:nth-child(3){width:34%}th.ancestor,td.ancestor{display:none}}
+
+.school-filters{display:flex;align-items:center;flex-wrap:wrap;gap:6px;width:100%}
+.school-filters button{font:inherit;font-size:.83rem;padding:6px 10px;min-height:34px;border:1px solid #53627b;border-radius:6px;color:var(--ink);background:#0f1722;cursor:pointer}
+.school-filters button[aria-pressed="true"]{background:var(--accent);color:#201315;border-color:var(--accent);font-weight:700}
+.school-filters button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+th:nth-child(1){width:25%}th:nth-child(2){width:18%}th:nth-child(3){width:22%}th:nth-child(4){width:18%}th:nth-child(5){width:17%}
+.lineage-note{display:none}
+@media(max-width:640px){
+ .school-filters{flex-wrap:nowrap;overflow-x:auto;padding:3px 2px 6px;scrollbar-width:thin}
+ .school-filters button{min-height:44px;flex:none}
+ th.lineage,td.lineage{display:none}
+ .lineage-note{display:block}
+ th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(3){width:33%}
+}
 </style>
 </head>
 <body><main>
 <header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Member table</h1></div>
 <nav aria-label="Roster views"><a href="tree.html">Tree</a><a href="table.html" aria-current="page">Table</a></nav></header>
 <div class="filters"><label>Search members<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label>
-<label>School<select id="school"><option value="">All schools</option></select></label>
+<div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
 <p id="status" aria-live="polite"></p></div>
-<table aria-label="Members and Big Brother connections"><thead><tr><th scope="col">Member</th><th scope="col">School</th><th scope="col">Big Brother</th><th scope="col" class="ancestor">Founder</th></tr></thead><tbody id="members"></tbody></table>
+<table aria-label="Members and Big Brother connections"><thead><tr><th scope="col">Member</th><th scope="col">School</th><th scope="col">Big Brother</th><th scope="col" class="lineage">Lineage</th><th scope="col" class="ancestor">Founder</th></tr></thead><tbody id="members"></tbody></table>
 </main>
 <script src="lineage-data.js"></script>
 <script>
 'use strict';
 const query=document.getElementById('query');
-const school=document.getElementById('school');
+const schoolFilters=document.getElementById('schools');
+let activeSchool=null;
 const members=document.getElementById('members');
 const status=document.getElementById('status');
-for(const [id,name] of campuses.entries()) school.add(new Option(name,id));
+const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
+for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
+  const button=document.createElement('button');
+  button.type='button';
+  button.textContent=label;
+  if(id!==null) button.setAttribute('aria-label',campuses[id]);
+  button.setAttribute('aria-pressed',String(id===activeSchool));
+  button.addEventListener('click',()=>{
+    if(id===activeSchool) return;
+    schoolFilters.querySelector('[aria-pressed="true"]').setAttribute('aria-pressed','false');
+    button.setAttribute('aria-pressed','true');
+    activeSchool=id;
+    drawMembers();
+  });
+  schoolFilters.append(button);
+}
+const lineageStart=records.map((_,id)=>{
+  let start=id;
+  for(let parent=records[start][1];parent!==null&&schoolIds[parent]===schoolIds[start];parent=records[start][1]) start=parent;
+  return start;
+});
 const sorted=records.map((_,id)=>id).sort((a,b)=>records[a][3].localeCompare(records[b][3]));
 function addMember(cell,id,showLine=false){
   if(id===null){cell.textContent='Founder';return;}
@@ -58,15 +93,32 @@ function addMember(cell,id,showLine=false){
     cell.append(line);
   }
 }
+function addLineage(container,id){
+  const link=document.createElement('a');
+  link.href='tree.html?member='+id;
+  link.textContent=records[id][0];
+  link.title=records[id][3];
+  container.append(link);
+}
 function drawMembers(){
   const term=normalizeMemberQuery(query.value);
-  const filtered=sorted.filter(id=>(school.value===''||schoolIds[id]===Number(school.value))&&matchesMember(records[id],term));
+  const filtered=sorted.filter(id=>(activeSchool===null||schoolIds[id]===activeSchool)&&matchesMember(records[id],term));
   const body=document.createDocumentFragment();
   for(const id of filtered){
     const row=document.createElement('tr');
-    addMember(row.insertCell(),id,true);
+    const memberCell=row.insertCell();
+    addMember(memberCell,id,true);
+    const start=lineageStart[id];
+    const lineageNote=document.createElement('small');
+    lineageNote.className='lineage-note';
+    lineageNote.append('Lineage: ');
+    addLineage(lineageNote,start);
+    memberCell.append(lineageNote);
     row.insertCell().textContent=campuses[schoolIds[id]];
     addMember(row.insertCell(),records[id][1]);
+    const lineage=row.insertCell();
+    lineage.className='lineage';
+    addLineage(lineage,start);
     let founder=id;
     while(records[founder][1]!==null) founder=records[founder][1];
     const ancestry=row.insertCell();
@@ -78,7 +130,6 @@ function drawMembers(){
   status.textContent=filtered.length===0?'No matching members':filtered.length+' of '+records.length+' members';
 }
 query.addEventListener('input',drawMembers);
-school.addEventListener('change',drawMembers);
 drawMembers();
 </script>
 </body></html>
