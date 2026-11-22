@@ -41,6 +41,20 @@ th:nth-child(1){width:25%}th:nth-child(2){width:18%}th:nth-child(3){width:22%}th
  .lineage-note{display:block}
  th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(3){width:33%}
 }
+
+th:nth-child(1){width:21%}th:nth-child(2){width:14%}th:nth-child(3){width:19%}th:nth-child(4){width:17%}th:nth-child(5){width:13%}th:nth-child(6){width:16%}
+th button{display:flex;align-items:center;gap:5px;padding:0;min-height:34px;width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer}
+th button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+th button::after{content:"↕";color:var(--muted)}
+th[aria-sort="ascending"] button::after{content:"↑";color:var(--accent)}
+th[aria-sort="descending"] button::after{content:"↓";color:var(--accent)}
+.crossing-note{display:none}
+@media(max-width:640px){
+ th.crossing,td.crossing{display:none}
+ .crossing-note{display:block}
+ th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(4){width:33%}
+ th button{min-height:44px}
+}
 </style>
 </head>
 <body><main>
@@ -49,7 +63,14 @@ th:nth-child(1){width:25%}th:nth-child(2){width:18%}th:nth-child(3){width:22%}th
 <div class="filters"><label>Search members<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label>
 <div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
 <p id="status" aria-live="polite"></p></div>
-<table aria-label="Members and Big Brother connections"><thead><tr><th scope="col">Member</th><th scope="col">School</th><th scope="col">Big Brother</th><th scope="col" class="lineage">Lineage</th><th scope="col" class="ancestor">Founder</th></tr></thead><tbody id="members"></tbody></table>
+<table aria-label="Members and Big Brother connections"><thead><tr>
+<th scope="col" aria-sort="ascending"><button type="button" data-sort="member">Member</button></th>
+<th scope="col"><button type="button" data-sort="school">School</button></th>
+<th scope="col" class="crossing"><button type="button" data-sort="crossing">Crossing</button></th>
+<th scope="col"><button type="button" data-sort="big">Big Brother</button></th>
+<th scope="col" class="lineage"><button type="button" data-sort="lineage">Lineage</button></th>
+<th scope="col" class="ancestor"><button type="button" data-sort="founder">Founder</button></th>
+</tr></thead><tbody id="members"></tbody></table>
 </main>
 <script src="lineage-data.js"></script>
 <script>
@@ -80,7 +101,41 @@ const lineageStart=records.map((_,id)=>{
   for(let parent=records[start][1];parent!==null&&schoolIds[parent]===schoolIds[start];parent=records[start][1]) start=parent;
   return start;
 });
-const sorted=records.map((_,id)=>id).sort((a,b)=>records[a][3].localeCompare(records[b][3]));
+const founders=records.map((_,id)=>{
+  let founder=id;
+  while(records[founder][1]!==null) founder=records[founder][1];
+  return founder;
+});
+const semesterOrder={Winter:0,Spring:1,Summer:2,Fall:3};
+function semesterKey(value){
+  const [term,year]=value.split(' ');
+  return Number(year)*4+semesterOrder[term];
+}
+const sortValues={
+  member:id=>records[id][3],
+  school:id=>campuses[schoolIds[id]],
+  big:id=>records[records[id][1]]?.[3]??'',
+  lineage:id=>records[lineageStart[id]][0],
+  founder:id=>records[founders[id]][3],
+};
+let sortColumn='member', sortDirection=1;
+const collator=new Intl.Collator(undefined,{sensitivity:'base',numeric:true});
+function compareMembers(a,b){
+  const order=sortColumn==='crossing'
+    ? semesterKey(crossings[a][0])-semesterKey(crossings[b][0])||collator.compare(crossings[a][1],crossings[b][1])
+    : collator.compare(sortValues[sortColumn](a),sortValues[sortColumn](b));
+  return sortDirection*order||collator.compare(records[a][3],records[b][3]);
+}
+for(const button of document.querySelectorAll('[data-sort]')){
+  button.addEventListener('click',()=>{
+    const column=button.dataset.sort;
+    sortDirection=column===sortColumn?-sortDirection:1;
+    sortColumn=column;
+    document.querySelector('th[aria-sort]')?.removeAttribute('aria-sort');
+    button.closest('th').setAttribute('aria-sort',sortDirection===1?'ascending':'descending');
+    drawMembers();
+  });
+}
 function addMember(cell,id,showLine=false){
   if(id===null){cell.textContent='Founder';return;}
   const link=document.createElement('a');
@@ -102,12 +157,17 @@ function addLineage(container,id){
 }
 function drawMembers(){
   const term=normalizeMemberQuery(query.value);
-  const filtered=sorted.filter(id=>(activeSchool===null||schoolIds[id]===activeSchool)&&matchesMember(records[id],term));
+  const filtered=records.map((_,id)=>id).filter(id=>(activeSchool===null||schoolIds[id]===activeSchool)&&matchesMember(records[id],term)).sort(compareMembers);
   const body=document.createDocumentFragment();
   for(const id of filtered){
     const row=document.createElement('tr');
     const memberCell=row.insertCell();
     addMember(memberCell,id,true);
+    const [semester,cohort]=crossings[id];
+    const crossingNote=document.createElement('small');
+    crossingNote.className='crossing-note';
+    crossingNote.textContent=semester+' · '+cohort;
+    memberCell.append(crossingNote);
     const start=lineageStart[id];
     const lineageNote=document.createElement('small');
     lineageNote.className='lineage-note';
@@ -115,15 +175,19 @@ function drawMembers(){
     addLineage(lineageNote,start);
     memberCell.append(lineageNote);
     row.insertCell().textContent=campuses[schoolIds[id]];
+    const crossing=row.insertCell();
+    crossing.className='crossing';
+    crossing.textContent=semester;
+    const classLabel=document.createElement('small');
+    classLabel.textContent=cohort;
+    crossing.append(classLabel);
     addMember(row.insertCell(),records[id][1]);
     const lineage=row.insertCell();
     lineage.className='lineage';
     addLineage(lineage,start);
-    let founder=id;
-    while(records[founder][1]!==null) founder=records[founder][1];
     const ancestry=row.insertCell();
     ancestry.className='ancestor';
-    addMember(ancestry,founder);
+    addMember(ancestry,founders[id]);
     body.append(row);
   }
   members.replaceChildren(body);
