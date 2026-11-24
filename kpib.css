@@ -524,15 +524,10 @@ i[data-icon]{display:contents;font-style:normal}
 }
 @media(min-width:700px){.kp-herobg{right:auto;width:calc(100% * 5 / 11)}}
 
-/* home page: full-screen sections that snap into place (off under prefers-reduced-motion) */
-@media (prefers-reduced-motion:no-preference){
-  html.kp-snap{scroll-snap-type:y mandatory}
-  .kp-snap .kp-hero,.kp-snap .kp-motto-band,.kp-snap main>.kp-section{scroll-snap-align:start;scroll-snap-stop:always;min-height:calc(100svh - var(--hdr,74px));box-sizing:border-box}
-  .kp-snap .kp-motto-band{display:flex;flex-direction:column;justify-content:center}
-  .kp-snap main>.kp-section{display:flex;flex-direction:column;justify-content:center;padding-block:var(--space-8)!important}
-  .kp-snap .kp-ftr{scroll-snap-align:end}
-}
-
 /* home page: header stays pinned; snapped sections start just below it */
 html.kp-snap{scroll-padding-top:var(--hdr,74px)}
 .kp-snap .kp-hdr{position:sticky;top:0}
+
+/* motto band: circuit-line image behind the text */
+.kp-motto-band{background:#0a0a0a url("assets/motto-bg.jpg") right center/cover no-repeat}
+@media(max-width:699px){.kp-motto-band{background-position:70% center}}
