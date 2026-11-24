@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=8">
+<link rel="stylesheet" href="kpib.css?v=9">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -58,6 +58,8 @@
 </section></main>
 <script src="d3.min.js"></script>
 <script src="lineage-data.js?v=crossing"></script>
+<script src="class-dads.js?v=class-kids"></script>
+<script src="relationships.js?v=1"></script>
 <script>
 'use strict';
 const schoolOf=id=>campuses[schoolIds[id]];
@@ -257,12 +259,16 @@ const generationName=n=>['Kids','Grandkids','Great-grandkids','Great-great-grand
 function renderGenerations(){
   const box=pick('generations');
   box.replaceChildren();
-  const levels=[];
-  let row=children[selected];
-  while(row.length){levels.push(row);row=row.flatMap(id=>children[id]);}
+  const levels=[],seen=new Set([selected]);
+  let row=kidsByMember[selected].filter(id=>!seen.has(id));
+  while(row.length){
+    row.forEach(id=>seen.add(id));
+    levels.push(row);
+    row=[...new Set(row.flatMap(id=>kidsByMember[id]))].filter(id=>!seen.has(id));
+  }
   const total=levels.reduce((sum,level)=>sum+level.length,0);
   const heading=document.createElement('h2');
-  heading.textContent=records[selected][3]+(total?' · '+total+(total===1?' descendant':' descendants')+' in '+levels.length+(levels.length===1?' generation':' generations'):' · no kids recorded');
+  heading.textContent=records[selected][3]+(total?' · '+total+(total===1?' descendant':' descendants')+' in '+levels.length+(levels.length===1?' generation':' generations'):' · no class kids recorded');
   box.append(heading);
   levels.forEach((ids,index)=>{
     const group=document.createElement('details');
@@ -278,7 +284,7 @@ function renderGenerations(){
       const real=document.createElement('span');real.textContent=records[id][3];
       const meta=document.createElement('span'),dot=document.createElement('i');
       dot.className='school-dot d'+schoolIds[id];dot.setAttribute('aria-hidden','true');
-      meta.append(dot,[schoolOf(id),crossings[id][0],index>0?'Little of '+records[records[id][1]][0]:''].filter(Boolean).join(' · '));
+      meta.append(dot,[schoolOf(id),crossings[id][0],index>0&&dadsByMember[id].length?'Class dad: '+dadsByMember[id].join(', '):''].filter(Boolean).join(' · '));
       button.append(line,real,meta);
       button.addEventListener('click',()=>mark(id,false));
       item.append(button);list.append(item);
@@ -314,7 +320,7 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.checked=!full;
-  if(showList){renderGenerations();caption.textContent='Kids and every generation below them. Tap a member to see their kids.';return;}
+  if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
   caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Big Brother to move up a level.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.');
 }
 function openConnections(){

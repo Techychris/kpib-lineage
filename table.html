@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=roster-relationships">
+<link rel="stylesheet" href="kpib.css?v=9">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
@@ -50,6 +50,7 @@
 </main>
 <script src="lineage-data.js?v=crossing"></script>
 <script src="class-dads.js?v=class-kids"></script>
+<script src="relationships.js?v=1"></script>
 <script>
 'use strict';
 const query=document.getElementById('query');
@@ -59,19 +60,6 @@ const rosterStateKey='kpib-roster-view';
 const members=document.getElementById('members');
 const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
-const kidsByMember=records.map(()=>[]);
-const dadsByMember=crossings.map(([semester,cohort],id)=>classDadsBySchool[schoolIds[id]][semester+'|'+cohort]??[]);
-const memberIdsByName=new Map();
-for(const [id,record] of records.entries()){
-  const name=normalizeMemberQuery(record[3]);
-  memberIdsByName.set(name,memberIdsByName.has(name)?null:id);
-}
-for(const [id,dads] of dadsByMember.entries()){
-  const dadIds=new Set(dads.map(name=>memberIdsByName.get(normalizeMemberQuery(classDadAliases[name]??name))));
-  for(const dad of dadIds){
-    if(Number.isInteger(dad)) kidsByMember[dad].push(id);
-  }
-}
 const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
 for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
   const button=document.createElement('button');
