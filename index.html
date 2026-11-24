@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=40">
+<link rel="stylesheet" href="kpib.css?v=41">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -122,6 +122,9 @@ function update(){ticking=false;var h=hero.offsetHeight,y=Math.min(Math.max(wind
 addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
 update();
 })();
+</script>
+<script>
+(function(){var h=document.querySelector('.kp-hdr');if(!h)return;function s(){document.documentElement.style.setProperty('--hdr',h.offsetHeight+'px')}s();addEventListener('resize',s);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(s);})();
 </script>
 <script src="icons.js?v=1"></script>
 <script src="kpib.js?v=5"></script>

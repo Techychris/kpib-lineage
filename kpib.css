@@ -527,9 +527,12 @@ i[data-icon]{display:contents;font-style:normal}
 /* home page: full-screen sections that snap into place (off under prefers-reduced-motion) */
 @media (prefers-reduced-motion:no-preference){
   html.kp-snap{scroll-snap-type:y mandatory}
-  .kp-snap .kp-hdr{scroll-snap-align:start}
-  .kp-snap .kp-hero,.kp-snap .kp-motto-band,.kp-snap main>.kp-section{scroll-snap-align:start;scroll-snap-stop:always;min-height:100svh;box-sizing:border-box}
+  .kp-snap .kp-hero,.kp-snap .kp-motto-band,.kp-snap main>.kp-section{scroll-snap-align:start;scroll-snap-stop:always;min-height:calc(100svh - var(--hdr,74px));box-sizing:border-box}
   .kp-snap .kp-motto-band{display:flex;flex-direction:column;justify-content:center}
   .kp-snap main>.kp-section{display:flex;flex-direction:column;justify-content:center;padding-block:var(--space-8)!important}
   .kp-snap .kp-ftr{scroll-snap-align:end}
 }
+
+/* home page: header stays pinned; snapped sections start just below it */
+html.kp-snap{scroll-padding-top:var(--hdr,74px)}
+.kp-snap .kp-hdr{position:sticky;top:0}
