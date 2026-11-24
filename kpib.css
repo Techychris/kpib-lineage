@@ -482,3 +482,8 @@ i[data-icon]{display:contents;font-style:normal}
   .kp-hero .pic svg{transform:translate3d(0,calc(var(--py,0) * -.08px),0);will-change:transform}
   .kp-hero{overflow:hidden}
 }
+
+/* hero: search row and both buttons share one width */
+.kp-hero .kp-herosearch,.kp-hero .kp-actions{width:100%;max-width:480px;box-sizing:border-box}
+.kp-hero .kp-actions{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
+.kp-hero .kp-actions .kp-btn{width:100%;box-sizing:border-box}
