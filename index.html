@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=56">
+<link rel="stylesheet" href="kpib.css?v=59">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -143,7 +143,7 @@ function render(){
  if(!items.length){var e=document.createElement('li');e.className='none';e.textContent='No member matches';e.setAttribute('role','presentation');list.appendChild(e);}
  items.forEach(function(h,i){var li=document.createElement('li');li.id='hs'+i;li.setAttribute('role','option');
   var n=document.createElement('b');n.textContent=h.r[0];var s=document.createElement('span');s.textContent=h.r[3]+' \u00b7 '+campuses[schoolIds[h.id]];
-  li.appendChild(n);li.appendChild(s);li.addEventListener('mousedown',function(ev){ev.preventDefault();go(h.id);});list.appendChild(li);});
+  li.appendChild(n);li.appendChild(s);li.addEventListener('click',function(){go(h.id);});li.addEventListener('mousedown',function(ev){ev.preventDefault();});list.appendChild(li);});
  if(hits.length>6){var m=document.createElement('li');m.className='none';m.setAttribute('role','presentation');m.textContent=(hits.length-6)+' more. Press Search to see all.';list.appendChild(m);}
  list.hidden=false;inp.setAttribute('aria-expanded','true');idx=-1;mark();
 }
@@ -157,7 +157,10 @@ inp.addEventListener('keydown',function(e){
  else if(e.key==='Enter'&&idx>=0){e.preventDefault();go(items[idx].id);}
  else if(e.key==='Escape'){close();}
 });
-inp.addEventListener('blur',function(){setTimeout(close,120);});
+var keep=false;list.addEventListener('pointerdown',function(){keep=true;});
+inp.addEventListener('blur',function(){setTimeout(function(){if(keep){keep=false;return;}close();},150);});
+document.addEventListener('pointerdown',function(e){if(!list.hidden&&!list.contains(e.target)&&e.target!==inp){keep=false;close();}});
+inp.addEventListener('focus',function(){setTimeout(function(){inp.scrollIntoView({block:'start',behavior:'smooth'});},250);});
 })();
 </script>
 <script src="icons.js?v=1"></script>

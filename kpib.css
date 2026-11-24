@@ -576,3 +576,9 @@ a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2
 #homeSuggest li.none{cursor:default;color:#555;font-size:14px;line-height:20px}
 #homeSuggest li.none:hover{background:none}
 .kp-herosearch{position:relative;z-index:4}
+#homeSuggest{max-height:min(280px,50vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.kp-herosearch input{scroll-margin-top:calc(var(--hdr,74px) + var(--space-4))}
+/* let the search suggestions extend past the hero; clip the decorations themselves */
+.kp-hero{overflow:visible!important;z-index:2}
+.kp-herobg,.kp-hero .pic{overflow:hidden}
+.kp-hero .txt{z-index:3}
