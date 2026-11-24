@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=44">
+<link rel="stylesheet" href="kpib.css?v=45">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -125,7 +125,16 @@ document.addEventListener('keydown',event=>{
 document.addEventListener('pointerdown',event=>{
   if(!event.target.closest('.tools')) closeView();
 });
-const DEFAULT_DEPTH=5;
+// Default depth follows the screen: how many generations fit along the depth axis at a readable size.
+let lastDepth=5, drawnDepth=5;
+function defaultDepth(){
+  const vertical=orientation.value==='vertical';
+  const extent=vertical?canvas.clientHeight:canvas.clientWidth;
+  if(!extent) return lastDepth;
+  const step=vertical?185:(phone.matches?NODE_WIDTH+44:400);
+  lastDepth=Math.max(3,Math.min(7,Math.round(extent/(step*0.4))));
+  return lastDepth;
+}
 let fullDepth=false;
 try{fullDepth=localStorage.getItem('kpib-depth')==='full';}catch(e){}
 let listView=false, branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
@@ -203,10 +212,11 @@ function draw(){
   const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
   const rootId=focused?selected:branch;
-  const depthLimit=fullDepth?Infinity:DEFAULT_DEPTH;
+  const depthLimit=fullDepth?Infinity:defaultDepth();
   const depthOf=new Map([[rootId,0]]);
   const hidden=new Map();
   const below=id=>children[id].reduce((sum,kid)=>sum+1+below(kid),0);
+  drawnDepth=depthLimit;
   const hierarchy=d3.hierarchy(rootId,id=>{
     if(id===OVERVIEW) return rootIds;
     if(id===UNRESOLVED) return floating;
@@ -266,7 +276,7 @@ function draw(){
   cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?14:19));
   cards.select('.more').text(d=>hidden.has(d.data)?'+'+hidden.get(d.data):'');
   const depthNote=pick('depthNote');depthNote.hidden=!hidden.size;
-  depthNote.textContent='Showing '+DEFAULT_DEPTH+' generations. A +N on a card means more members below it. Turn on Full depth to see everything.';
+  depthNote.textContent='Showing '+lastDepth+' generations. A +N on a card means more members below it. Turn on Full depth to see everything.';
   cards.select('.member-name').text(d=>short(names(d.data)[1],25));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
   cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
@@ -488,7 +498,10 @@ if(linkedMember!==null&&linkedMember<records.length) mark(linkedMember,false);
 else show(phone.matches?FOUNDERS:OVERVIEW);
 const startQuery=new URLSearchParams(location.search).get('q');
 if(startQuery&&linkedMember===null){query.value=startQuery;document.getElementById('find').requestSubmit();}
-new ResizeObserver(()=>{if(branch===OVERVIEW) fit();}).observe(canvas);
+new ResizeObserver(()=>{
+  if(branch===OVERVIEW){fit();return;}
+  if(!fullDepth&&!listActive()&&branch!==FOUNDERS&&canvas.clientWidth&&defaultDepth()!==drawnDepth){draw();if(selected!==null) frame(selected);else fit();}
+}).observe(canvas);
 </script>
 <script src="kpib.js?v=5"></script>
 </body></html>
