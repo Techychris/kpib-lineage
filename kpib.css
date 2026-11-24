@@ -316,9 +316,6 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
   .mobile-sort{display:none!important}
 }
 @media(min-width:641px){
-  .kp-t th:nth-child(1){width:21%}.kp-t th:nth-child(2){width:14%}.kp-t th:nth-child(3){width:19%}.kp-t th:nth-child(4){width:17%}.kp-t th:nth-child(5){width:13%}.kp-t th:nth-child(6){width:16%}
-  th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:table-cell}
-  .crossing-note,.lineage-note{display:none}
   .kp-t th,.kp-t td{padding-inline:var(--space-4)}
   .table-scroll th button{letter-spacing:.14em}
   .kp-t td{font-size:16px;line-height:24px}
@@ -355,3 +352,10 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
 #generations summary{min-height:var(--hit-min);display:flex;align-items:center;padding:0 var(--space-1);font:700 14px/20px var(--font-body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
 #generations ul{display:grid;gap:var(--space-2);margin:0;padding:0;list-style:none}
 @media (min-width:701px){#generations{padding:var(--space-5)}#generations ul{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
+
+/* six table columns need real width; tablets in portrait keep the three-column layout */
+@media(min-width:1000px){
+  .kp-t th:nth-child(1){width:21%}.kp-t th:nth-child(2){width:14%}.kp-t th:nth-child(3){width:19%}.kp-t th:nth-child(4){width:17%}.kp-t th:nth-child(5){width:13%}.kp-t th:nth-child(6){width:16%}
+  th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:table-cell}
+  .kp-t td .crossing-note,.kp-t td .lineage-note{display:none}
+}
