@@ -544,3 +544,8 @@ a.kp-card .go{margin-top:var(--space-3)}
 .kp-card .kp-label{margin-bottom:var(--space-1)}
 .kp-hero .pic figcaption{margin-top:var(--space-5)}
 a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2)}
+
+/* spacing pass 2: table cell links stop inflating rows; tree toolbar even inset */
+.kp-t td a{min-height:32px}
+.kp-t td small{margin-top:0}
+.tools{padding:var(--space-2)}
