@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=13">
+<link rel="stylesheet" href="kpib.css?v=14">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -30,7 +30,7 @@
 <div id="viewControls">
 <a class="mobile-home" href="./">Home</a>
 <label>Branch<select id="branch"></select></label>
-<label>Lineage<select id="lineage"><option value="dad">Class dad</option><option value="big">Big Brother</option></select></label>
+<label>Lineage<select id="lineage"><option value="big">Big Brother</option><option value="dad">Class dad</option></select></label>
 <label>Layout<select id="orientation"><option value="horizontal">Horizontal</option><option value="vertical" selected>Top-down</option></select></label>
 <div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="fit">Fit diagram</button></div>
 <button type="button" id="overview" hidden>Full organization</button>
@@ -66,9 +66,9 @@
 const schoolOf=id=>campuses[schoolIds[id]];
 const rootIds=[], floating=[];
 const children=records.map(()=>[]);
-// Two ways to draw the lineage: by class dad (default) or by Big Brother.
-let lineageMode='dad';
-try{if(localStorage.getItem('kpib-lineage')==='big') lineageMode='big';}catch(e){}
+// Two ways to draw the lineage: by Big Brother (default) or by class dad.
+let lineageMode='big';
+try{if(localStorage.getItem('kpib-lineage')==='dad') lineageMode='dad';}catch(e){}
 const parentOf=records.map(()=>null);
 function buildLineage(){
   rootIds.length=0;floating.length=0;
