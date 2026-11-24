@@ -363,3 +363,29 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor,th.kids,td
   th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor,th.kids,td.kids,th.class-dad,td.class-dad{display:table-cell}
   .kp-t td .crossing-note,.kp-t td .lineage-note,.kp-t td .relationship-notes{display:none}
 }
+
+/* icons: 16px line icons that follow the text color */
+i[data-icon]{display:contents;font-style:normal}
+.ico{display:inline-block;flex:none;width:16px;height:16px;margin-right:8px;vertical-align:-3px}
+.ico svg{display:block;width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.zoom-controls button:not(#fit) .ico{margin:0}
+.kp-ibtn .ico{margin-right:6px}
+.kp-menu summary .ico{margin-right:6px}
+.kp-stat dt .ico{width:18px;height:18px;margin-right:8px}
+.kp-card .kp-label .ico{width:14px;height:14px;margin-right:6px;vertical-align:-2px}
+.kp-card .kp-h3 .ico{width:20px;height:20px;margin-right:10px;vertical-align:-3px}
+.go .ico{margin:0 0 0 8px}
+.seg .ico,.context .ico{margin-right:6px}
+
+/* phone toolbar: Table and Search are icon-only so the search box keeps its width */
+.tools .lbl{display:none}
+.tools .view-tabs a .ico,.tools .search button .ico{margin:0}
+@media (min-width:701px){
+  .tools .lbl{display:inline}
+  .tools .view-tabs a .ico,.tools .search button .ico{margin-right:8px}
+}
+
+/* phone header: the theme button is icon-only so Menu stays on screen */
+.kp-ibtn .tlabel{display:none}
+.kp-ibtn .ico{margin-right:0}
+@media (min-width:701px){.kp-ibtn .tlabel{display:inline}.kp-ibtn .ico{margin-right:6px}}

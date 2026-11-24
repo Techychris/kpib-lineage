@@ -10,15 +10,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=14">
+<link rel="stylesheet" href="kpib.css?v=17">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
 <header class="kp-hdr"><div class="in">
 <a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img data-component="image" src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a>
-<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./">Home</a><a href="tree.html">Lineage tree</a><a href="table.html" aria-current="page">Member table</a></nav>
+<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html"><i data-icon="tree"></i>Lineage tree</a><a href="table.html" aria-current="page"><i data-icon="table"></i>Member table</a></nav>
 <div class="kp-tools"><button class="kp-ibtn" data-component="button" data-name="Theme" id="themeToggle" type="button">Dark</button>
-<details class="kp-menu"><summary>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./">Home</a><a href="tree.html">Lineage tree</a><a href="table.html" aria-current="page">Member table</a></nav></details></div>
+<details class="kp-menu"><summary><i data-icon="menu"></i>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html"><i data-icon="tree"></i>Lineage tree</a><a href="table.html" aria-current="page"><i data-icon="table"></i>Member table</a></nav></details></div>
 </div></header>
 <main>
 <div class="app-title"><h1>Member table</h1></div>
@@ -241,5 +241,6 @@ query.addEventListener('input',drawMembers);
 document.addEventListener('click',event=>{if(event.target.closest('a[href^="tree.html"]')) rememberRoster();});
 restoreRoster();
 </script>
-<script src="kpib.js?v=3"></script>
+<script src="icons.js?v=1"></script>
+<script src="kpib.js?v=5"></script>
 </body></html>

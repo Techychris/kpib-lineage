@@ -3,7 +3,7 @@
   var root=document.documentElement,btn=document.getElementById('themeToggle');
   function paint(t){
     root.dataset.theme=t;
-    if(btn){btn.textContent=t==='dark'?'Light':'Dark';btn.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' theme');}
+    if(btn){btn.innerHTML=(window.kpibIcon?kpibIcon(t==='dark'?'sun':'moon'):'')+'<span class="tlabel">'+(t==='dark'?'Light':'Dark')+'</span>';btn.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' theme');}
   }
   paint(root.dataset.theme==='dark'?'dark':'light');
   if(btn)btn.addEventListener('click',function(){

@@ -10,33 +10,33 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=14">
+<link rel="stylesheet" href="kpib.css?v=17">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
 <header class="kp-hdr"><div class="in">
 <a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img data-component="image" src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a>
-<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./">Home</a><a href="tree.html" aria-current="page">Lineage tree</a><a href="table.html">Member table</a></nav>
+<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html" aria-current="page"><i data-icon="tree"></i>Lineage tree</a><a href="table.html"><i data-icon="table"></i>Member table</a></nav>
 <div class="kp-tools"><button class="kp-ibtn" data-component="button" data-name="Theme" id="themeToggle" type="button">Dark</button>
-<details class="kp-menu"><summary>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./">Home</a><a href="tree.html" aria-current="page">Lineage tree</a><a href="table.html">Member table</a></nav></details></div>
+<details class="kp-menu"><summary><i data-icon="menu"></i>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html" aria-current="page"><i data-icon="tree"></i>Lineage tree</a><a href="table.html"><i data-icon="table"></i>Member table</a></nav></details></div>
 </div></header>
 <main>
 <div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b>559</b> members</span><span><b>553</b> connections</span></p></div>
 <section id="explorer" aria-label="Lineage explorer">
 <div class="tools">
-<nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html">Table</a></nav>
-<form class="search" id="find"><label>Member name<input id="query" data-component="input" type="search" placeholder="Name or line" autocomplete="off"></label><button data-component="button" data-name="Search">Search</button></form>
-<button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden>View</button>
+<nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html" aria-label="Member table"><i data-icon="table"></i><span class="lbl">Table</span></a></nav>
+<form class="search" id="find"><label>Member name<input id="query" data-component="input" type="search" placeholder="Name or line" autocomplete="off"></label><button data-component="button" data-name="Search" aria-label="Search"><i data-icon="search"></i><span class="lbl">Search</span></button></form>
+<button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden><i data-icon="sliders"></i>View</button>
 <div id="viewControls">
-<a class="mobile-home" href="./">Home</a>
+<a class="mobile-home" href="./"><i data-icon="home"></i>Home</a>
 <label>Branch<select id="branch"></select></label>
 <label>Lineage<select id="lineage"><option value="big">Big Brother</option><option value="dad">Class dad</option></select></label>
 <label>Layout<select id="orientation"><option value="horizontal">Horizontal</option><option value="vertical" selected>Top-down</option></select></label>
-<div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="fit">Fit diagram</button></div>
-<button type="button" id="overview" hidden>Full organization</button>
+<div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out"><i data-icon="minus"></i></button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in"><i data-icon="plus"></i></button><button type="button" id="fit"><i data-icon="fit"></i>Fit diagram</button></div>
+<button type="button" id="overview" hidden><i data-icon="users"></i>Full organization</button>
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
-<div class="seg" role="group" aria-label="Member view"><button type="button" id="viewTree" aria-pressed="true">Tree</button><button type="button" id="viewList" aria-pressed="false">Generations</button></div>
+<div class="seg" role="group" aria-label="Member view"><button type="button" id="viewTree" aria-pressed="true"><i data-icon="tree"></i>Tree</button><button type="button" id="viewList" aria-pressed="false"><i data-icon="list"></i>Generations</button></div>
 <button type="button" id="parent" hidden></button><label class="toggle"><input type="checkbox" id="mode" checked><span>Show downstream</span></label>
 </div>
 <div class="menu-schools"><span class="kp-label">Schools</span><ul class="school-key" data-school-key></ul></div>
@@ -49,7 +49,7 @@
 <div id="founderList" hidden><h2>Choose a founder</h2></div>
 <div id="generations" hidden></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
-<button type="button" id="connections" hidden>Connections</button>
+<button type="button" id="connections" hidden><i data-icon="users"></i>Connections</button>
 <dialog id="connectionsPanel" aria-labelledby="connectionsTitle">
   <div class="connections-head"><h2 id="connectionsTitle">Connections</h2><form method="dialog"><button autofocus>Close</button></form></div>
   <p id="connectionsMeta"></p>
@@ -58,6 +58,7 @@
 <div class="diagram-key" aria-label="Diagram key"><span><i></i>Same-school link</span><span><i class="change"></i>School change</span><span><i class="ancestry"></i>Path to founder</span><ul class="school-key" data-school-key aria-label="School colors"></ul></div>
 </section></main>
 <script src="d3.min.js"></script>
+<script src="icons.js?v=1"></script>
 <script src="lineage-data.js?v=crossing"></script>
 <script src="class-dads.js?v=class-kids"></script>
 <script src="relationships.js?v=1"></script>
@@ -334,7 +335,7 @@ function describe(){
   member.hidden=selected===null;
   connectionsButton.hidden=selected===null;
   pick('overview').hidden=choosing||(!phone.matches&&branch===OVERVIEW);
-  pick('overview').textContent=phone.matches?'All founders':'Full organization';
+  pick('overview').innerHTML=kpibIcon('users')+(phone.matches?'All founders':'Full organization');
   if(selected===null){
     caption.textContent=choosing?'Select a founder or search for a member.':'Full organization. Search or choose a branch to read names.';
     return;
@@ -345,7 +346,8 @@ function describe(){
   const count=children[selected].length;
   pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' '+(lineageMode==='big'?(count===1?'little':'littles'):(count===1?'kid':'kids'));
   parentButton.hidden=parent===null;
-  parentButton.textContent=parent===null?'':dadWord()+' · '+records[parent][3];
+  parentButton.replaceChildren();
+  if(parent!==null){parentButton.insertAdjacentHTML('afterbegin',kpibIcon('up'));parentButton.append(dadWord()+' · '+records[parent][3]);}
   modeButton.checked=!full;
   if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
   caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use '+dadWord()+' to move up a level. Drag to pan. Pinch or use the zoom controls.';
@@ -475,5 +477,5 @@ if(linkedMember!==null&&linkedMember<records.length) mark(linkedMember,false);
 else show(phone.matches?FOUNDERS:OVERVIEW);
 new ResizeObserver(()=>{if(branch===OVERVIEW) fit();}).observe(canvas);
 </script>
-<script src="kpib.js?v=3"></script>
+<script src="kpib.js?v=5"></script>
 </body></html>
