@@ -402,3 +402,13 @@ i[data-icon]{display:contents;font-style:normal}
   #viewToggle[aria-expanded="true"]+#viewControls{grid-template-columns:1fr 1fr;align-items:end}
   #viewControls>.mobile-home,#viewControls>.context,#viewControls>.menu-schools,#viewControls>.menu-key,#viewControls>.zoom-controls{grid-column:1/-1}
 }
+
+/* identical control boxes everywhere, including iOS Safari, which draws native selects and inputs shorter */
+.page-app input,.page-app select,.tools button,.context button,.view-tabs a,#connections{box-sizing:border-box;height:var(--hit-min);-webkit-appearance:none;appearance:none;margin:0}
+.page-app select{padding-right:36px;background-repeat:no-repeat;background-position:right 12px center;background-size:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23777' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+[data-theme="dark"] .page-app select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23bbb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")}
+.page-app input,.page-app select,.tools button,.context button{display:inline-flex;align-items:center}
+.page-app input{display:block}
+.page-app select{display:block}
+.tools button,.context button,.view-tabs a{justify-content:center;white-space:nowrap}
+.page-app input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;width:20px;height:20px;min-height:0;padding:0;display:inline-block;accent-color:var(--accent,#b3261e)}
