@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=4">
+<link rel="stylesheet" href="kpib.css?v=5">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -35,6 +35,7 @@
 <button type="button" id="overview" hidden>Full organization</button>
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
+<div class="seg" role="group" aria-label="Member view"><button type="button" id="viewTree" aria-pressed="true">Tree</button><button type="button" id="viewList" aria-pressed="false">Generations</button></div>
 <button type="button" id="parent" hidden></button><label class="toggle"><input type="checkbox" id="mode" checked><span>Show downstream</span></label>
 </div>
 <div class="menu-schools"><span class="kp-label">Schools</span><ul class="school-key" data-school-key></ul></div>
@@ -45,6 +46,7 @@
 <div id="desktopMember"></div>
 <p id="caption" aria-live="polite"></p>
 <div id="founderList" hidden><h2>Choose a founder</h2></div>
+<div id="generations" hidden></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
 <button type="button" id="connections" hidden>Connections</button>
 <dialog id="connectionsPanel" aria-labelledby="connectionsTitle">
@@ -102,7 +104,7 @@ document.addEventListener('keydown',event=>{
 document.addEventListener('pointerdown',event=>{
   if(!event.target.closest('.tools')) closeView();
 });
-let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
+let listView=false, branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
 const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidth,canvas.clientHeight]])
@@ -238,6 +240,7 @@ function draw(){
 }
 function fit(){
   const w=canvas.clientWidth,h=canvas.clientHeight;
+  if(!w||!h) return;
   const fitted=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
   // On a phone, never shrink below a readable size (about 72%): anchor the root and let the person pan.
   const scale=phone.matches?Math.max(fitted,.72):fitted;
@@ -249,13 +252,53 @@ function fit(){
   }
   drawing.call(zoom.transform,d3.zoomIdentity.translate(x,y).scale(scale));
 }
+const listActive=()=>listView&&selected!==null;
+const generationName=n=>['Kids','Grandkids','Great-grandkids','Great-great-grandkids'][n]??'Generation '+(n+1);
+function renderGenerations(){
+  const box=pick('generations');
+  box.replaceChildren();
+  const levels=[];
+  let row=children[selected];
+  while(row.length){levels.push(row);row=row.flatMap(id=>children[id]);}
+  const total=levels.reduce((sum,level)=>sum+level.length,0);
+  const heading=document.createElement('h2');
+  heading.textContent=records[selected][3]+(total?' · '+total+(total===1?' descendant':' descendants')+' in '+levels.length+(levels.length===1?' generation':' generations'):' · no kids recorded');
+  box.append(heading);
+  levels.forEach((ids,index)=>{
+    const group=document.createElement('details');
+    group.open=index<2;
+    const title=document.createElement('summary');
+    title.textContent=generationName(index)+' · '+ids.length;
+    group.append(title);
+    const list=document.createElement('ul');
+    for(const id of ids){
+      const item=document.createElement('li'),button=document.createElement('button');
+      button.type='button';
+      const line=document.createElement('strong');line.textContent=records[id][0];
+      const real=document.createElement('span');real.textContent=records[id][3];
+      const meta=document.createElement('span'),dot=document.createElement('i');
+      dot.className='school-dot d'+schoolIds[id];dot.setAttribute('aria-hidden','true');
+      meta.append(dot,[schoolOf(id),crossings[id][0],index>0?'Little of '+records[records[id][1]][0]:''].filter(Boolean).join(' · '));
+      button.append(line,real,meta);
+      button.addEventListener('click',()=>mark(id,false));
+      item.append(button);list.append(item);
+    }
+    group.append(list);box.append(group);
+  });
+  box.scrollTop=0;
+}
 function describe(){
   const choosing=branch===FOUNDERS;
   document.body.classList.toggle('diagram-open',!choosing);
+  const showList=listActive()&&!choosing;
   founderList.hidden=!choosing;
-  canvas.hidden=choosing;
-  document.querySelector('.diagram-key').hidden=choosing;
-  document.querySelector('.zoom-controls').hidden=choosing;
+  canvas.hidden=choosing||showList;
+  pick('generations').hidden=!showList;
+  document.querySelector('.diagram-key').hidden=choosing||showList;
+  document.querySelector('.zoom-controls').hidden=choosing||showList;
+  document.querySelector('.toggle').hidden=showList;
+  pick('viewTree').setAttribute('aria-pressed',String(!showList));
+  pick('viewList').setAttribute('aria-pressed',String(showList));
   member.hidden=selected===null;
   connectionsButton.hidden=selected===null;
   pick('overview').hidden=choosing||(!phone.matches&&branch===OVERVIEW);
@@ -271,6 +314,7 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.checked=!full;
+  if(showList){renderGenerations();caption.textContent='Kids and every generation below them. Tap a member to see their kids.';return;}
   caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Big Brother to move up a level.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.');
 }
 function openConnections(){
@@ -338,7 +382,8 @@ function mark(id,moveFocus){
   const target=rootOf(id);
   branch=target;selected=id;select.value=String(branch);
   matches.replaceChildren();
-  describe();draw();frame(id,moveFocus);
+  describe();
+  if(!listActive()){draw();frame(id,moveFocus);}
 }
 select.addEventListener('change',()=>{closeView();show(Number(select.value));});
 orientation.addEventListener('change',()=>{
@@ -350,6 +395,13 @@ orientation.addEventListener('change',()=>{
 });
 parentButton.addEventListener('click',()=>mark(records[selected][1],true));
 modeButton.addEventListener('change',()=>{full=!modeButton.checked;draw();describe();frame(selected);});
+function setList(on){
+  if(listView===on) return;
+  listView=on;closeView();describe();
+  if(!on&&selected!==null){draw();frame(selected);}
+}
+pick('viewTree').addEventListener('click',()=>setList(false));
+pick('viewList').addEventListener('click',()=>setList(true));
 pick('zoomOut').addEventListener('click',()=>drawing.call(zoom.scaleBy,.8));
 pick('zoomIn').addEventListener('click',()=>drawing.call(zoom.scaleBy,1.25));
 pick('fit').addEventListener('click',fit);

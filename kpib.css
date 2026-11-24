@@ -166,9 +166,9 @@ a.kp-card .go{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:
 #matches{position:absolute;z-index:3;top:56px;left:var(--space-2);right:var(--space-2);max-height:min(45dvh,288px);overflow:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:var(--space-1);padding:var(--space-2);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--shadow-popover)}
 #matches:empty{display:none}
 #matches>span{color:var(--ink-muted);font-size:14px;line-height:20px}
-#matches button,#founderList button,#connectionsBody button{display:block;width:100%;min-height:var(--hit-min);padding:var(--space-2) var(--space-3);text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--border-hairline);border-radius:var(--radius-md);font:700 16px/24px var(--font-body);letter-spacing:0;text-transform:none;cursor:pointer;transition:border-color var(--duration-base) var(--ease-out)}
-#matches button:hover,#founderList button:hover,#connectionsBody button:hover{border-color:var(--ink)}
-#matches button span,#founderList button span,#connectionsBody small{display:block;color:var(--ink-muted);font-size:14px;line-height:20px;font-weight:400}
+#matches button,#founderList button,#generations button,#connectionsBody button{display:block;width:100%;min-height:var(--hit-min);padding:var(--space-2) var(--space-3);text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--border-hairline);border-radius:var(--radius-md);font:700 16px/24px var(--font-body);letter-spacing:0;text-transform:none;cursor:pointer;transition:border-color var(--duration-base) var(--ease-out)}
+#matches button:hover,#founderList button:hover,#generations button:hover,#connectionsBody button:hover{border-color:var(--ink)}
+#matches button span,#founderList button span,#generations button span,#connectionsBody small{display:block;color:var(--ink-muted);font-size:14px;line-height:20px;font-weight:400}
 main>section{position:relative;flex:1;min-height:0;display:flex;flex-direction:column}
 #founderList{display:grid;gap:var(--space-2);align-content:start;flex:1;min-height:0;overflow:auto;padding:var(--space-3)}
 #founderList h2{margin:0 0 var(--space-1);font-size:18px;line-height:24px}
@@ -346,3 +346,12 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
 .context .toggle:hover{border-color:var(--ink)}
 .context .toggle input{width:20px;height:20px;margin:0;accent-color:var(--accent);cursor:pointer}
 .context .toggle:focus-within{outline:2px solid var(--focus-ring);outline-offset:2px}
+
+.seg{display:flex;gap:var(--space-1)}
+.context .seg button[aria-pressed="true"]{background:var(--surface-band);color:var(--on-band);border-color:var(--surface-band)}
+#generations{flex:1;min-height:0;overflow:auto;padding:var(--space-3) var(--space-3) 88px;background:var(--surface-raised)}
+#generations h2{margin:0 0 var(--space-3);font-size:18px;line-height:24px}
+#generations details{margin-bottom:var(--space-3)}
+#generations summary{min-height:var(--hit-min);display:flex;align-items:center;padding:0 var(--space-1);font:700 14px/20px var(--font-body);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+#generations ul{display:grid;gap:var(--space-2);margin:0;padding:0;list-style:none}
+@media (min-width:701px){#generations{padding:var(--space-5)}#generations ul{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
