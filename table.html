@@ -58,7 +58,8 @@ const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
 for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
   const button=document.createElement('button');
   button.type='button';
-  button.textContent=label;
+  if(id===null) button.textContent=label;
+  else{const dot=document.createElement('span');dot.className='school-dot d'+id;dot.setAttribute('aria-hidden','true');button.append(dot,label);}
   if(id!==null) button.setAttribute('aria-label',campuses[id]);
   button.setAttribute('aria-pressed',String(id===activeSchool));
   button.addEventListener('click',()=>{
@@ -174,7 +175,9 @@ function drawMembers(){
     lineageNote.append('Lineage: ');
     addLineage(lineageNote,start);
     memberCell.append(lineageNote);
-    row.insertCell().textContent=campuses[schoolIds[id]];
+    const schoolCell=row.insertCell(),schoolDot=document.createElement('span');
+    schoolDot.className='school-dot d'+schoolIds[id];schoolDot.setAttribute('aria-hidden','true');
+    schoolCell.append(schoolDot,campuses[schoolIds[id]]);
     const crossing=row.insertCell();
     crossing.className='crossing';
     crossing.textContent=semester;

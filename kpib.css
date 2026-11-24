@@ -12,6 +12,7 @@
   --space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:24px;--space-6:32px;--space-7:48px;--space-8:64px;--space-9:96px;
   --radius-sm:4px;--radius-md:8px;--radius-lg:12px;
   --shadow-popover:0 8px 24px rgba(0,0,0,.12);--duration-base:150ms;--ease-out:cubic-bezier(0.22, 1, 0.36, 1);
+  --school-0:#1F6FB5;--school-1:#C2570C;--school-2:#0F766E;--school-3:#6D3FC0;--school-4:#A23B84;--school-5:#8A7200;
   --hit-min:44px;--control-height:48px;--gutter:20px;
   --font-body:"League Spartan",Arial,sans-serif;
 }
@@ -20,6 +21,7 @@
   --surface:#0B0B0B;--surface-raised:#1A1A1A;--surface-band:#363636;
   --ink:#FFFFFF;--ink-muted:#B8B8B8;--accent:#E57373;--on-band-muted:#D0D0D0;
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;
+  --school-0:#5BA4E6;--school-1:#F0903C;--school-2:#3CC4B4;--school-3:#A98BEF;--school-4:#E277BC;--school-5:#D9B93A;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -327,3 +329,15 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
   .page-table .table-scroll{min-height:176px;max-height:60dvh}
 }
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* school colour coding: a stripe on tree cards, a dot in the table and filters, one legend */
+.node rect.school-bar,.node:hover rect.school-bar,.node.selected rect.school-bar,.node.on-path rect.school-bar,.node:focus-visible rect.school-bar{fill:var(--c,var(--ink-muted));stroke:none}
+.node rect.school-bar.sx{display:none}
+.s0,.d0{--c:var(--school-0)}.s1,.d1{--c:var(--school-1)}.s2,.d2{--c:var(--school-2)}.s3,.d3{--c:var(--school-3)}.s4,.d4{--c:var(--school-4)}.s5,.d5{--c:var(--school-5)}
+.school-dot{display:inline-block;flex:none;width:10px;height:10px;margin-right:var(--space-2);border-radius:50%;background:var(--c)}
+.school-filters button .school-dot{margin-right:var(--space-1)}
+.school-key{display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-3);margin:0;padding:0;list-style:none;color:var(--ink-muted);font-size:14px;line-height:20px}
+.school-key li{display:flex;align-items:center}
+.school-key .school-dot{margin-right:var(--space-1)}
+.menu-schools{display:block}
+@media (min-width:701px){.menu-schools{display:none}}

@@ -37,6 +37,7 @@
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
 <button type="button" id="parent" hidden></button><button type="button" id="mode">Full branch</button>
 </div>
+<div class="menu-schools"><span class="kp-label">Schools</span><ul class="school-key" data-school-key></ul></div>
 <div class="menu-key">Dashed links mark school changes.</div>
 </div>
 </div>
@@ -51,7 +52,7 @@
   <p id="connectionsMeta"></p>
   <div id="connectionsBody"></div>
 </dialog>
-<div class="diagram-key" aria-label="Diagram key"><span><i></i>Same-school link</span><span><i class="change"></i>School change</span><span><i class="ancestry"></i>Path to founder</span></div>
+<div class="diagram-key" aria-label="Diagram key"><span><i></i>Same-school link</span><span><i class="change"></i>School change</span><span><i class="ancestry"></i>Path to founder</span><ul class="school-key" data-school-key aria-label="School colors"></ul></div>
 </section></main>
 <script src="d3.min.js"></script>
 <script src="lineage-data.js?v=crossing"></script>
@@ -125,6 +126,11 @@ for(const id of rootIds){
 }
 if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
 const NODE_WIDTH=206, NODE_HEIGHT=104;
+document.querySelectorAll('[data-school-key]').forEach(list=>campuses.forEach((name,index)=>{
+  const item=document.createElement('li'),dot=document.createElement('span');
+  dot.className='school-dot d'+index;dot.setAttribute('aria-hidden','true');
+  item.append(dot,name);list.append(item);
+}));
 const orientation=pick('orientation');
 if(phone.matches) orientation.value='horizontal';
 const names=id=>id===OVERVIEW?['Kappa Pi Beta','']:id===UNRESOLVED?['Unmatched branches','']:[records[id][0],records[id][3]];
@@ -204,12 +210,13 @@ function draw(){
     const item=enter.append('g').attr('class','node');
     item.append('title');
     item.append('rect').attr('width',NODE_WIDTH).attr('height',NODE_HEIGHT).attr('y',-NODE_HEIGHT/2).attr('rx',12);
-    item.append('text').attr('class','name').attr('x',12).attr('y',-29);
+    item.append('rect').attr('class','school-bar').attr('x',10).attr('y',-NODE_HEIGHT/2+12).attr('width',4).attr('height',NODE_HEIGHT-24).attr('rx',2);
+    item.append('text').attr('class','name').attr('x',24).attr('y',-29);
     item.append('text').attr('class','more').attr('x',NODE_WIDTH-12).attr('y',-29).attr('text-anchor','end');
-    item.append('text').attr('class','member-name').attr('x',12).attr('y',-12);
-    item.append('text').attr('class','school').attr('x',12).attr('y',5);
-    item.append('text').attr('class','school semester').attr('x',12).attr('y',22);
-    item.append('text').attr('class','school cohort').attr('x',12).attr('y',39);
+    item.append('text').attr('class','member-name').attr('x',24).attr('y',-12);
+    item.append('text').attr('class','school').attr('x',24).attr('y',5);
+    item.append('text').attr('class','school semester').attr('x',24).attr('y',22);
+    item.append('text').attr('class','school cohort').attr('x',24).attr('y',39);
     return item;
   }).attr('transform',d=>'translate('+d.left+','+d.centerY+')')
     .attr('class',d=>'node'+(d.data===rootId?' root':'')+(d.data===selected?' selected':'')+(ancestry.has(d.data)?' on-path':''))
@@ -217,14 +224,15 @@ function draw(){
     .attr('aria-label',d=>[...names(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '))
     .on('click',(event,d)=>{if(!event.defaultPrevented&&d.data>=0) mark(d.data,true);})
     .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();mark(d.data,true);}});
+  cards.select('.school-bar').attr('class',d=>'school-bar '+(d.data>=0?'s'+schoolIds[d.data]:'sx'));
   cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
-  cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?15:21));
+  cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?14:19));
   cards.select('.more').text(d=>hidden.has(d.data)?'+'+hidden.get(d.data):'');
-  cards.select('.member-name').text(d=>short(names(d.data)[1],27));
+  cards.select('.member-name').text(d=>short(names(d.data)[1],25));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
   cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
-  cards.select('.cohort').text(d=>short(crossings[d.data]?.[1]??'',27));
+  cards.select('.cohort').text(d=>short(crossings[d.data]?.[1]??'',25));
   nodesById.clear();
   cards.each(function(d){nodesById.set(d.data,{element:this,x:d.left+NODE_WIDTH/2,y:d.centerY});});
 }
