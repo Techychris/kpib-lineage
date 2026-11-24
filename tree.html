@@ -25,7 +25,7 @@
 <section id="explorer" aria-label="Lineage explorer">
 <div class="tools">
 <nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html">Table</a></nav>
-<form class="search" id="find"><label>Member name<input id="query" data-component="input" type="search" placeholder="Name or line name" autocomplete="off"></label><button data-component="button" data-name="Search">Search</button></form>
+<form class="search" id="find"><label>Member name<input id="query" data-component="input" type="search" placeholder="Name or line" autocomplete="off"></label><button data-component="button" data-name="Search">Search</button></form>
 <button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden>View</button>
 <div id="viewControls">
 <a class="mobile-home" href="./">Home</a>
@@ -101,7 +101,7 @@ document.addEventListener('keydown',event=>{
 document.addEventListener('pointerdown',event=>{
   if(!event.target.closest('.tools')) closeView();
 });
-let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0];
+let branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
 const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidth,canvas.clientHeight]])
@@ -110,7 +110,7 @@ const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidt
 drawing.call(zoom).on('dblclick.zoom',null);
 const member=pick('member'), parentButton=pick('parent'), modeButton=pick('mode');
 if(phone.matches) select.add(new Option('Choose a founder',FOUNDERS));
-select.add(new Option('Full organization',OVERVIEW));
+if(!phone.matches) select.add(new Option('Full organization',OVERVIEW));
 for(const id of rootIds){
   select.add(new Option(records[id][0]+' · '+records[id][3],id));
   const card=document.createElement('button');
@@ -166,6 +166,7 @@ function draw(){
   });
   const vertical=orientation.value==='vertical';
   const nodes=positionTree(hierarchy,vertical,branch===OVERVIEW);
+  rootPoint={x:nodes[0].left+NODE_WIDTH/2,y:nodes[0].centerY,vertical};
   dimensions=[d3.max(nodes,d=>d.left)+NODE_WIDTH+18,d3.max(nodes,d=>d.centerY)+NODE_HEIGHT/2+18];
   const links=hierarchy.links();
   const isCross=({source,target})=>source.data>=0&&schoolOf(source.data)!==schoolOf(target.data);
@@ -218,8 +219,16 @@ function draw(){
 }
 function fit(){
   const w=canvas.clientWidth,h=canvas.clientHeight;
-  const scale=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
-  drawing.call(zoom.transform,d3.zoomIdentity.translate((w-dimensions[0]*scale)/2,(h-dimensions[1]*scale)/2).scale(scale));
+  const fitted=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
+  // On a phone, never shrink below a readable size: anchor the root and let the person pan.
+  const scale=phone.matches?Math.max(fitted,.8):fitted;
+  let x=(w-dimensions[0]*scale)/2,y=(h-dimensions[1]*scale)/2;
+  if(phone.matches&&rootPoint){
+    if(dimensions[0]*scale>w-24) x=rootPoint.vertical?w/2-rootPoint.x*scale:16;
+    if(dimensions[1]*scale>h-24) y=rootPoint.vertical?16:h/2-rootPoint.y*scale;
+    else if(rootPoint.vertical) y=16;
+  }
+  drawing.call(zoom.transform,d3.zoomIdentity.translate(x,y).scale(scale));
 }
 function describe(){
   const choosing=branch===FOUNDERS;
