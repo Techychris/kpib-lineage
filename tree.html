@@ -1,149 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta name="robots" content="noindex, nofollow, nosnippet"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kappa Pi Beta · Lineage Tree</title><meta name="description" content="Explore Kappa Pi Beta founder branches and Big Brother connections using line names.">
-<style>
-:root{color-scheme:dark;--bg:#0c111a;--panel:#151e2b;--ink:#f0f4fc;--muted:#aab8cd;--line:#344155;--accent:#f69d82;--focus:#ffd5ca;font:16px system-ui,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}
-main{max-width:1440px;margin:auto;padding:clamp(18px,4vw,56px)}
-header{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:25px}
-.brand{margin:0;color:var(--accent);font-size:.875rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
-h1{font:500 clamp(2.7rem,6vw,5rem)/1.02 Georgia,serif;margin:5px 0 0;letter-spacing:-.04em}
-.stats{display:flex;gap:16px;color:var(--muted);margin:0 0 4px;flex-wrap:wrap}.stats b{color:var(--ink)}
-.tools{display:flex;gap:12px;align-items:end;flex-wrap:wrap;padding:16px;background:var(--panel);border:1px solid var(--line);border-radius:15px 15px 0 0}
-label{display:grid;gap:6px;color:var(--muted);font-size:.9rem}input,select,button{font:inherit;color:var(--ink);background:#0f1722;border:1px solid #53627b;border-radius:7px;min-height:42px;padding:7px 12px}button{cursor:pointer}button:hover{background:#24334a}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}input{width:min(65vw,260px)}.search{display:flex;gap:7px;align-items:end}
-#matches{padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-inline:1px solid var(--line);background:var(--panel)}#matches:empty{display:none}
-#caption{padding:12px 16px;margin:0;border-inline:1px solid var(--line);color:var(--muted)}
-#canvas{height:min(64vh,690px);min-height:320px;overflow:auto;border:1px solid var(--line);border-radius:0 0 15px 15px;background-color:#0e1621;background-image:radial-gradient(#28364a 1px, transparent 1px);background-size:20px 20px}
-svg{display:block;margin:0 auto;overflow:visible;font-family:system-ui,sans-serif}.edge{fill:none;stroke:#69809d;stroke-width:1.4}.node{cursor:pointer}.node rect{fill:#182438;stroke:#657b97;stroke-width:1.1}.node text{fill:var(--ink);font-size:14px;pointer-events:none}.node .member-name{fill:var(--muted);font-size:12px}.link-name{fill:var(--muted);font-size:12px;paint-order:stroke;stroke:#0e1621;stroke-width:5;stroke-linejoin:round;pointer-events:none}.node:hover rect,.node:focus rect{stroke:var(--focus);stroke-width:2.5}.node:focus{outline:none}.node.root rect{fill:#502b2f;stroke:var(--accent)}.node.selected rect{stroke:var(--focus);stroke-width:3}
-@media(max-width:550px){.tools{gap:10px}main{padding:17px}.stats{font-size:.875rem}}
-
-[hidden]{display:none!important}
-#caption{padding:12px 16px;background:#101824}
-.context{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:var(--panel);border-inline:1px solid var(--line)}
-.context strong{font-size:1.1rem}.context .meta{color:var(--muted)}.context button{min-height:36px}
-#matches button{text-align:left}#matches button span{display:block;color:var(--muted);font-size:.875rem}
-#canvas:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-#zoom{color:var(--muted);min-width:3.3rem;text-align:center;font-variant-numeric:tabular-nums}
-.zoom-controls{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-#overview{margin-left:auto}
-@media(max-width:700px){.search{order:-1;width:100%}.search label{flex:1}.search input{width:100%}#overview{margin-left:0}#canvas{height:57vh}}
-
-#canvas{overflow:hidden;position:relative;touch-action:none}
-#canvas svg{width:100%;height:100%;margin:0;overflow:hidden;cursor:grab;user-select:none}
-#canvas svg:active{cursor:grabbing}
-.edge.cross-school{stroke:#f69d82;stroke-width:2;stroke-dasharray:7 5}
-.edge.ancestry{stroke:#9edfff;stroke-width:2.8}
-.node .name{font-size:15px;font-weight:650}.node .school{fill:#aab8cd;font-size:11.5px}
-.node.on-path rect{stroke:#9edfff}.node.selected rect{fill:#40262e;stroke:var(--focus)}
-.link-name .transition{fill:#ffd0c0}
-.diagram-key{display:flex;gap:12px 20px;flex-wrap:wrap;color:var(--muted);font-size:.875rem;margin:10px 0 0}
-.diagram-key span{display:flex;align-items:center;gap:7px}
-.diagram-key i{display:inline-block;width:24px;border-top:2px solid #69809d}
-.diagram-key .change{border-color:var(--accent);border-top-style:dashed}
-.diagram-key .ancestry{border-color:#9edfff}
-
-body{height:100dvh;overflow:hidden}
-main{width:100%;max-width:none;height:100%;padding:0;display:flex;flex-direction:column}
-header{margin:0;padding:10px 18px;align-items:center;gap:8px 18px}
-header>div{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
-h1{font-size:clamp(1.4rem,4vw,2rem);margin:0}
-.stats{margin:0}
-main>section{display:flex;flex-direction:column;flex:1;min-height:0}
-.tools{border-radius:0;padding:8px 16px}
-#caption,.context{padding:6px 16px}
-#canvas{flex:1;min-height:0;height:auto;border-radius:0;border-inline:0}
-.diagram-key{margin:0;padding:6px 16px}
-@media(max-width:700px){header{padding:8px 12px}.tools{padding:6px 12px;gap:6px}.diagram-key{gap:4px 12px}}
-
-@media(max-width:700px){
-  main>section{position:relative}
-  header{padding:7px 10px}
-  header>div{gap:2px 8px}
-  .brand{font-size:.72rem}
-  .stats{font-size:.75rem;gap:8px}
-  .tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px 8px;padding:7px 10px;border-inline:0}
-  .tools>label,.search label{min-width:0;gap:3px;font-size:.8rem}
-  .tools select{width:100%;min-width:0}
-  .search{grid-column:1/-1;order:-1}
-  .search input{font-size:16px}
-  .tools button,.tools input,.tools select{min-height:44px}
-  .zoom-controls{grid-column:1/-1;gap:5px}
-  .zoom-controls button{min-width:44px}
-  #overview{grid-column:1/-1;justify-self:start;margin:0}
-  #matches{position:absolute;z-index:1;top:69px;left:10px;right:10px;max-height:min(45dvh,280px);overflow:auto;overscroll-behavior:contain;box-shadow:0 8px 24px #0008;border:1px solid var(--line);border-radius:7px}
-  #matches button{width:100%;min-height:44px}
-  #caption{font-size:.8rem;padding:4px 10px}
-  .context{gap:5px 8px;padding:6px 10px}
-  .context strong{font-size:1rem}
-  .context .meta{font-size:.8rem}
-  .context button{min-height:44px}
-  .diagram-key{font-size:.75rem;gap:4px 10px;padding:6px 10px max(6px,env(safe-area-inset-bottom))}
-}
-@media(max-width:700px) and (max-height:540px){
-  header .stats,#caption,.diagram-key{display:none}
-}
-.brand{text-decoration:none}.brand:hover{text-decoration:underline}.brand:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
-#founderList{display:grid;gap:6px;padding:8px 10px;overflow:auto;flex:1;min-height:0;align-content:start}
-#founderList button{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;min-height:46px}
-#founderList button span{color:var(--muted);font-size:.85rem;text-align:right}
-#founderList h2{margin:0 0 3px;font-size:1rem}
-
-#viewControls{display:contents}
-@media(max-width:700px){
-  .tools{display:flex;align-items:center;position:relative;z-index:2}
-  .tools .search{width:auto;flex:1;min-width:0}
-  .search label{font-size:0}
-  .search input{font-size:16px}
-  #viewToggle{flex:none}
-  #viewControls{display:none;position:absolute;top:100%;right:10px;z-index:2;width:min(285px,calc(100vw - 20px));padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 24px #0008}
-  #viewToggle[aria-expanded="true"]+#viewControls{display:grid;gap:9px}
-  #viewControls label{min-width:0}
-  #matches{top:62px;z-index:3}
-}
-
-.mobile-home,.menu-key{display:none}
-@media(max-width:700px){
-  .diagram-open header,.diagram-open #caption,.diagram-open .diagram-key{display:none!important}
-  .tools{padding:3px 6px;gap:4px}
-  .tools .search{gap:3px}
-  #viewToggle,.tools .search button{padding-inline:8px}
-  #viewControls{max-height:calc(100dvh - 58px);overflow:auto;overscroll-behavior:contain}
-  #viewControls .context{padding:7px 0;border:0;border-top:1px solid var(--line)}
-  #viewControls .context strong,#viewControls .context .meta{width:100%}
-  .mobile-home,.menu-key{display:block}
-  .mobile-home{color:var(--ink);min-height:38px;display:flex;align-items:center}
-  .menu-key{font-size:.8rem;color:var(--muted)}
-  #matches{top:52px}
-}
-
-.view-tabs{display:flex;gap:4px;align-self:center}
-.view-tabs a{padding:8px 10px;color:var(--ink);text-decoration:none;border:1px solid var(--line);border-radius:6px;min-height:42px;display:grid;place-items:center}
-.view-tabs [aria-current]{border-color:var(--accent)}
-.view-tabs a:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-@media(max-width:700px){.view-tabs [aria-current]{display:none}.view-tabs a{min-height:44px;padding-inline:7px}.tools input{min-width:0}}
-
-#connections{position:absolute;right:12px;bottom:44px;background:var(--panel);z-index:1}
-main>section{position:relative}
-#connectionsPanel{width:min(500px,calc(100% - 24px));max-height:80dvh;overflow:auto;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:16px}
-#connectionsPanel::backdrop{background:#06080ab8}
-.connections-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.connections-head h2{margin:0;font-size:1.2rem}
-#connectionsMeta{color:var(--muted);margin:4px 0}
-#connectionsBody h3{font-size:.95rem;margin:16px 0 6px}
-#connectionsBody ol,#connectionsBody ul{padding-inline-start:24px;margin:0}
-#connectionsBody li{margin-block:4px}
-#connectionsBody button{width:100%;text-align:left;min-height:44px}
-#connectionsBody small{display:block;color:var(--muted)}
-@media(max-width:700px){#connections{bottom:max(12px,env(safe-area-inset-bottom));min-height:44px}#connectionsPanel{margin:auto auto 8px}}
-</style></head>
-<body><main>
-<header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Lineage Tree</h1></div><p class="stats"><span><b>559</b> roster records</span><span><b>553</b> matched connections</span></p></header>
-<section aria-label="Lineage explorer">
+<meta name="robots" content="noindex, nofollow, nosnippet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kappa Pi Beta · Lineage Tree</title>
+<meta name="description" content="Explore Kappa Pi Beta founder branches and Big Brother connections using line names.">
+<link rel="icon" href="assets/kpib-crest-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
+<link rel="stylesheet" href="kpib.css?v=2">
+</head>
+<body class="page-app">
+<a class="kp-skip" href="#explorer">Skip to content</a>
+<header class="kp-hdr"><div class="in">
+<a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img data-component="image" src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a>
+<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./">Home</a><a href="tree.html" aria-current="page">Lineage tree</a><a href="table.html">Member table</a></nav>
+<div class="kp-tools"><button class="kp-ibtn" data-component="button" data-name="Theme" id="themeToggle" type="button">Dark</button>
+<details class="kp-menu"><summary>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./">Home</a><a href="tree.html" aria-current="page">Lineage tree</a><a href="table.html">Member table</a></nav></details></div>
+</div></header>
+<main>
+<div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b>559</b> members</span><span><b>553</b> connections</span></p></div>
+<section id="explorer" aria-label="Lineage explorer">
 <div class="tools">
 <nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html">Table</a></nav>
-<form class="search" id="find"><label>Member name<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label><button>Search</button></form>
+<form class="search" id="find"><label>Member name<input id="query" data-component="input" type="search" placeholder="Name or line name" autocomplete="off"></label><button data-component="button" data-name="Search">Search</button></form>
 <button type="button" id="viewToggle" aria-expanded="false" aria-controls="viewControls" hidden>View</button>
 <div id="viewControls">
 <a class="mobile-home" href="./">Home</a>
@@ -151,7 +33,6 @@ main>section{position:relative}
 <label>Layout<select id="orientation"><option value="horizontal">Horizontal</option><option value="vertical" selected>Top-down</option></select></label>
 <div class="zoom-controls" role="group" aria-label="Diagram zoom"><button type="button" id="zoomOut" aria-label="Zoom out">−</button><output id="zoom" aria-live="off">100%</output><button type="button" id="zoomIn" aria-label="Zoom in">+</button><button type="button" id="fit">Fit diagram</button></div>
 <button type="button" id="overview" hidden>Full organization</button>
-
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
 <button type="button" id="parent" hidden></button><button type="button" id="mode">Full branch</button>
@@ -277,11 +158,11 @@ function draw(){
   const path=selected===null?[]:founderPath(selected);
   const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
-  const hierarchy=d3.hierarchy(branch,id=>{
+  const rootId=focused?selected:branch;
+  const hierarchy=d3.hierarchy(rootId,id=>{
     if(id===OVERVIEW) return rootIds;
     if(id===UNRESOLVED) return floating;
-    if(!focused||id===selected) return children[id];
-    return nextOnPath.has(id)?[nextOnPath.get(id)]:[];
+    return children[id];
   });
   const vertical=orientation.value==='vertical';
   const nodes=positionTree(hierarchy,vertical,branch===OVERVIEW);
@@ -312,7 +193,7 @@ function draw(){
   const cards=scene.selectAll('.node').data(nodes,d=>d.data).join(enter=>{
     const item=enter.append('g').attr('class','node');
     item.append('title');
-    item.append('rect').attr('width',NODE_WIDTH).attr('height',NODE_HEIGHT).attr('y',-NODE_HEIGHT/2).attr('rx',9);
+    item.append('rect').attr('width',NODE_WIDTH).attr('height',NODE_HEIGHT).attr('y',-NODE_HEIGHT/2).attr('rx',12);
     item.append('text').attr('class','name').attr('x',12).attr('y',-29);
     item.append('text').attr('class','member-name').attr('x',12).attr('y',-12);
     item.append('text').attr('class','school').attr('x',12).attr('y',5);
@@ -320,18 +201,18 @@ function draw(){
     item.append('text').attr('class','school cohort').attr('x',12).attr('y',39);
     return item;
   }).attr('transform',d=>'translate('+d.left+','+d.centerY+')')
-    .attr('class',d=>'node'+(d.data===branch?' root':'')+(d.data===selected?' selected':'')+(ancestry.has(d.data)?' on-path':''))
+    .attr('class',d=>'node'+(d.data===rootId?' root':'')+(d.data===selected?' selected':'')+(ancestry.has(d.data)?' on-path':''))
     .attr('tabindex',d=>d.data>=0?0:null).attr('role',d=>d.data>=0?'button':null)
     .attr('aria-label',d=>[...names(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '))
     .on('click',(event,d)=>{if(!event.defaultPrevented&&d.data>=0) mark(d.data,true);})
     .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();mark(d.data,true);}});
   cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
-  cards.select('.name').text(d=>short(names(d.data)[0],23));
-  cards.select('.member-name').text(d=>short(names(d.data)[1],29));
+  cards.select('.name').text(d=>short(names(d.data)[0],21));
+  cards.select('.member-name').text(d=>short(names(d.data)[1],27));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
   cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
-  cards.select('.cohort').text(d=>short(crossings[d.data]?.[1]??'',29));
+  cards.select('.cohort').text(d=>short(crossings[d.data]?.[1]??'',27));
   nodesById.clear();
   cards.each(function(d){nodesById.set(d.data,{element:this,x:d.left+NODE_WIDTH/2,y:d.centerY});});
 }
@@ -362,7 +243,7 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.textContent=full?'Focus on member':'Full branch';
-  caption.textContent=full?'Full founder branch. Drag to pan. Pinch or use the zoom controls.':'Showing the path to the founder and this member’s direct connections. Drag to pan. Pinch or use the zoom controls.';
+  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.';
 }
 function openConnections(){
   const id=selected;
@@ -413,6 +294,11 @@ function focusNode(id,moveFocus=false){
   drawing.call(zoom.transform,d3.zoomIdentity.translate(canvas.clientWidth/2-node.x,canvas.clientHeight/2-node.y));
   if(moveFocus) node.element.focus({preventScroll:true});
 }
+function frame(id,moveFocus=false){
+  if(full){focusNode(id,moveFocus);return;}
+  fit();
+  if(moveFocus) nodesById.get(id)?.element.focus({preventScroll:true});
+}
 function show(id){
   if(id>=0){full=false;mark(id,false);return;}
   branch=id;selected=null;full=false;select.value=String(id);
@@ -425,7 +311,7 @@ function mark(id,moveFocus){
   if(target!==branch) full=false;
   branch=target;selected=id;select.value=String(branch);
   matches.replaceChildren();
-  describe();draw();focusNode(id,moveFocus);
+  describe();draw();frame(id,moveFocus);
 }
 select.addEventListener('change',()=>{closeView();show(Number(select.value));});
 orientation.addEventListener('change',()=>{
@@ -433,10 +319,10 @@ orientation.addEventListener('change',()=>{
   if(branch===FOUNDERS) return;
   draw();
   if(selected===null) fit();
-  else focusNode(selected);
+  else frame(selected);
 });
 parentButton.addEventListener('click',()=>mark(records[selected][1],true));
-modeButton.addEventListener('click',()=>{full=!full;draw();describe();focusNode(selected);});
+modeButton.addEventListener('click',()=>{full=!full;draw();describe();frame(selected);});
 pick('zoomOut').addEventListener('click',()=>drawing.call(zoom.scaleBy,.8));
 pick('zoomIn').addEventListener('click',()=>drawing.call(zoom.scaleBy,1.25));
 pick('fit').addEventListener('click',fit);
@@ -475,4 +361,6 @@ const linkedMember=memberLink!==null&&/^\d+$/.test(memberLink)?Number(memberLink
 if(linkedMember!==null&&linkedMember<records.length) mark(linkedMember,false);
 else show(phone.matches?FOUNDERS:OVERVIEW);
 new ResizeObserver(()=>{if(branch===OVERVIEW) fit();}).observe(canvas);
-</script></body></html>
+</script>
+<script src="kpib.js"></script>
+</body></html>

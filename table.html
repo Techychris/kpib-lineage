@@ -1,102 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta name="robots" content="noindex, nofollow, nosnippet">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kappa Pi Beta · Member Table</title>
-<style>
-:root{color-scheme:dark;--bg:#0c111a;--panel:#151e2b;--ink:#f0f4fc;--muted:#aab8cd;--line:#344155;--accent:#f69d82;--focus:#ffd5ca;font:16px system-ui,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}a{color:inherit}
-main{max-width:1160px;margin:auto;padding:20px clamp(12px,4vw,40px) 40px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
-.brand{color:var(--accent);font-size:.85rem;font-weight:750;text-decoration:none;text-transform:uppercase;letter-spacing:.08em}
-h1{font:500 clamp(1.8rem,5vw,3rem)/1.08 Georgia,serif;margin:4px 0 0}
-nav{display:flex;gap:4px}nav a{display:grid;place-items:center;min-height:44px;padding:7px 12px;text-decoration:none;border:1px solid var(--line);border-radius:6px}
-nav a[aria-current]{border-color:var(--accent)}
-.filters{display:flex;flex-wrap:wrap;align-items:end;gap:8px 12px;padding:12px;border:1px solid var(--line);background:var(--panel);border-radius:8px 8px 0 0}
-.filters label{display:grid;gap:4px;min-width:0;font-size:.83rem;color:var(--muted)}
-.filters label:first-child{flex:1 1 180px}.filters label:nth-child(2){flex:0 1 235px}
-input,select{font:inherit;font-size:1rem;width:100%;min-height:44px;padding:7px 10px;color:var(--ink);background:#0f1722;border:1px solid #53627b;border-radius:6px}
-a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-#status{width:100%;font-size:.83rem;color:var(--muted);margin:0}
-table{border-collapse:collapse;width:100%;table-layout:fixed}
-th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
-th{background:#1c2a3d;font-size:.85rem}td{font-size:.92rem}
-th:nth-child(1){width:31%}th:nth-child(2){width:22%}th:nth-child(3){width:26%}th:nth-child(4){width:21%}
-td a{display:inline-block;text-decoration-color:#6e849e;text-underline-offset:3px;min-height:24px}
-td a:hover{color:var(--accent)}td small{display:block;color:var(--muted);margin-top:3px}
-tbody tr:nth-child(even){background:#111927}
-@media(max-width:640px){header{margin-bottom:10px}.filters{padding:8px}.filters label:nth-child(2){flex:1 1 130px}.filters label:first-child{flex:1 1 155px}th,td{padding:8px 6px;font-size:.82rem}th:nth-child(1){width:40%}th:nth-child(2){width:26%}th:nth-child(3){width:34%}th.ancestor,td.ancestor{display:none}}
-
-.school-filters{display:flex;align-items:center;flex-wrap:wrap;gap:6px;width:100%}
-.school-filters button{font:inherit;font-size:.83rem;padding:6px 10px;min-height:34px;border:1px solid #53627b;border-radius:6px;color:var(--ink);background:#0f1722;cursor:pointer}
-.school-filters button[aria-pressed="true"]{background:var(--accent);color:#201315;border-color:var(--accent);font-weight:700}
-.school-filters button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-th:nth-child(1){width:25%}th:nth-child(2){width:18%}th:nth-child(3){width:22%}th:nth-child(4){width:18%}th:nth-child(5){width:17%}
-.lineage-note{display:none}
-@media(max-width:640px){
- .school-filters{flex-wrap:nowrap;overflow-x:auto;padding:3px 2px 6px;scrollbar-width:thin}
- .school-filters button{min-height:44px;flex:none}
- th.lineage,td.lineage{display:none}
- .lineage-note{display:block}
- th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(3){width:33%}
-}
-
-th:nth-child(1){width:21%}th:nth-child(2){width:14%}th:nth-child(3){width:19%}th:nth-child(4){width:17%}th:nth-child(5){width:13%}th:nth-child(6){width:16%}
-th button{display:flex;align-items:center;gap:5px;padding:0;min-height:34px;width:100%;text-align:left;background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer}
-th button:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-th button::after{content:"";display:inline-block;flex:none;width:7px;height:9px;background:var(--muted);clip-path:polygon(50% 0,100% 40%,0 40%,0 60%,100% 60%,50% 100%)}
-th[aria-sort="ascending"] button::after{background:var(--accent);clip-path:polygon(50% 20%,100% 75%,0 75%)}
-th[aria-sort="descending"] button::after{background:var(--accent);clip-path:polygon(0 25%,100% 25%,50% 80%)}
-.crossing-note{display:none}
-@media(max-width:640px){
- th.crossing,td.crossing{display:none}
- .crossing-note{display:block}
- th:nth-child(1){width:42%}th:nth-child(2){width:25%}th:nth-child(4){width:33%}
- th button{min-height:44px}
-}
-
-body{height:100dvh;overflow:hidden}
-main{height:100%;display:flex;flex-direction:column;padding-bottom:12px}
-main>header,.filters{flex:none}
-.table-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior-y:contain;border:1px solid var(--line);border-top:0;border-radius:0 0 8px 8px;scrollbar-gutter:stable}
-.table-scroll:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
-thead th{position:sticky;top:0;z-index:1;box-shadow:0 1px 0 var(--line)}
-@media(max-width:640px){main{padding-top:10px;padding-bottom:max(6px,env(safe-area-inset-bottom))}}
-@media(max-height:470px){body{height:auto;overflow:auto}main{height:auto}.table-scroll{min-height:170px;max-height:60dvh}}
-
-.brand{text-transform:none;letter-spacing:0;font-weight:600}
-nav a:hover,input:hover,.school-filters button:hover{border-color:var(--muted)}
-nav a[aria-current]{background:#263243;border-color:#657b97}
-#status{font-variant-numeric:tabular-nums;width:auto}
-.filter-footer{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.mobile-sort{display:none!important}
-td a{font-weight:500}
-td a:focus-visible{outline-offset:1px}
-.table-scroll{scroll-padding-top:64px}
-@media(max-width:640px){
-  main{padding-inline:12px}
-  header{align-items:center;gap:8px;margin-bottom:8px}
-  .filters{gap:8px}
-  .filters>label:first-child{flex-basis:100%}
-  .school-filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:0;overflow:visible}
-  .school-filters button{font-size:.78rem;padding-inline:2px;min-width:0}
-  .school-filters button:last-child{grid-column:span 2}
-  .mobile-sort{display:flex!important;align-items:center;gap:4px!important;flex:none}
-  .mobile-sort select{width:auto;max-width:53vw;font-size:.82rem;min-height:44px;padding-inline:8px}
-  .filter-footer{gap:4px}
-  th,td{padding-inline:8px}
-  td small{margin-top:2px;line-height:1.35}
-}
-</style>
+<meta name="description" content="Browse Kappa Pi Beta members, their Big Brothers and founder lines.">
+<link rel="icon" href="assets/kpib-crest-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
+<link rel="stylesheet" href="kpib.css?v=2">
 </head>
-<body><main>
-<header><div><a class="brand" href="./">Kappa Pi Beta</a><h1>Member table</h1></div>
-<nav aria-label="Roster views"><a href="tree.html">Tree</a><a href="table.html" aria-current="page">Table</a></nav></header>
-<div class="filters"><label>Search members<input id="query" type="search" placeholder="Name or line name" autocomplete="off"></label>
+<body class="page-app page-table">
+<a class="kp-skip" href="#roster">Skip to content</a>
+<header class="kp-hdr"><div class="in">
+<a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img data-component="image" src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a>
+<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./">Home</a><a href="tree.html">Lineage tree</a><a href="table.html" aria-current="page">Member table</a></nav>
+<div class="kp-tools"><button class="kp-ibtn" data-component="button" data-name="Theme" id="themeToggle" type="button">Dark</button>
+<details class="kp-menu"><summary>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./">Home</a><a href="tree.html">Lineage tree</a><a href="table.html" aria-current="page">Member table</a></nav></details></div>
+</div></header>
+<main>
+<div class="app-title"><h1>Member table</h1></div>
+<div class="filters"><label>Search members<input id="query" data-component="input" type="search" placeholder="Name or line name" autocomplete="off"></label>
 <div id="schools" class="school-filters" role="group" aria-label="Filter by school"></div>
-<div class="filter-footer"><p id="status" aria-live="polite"></p>
+<div class="filter-footer"><p id="status" data-state="empty" data-state-for="roster" aria-live="polite"></p>
 <label class="mobile-sort">Sort<select id="mobileSort">
 <option value="crossing:1">Oldest class first</option><option value="crossing:-1">Newest class first</option>
 <option value="member:1">Member A to Z</option><option value="member:-1">Member Z to A</option>
@@ -105,8 +33,8 @@ td a:focus-visible{outline-offset:1px}
 <option value="lineage:1">Lineage A to Z</option><option value="lineage:-1">Lineage Z to A</option>
 <option value="founder:1">Founder A to Z</option><option value="founder:-1">Founder Z to A</option>
 </select></label></div></div>
-<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table">
-<table aria-label="Members and Big Brother connections"><thead><tr>
+<div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table" id="roster-region">
+<table class="kp-t" id="roster" data-component="table" data-dynamic data-states="empty" aria-label="Members and Big Brother connections"><thead><tr>
 <th scope="col"><button type="button" data-sort="member">Member</button></th>
 <th scope="col"><button type="button" data-sort="school">School</button></th>
 <th scope="col" class="crossing" aria-sort="ascending"><button type="button" data-sort="crossing">Crossing</button></th>
@@ -270,4 +198,5 @@ query.addEventListener('input',drawMembers);
 document.addEventListener('click',event=>{if(event.target.closest('a[href^="tree.html"]')) rememberRoster();});
 restoreRoster();
 </script>
+<script src="kpib.js"></script>
 </body></html>

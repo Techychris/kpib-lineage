@@ -1,84 +1,79 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta name="robots" content="noindex, nofollow, nosnippet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kappa Pi Beta Lineage</title>
 <meta name="description" content="Explore the Big Brother connections that link Kappa Pi Beta members across schools and back to their founders.">
-<style>
-:root{color-scheme:dark;--bg:#0c111a;--surface:#111b28;--ink:#edf3fb;--muted:#adbbcf;--line:#34465d;--accent:#ffaf97;--trace:#9edfff;font:16px system-ui,sans-serif}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);line-height:1.55}a{color:inherit}a:focus-visible,summary:focus-visible{outline:2px solid var(--trace);outline-offset:5px}
-.wrap{width:min(1120px,100% - 48px);margin-inline:auto}
-header{border-bottom:1px solid var(--line)}
-.bar{display:flex;justify-content:space-between;align-items:center;min-height:66px;position:relative}
-.identity{font-weight:700;text-decoration:none;color:var(--accent);letter-spacing:.07em;text-transform:uppercase;font-size:.9rem}
-.desktop-nav,.menu-links{display:flex;gap:30px;align-items:center}
-nav a{text-decoration:none;color:var(--muted)}nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:5px}
-.mobile-menu{display:none}
-.hero{display:grid;grid-template-columns:1.06fr .94fr;gap:clamp(25px,5vw,70px);align-items:center;padding-block:clamp(44px,8vw,104px) 50px}
-h1,h2,p{margin:0}h1{font:500 clamp(3.2rem,7.5vw,6.4rem)/.95 Georgia,serif;letter-spacing:-.065em}
-.intro{max-width:36rem;color:var(--muted);margin-top:23px;font-size:clamp(1rem,2vw,1.18rem)}
-.action{display:inline-grid;place-items:center;min-height:48px;padding:11px 20px;background:var(--accent);color:#261613;border-radius:6px;text-decoration:none;font-weight:750;margin-top:26px}
-.action:hover{background:#ffd1c3}
-.figure{padding:clamp(13px,3vw,27px);background:radial-gradient(#2c4058 1px,transparent 1px) 0 0/17px 17px,var(--surface);border:1px solid var(--line);border-radius:12px;margin:0}
-.flow{display:grid;justify-items:center;grid-template-columns:1fr 1fr}
-.node{display:grid;place-items:center;line-height:1.3;text-align:center;min-height:51px;width:min(100%,158px);padding:8px;background:#18263a;border:1px solid #7186a1;border-radius:7px;font-weight:650;font-size:.9rem}
-.node.root{grid-column:1/-1;background:#40252a;border-color:var(--accent)}
-.branches{grid-column:1/-1;width:50%;height:28px;border:2px solid var(--trace);border-bottom:0;margin-top:13px;position:relative}
-.branches:before{content:"";position:absolute;width:2px;height:13px;bottom:100%;left:calc(50% - 1px);background:var(--trace)}
-.stem{height:30px;width:0;border-left:2px solid var(--trace)}
-.stem.change{border-left:2px dashed var(--accent)}
-.figure figcaption{color:var(--muted);font-size:.84rem;margin-top:18px;text-align:center}
-.totals{display:grid;grid-template-columns:repeat(3,1fr);margin:0;border-block:1px solid var(--line);padding-block:17px;gap:10px 20px}
-.totals div{display:flex;align-items:baseline;gap:6px 12px;flex-wrap:wrap}.totals dt{order:1;color:var(--muted);font-size:.9rem}.totals dd{margin:0;color:var(--trace);font:500 clamp(1.8rem,4vw,2.65rem)/1 Georgia,serif}
-.read{display:grid;grid-template-columns:1fr 1fr;column-gap:clamp(24px,7vw,100px);row-gap:18px;padding-block:52px}
-.read h2{grid-column:1/-1;font:500 clamp(1.9rem,4vw,2.8rem)/1.05 Georgia,serif;letter-spacing:-.035em}
-.read h3{font-size:1rem;margin:0 0 6px}.read p{color:var(--muted)}
-footer{border-top:1px solid var(--line);padding-block:18px;color:var(--muted);font-size:.9rem}
-@media(max-width:650px){
- .wrap{width:calc(100% - 32px)}.bar{min-height:58px}.desktop-nav{display:none}.mobile-menu{display:block}
- .mobile-menu summary{display:grid;place-items:center;width:44px;height:44px;border:1px solid var(--line);border-radius:6px;cursor:pointer;list-style:none}
- .mobile-menu summary::-webkit-details-marker{display:none}.hamburger{width:19px;height:14px;border-block:2px solid currentColor;display:grid;align-items:center}.hamburger:before{content:"";border-top:2px solid currentColor}
- .menu-links{position:absolute;top:calc(100% + 5px);right:0;z-index:2;display:grid;gap:0;min-width:185px;border:1px solid var(--line);border-radius:7px;background:var(--surface)}
- .menu-links a{display:flex;align-items:center;min-height:46px;padding:8px 14px}.menu-links a+a{border-top:1px solid var(--line)}
- .hero{grid-template-columns:1fr;padding-block:39px 30px;gap:27px}.figure{margin:0}.totals div{display:grid;gap:4px}.totals dt{font-size:.78rem}
- .read{grid-template-columns:1fr;padding-block:34px}.node{width:min(calc(100% - 9px),158px)}
-}
-.table-entry{display:inline-flex;margin:12px 0 0 16px;min-height:44px;align-items:center;text-underline-offset:4px}@media(max-width:400px){.table-entry{margin-left:12px;font-size:.9rem}}</style>
+<link rel="icon" href="assets/kpib-crest-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
+<link rel="stylesheet" href="kpib.css?v=2">
 </head>
 <body>
-<header><div class="wrap bar">
-<a class="identity" href="./">Kappa Pi Beta</a>
-<nav class="desktop-nav" aria-label="Main navigation"><a href="#how-to-read">How to read the tree</a><a href="tree.html">Explore the tree</a><a href="table.html">Member table</a></nav>
-<details class="mobile-menu"><summary aria-label="Navigation menu"><span class="hamburger" aria-hidden="true"></span></summary><nav class="menu-links" aria-label="Mobile navigation"><a href="#how-to-read">How to read the tree</a><a href="tree.html">Explore the tree</a><a href="table.html">Member table</a></nav></details>
+<a class="kp-skip" href="#main">Skip to content</a>
+<header class="kp-hdr"><div class="in">
+<a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img data-component="image" src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a>
+<nav class="kp-nav" data-component="nav" data-name="Main navigation" aria-label="Main"><a href="./" aria-current="page">Home</a><a href="#how-to-read">How to read</a><a href="tree.html">Lineage tree</a><a href="table.html">Member table</a></nav>
+<div class="kp-tools"><button class="kp-ibtn" data-component="button" data-name="Theme" id="themeToggle" type="button">Dark</button>
+<details class="kp-menu"><summary>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./" aria-current="page">Home</a><a href="#how-to-read">How to read</a><a href="tree.html">Lineage tree</a><a href="table.html">Member table</a></nav></details></div>
 </div></header>
-<main class="wrap">
-<section class="hero" aria-labelledby="title">
-<div><h1 id="title">The lineage tree</h1><p class="intro">Follow Big Brother connections across schools and trace each member’s ancestry back to one of Kappa Pi Beta’s six founders.</p><a class="action" href="tree.html">Explore the tree</a><a class="table-entry" href="table.html">Browse the member table</a></div>
-<figure class="figure" aria-label="Example diagram showing a founder and two school branches">
-<div class="flow" aria-hidden="true">
-<div class="node root">Founder</div>
-<div class="branches"></div>
-<div class="node">Big Brother</div><div class="node">Big Brother</div>
-<div class="stem"></div><div class="stem change"></div>
-<div class="node">Same school</div><div class="node">New school</div>
+<main id="main">
+<section class="kp-hero" aria-labelledby="title">
+<div class="txt">
+<span class="kp-stripes" aria-hidden="true"></span>
+<p class="kp-label" style="margin:0">Kappa Pi Beta Fraternity, Inc.</p>
+<h1 class="kp-d1" id="title">The lineage tree</h1>
+<p class="kp-lead">Follow Big Brother connections across schools and trace each member back to one of Kappa Pi Beta’s six founders.</p>
+<div class="kp-actions"><a class="kp-btn p" data-component="button" data-name="Explore the tree" href="tree.html">Explore the tree</a><a class="kp-btn s" data-component="button" data-name="Browse the member table" href="table.html">Browse the member table</a></div>
 </div>
-<figcaption>A dashed connector marks a change of school.</figcaption>
+<figure class="pic">
+<svg viewBox="0 0 360 300" role="img" aria-label="Example lineage: a founder with two Big Brothers. One link stays at the same school. The other changes school.">
+<path class="dg-edge path" d="M105 64 C105 90 84 90 84 116"/><path class="dg-edge dash" d="M255 64 C255 90 276 90 276 116"/>
+<path class="dg-edge path" d="M84 172 L84 232"/><path class="dg-edge dash" d="M276 172 L276 232"/>
+<rect class="dg-node root" x="80" y="8" width="200" height="56" rx="12"/><text class="dg-t root" x="96" y="32">Founder</text><text class="dg-s root" x="96" y="50">Line name</text>
+<rect class="dg-node" x="0" y="116" width="168" height="56" rx="12"/><text class="dg-t" x="16" y="140">Big Brother</text><text class="dg-s" x="16" y="158">NIU</text>
+<rect class="dg-node" x="192" y="116" width="168" height="56" rx="12"/><text class="dg-t" x="208" y="140">Big Brother</text><text class="dg-s" x="208" y="158">NIU</text>
+<rect class="dg-node" x="0" y="232" width="168" height="56" rx="12"/><text class="dg-t" x="16" y="256">Little Brother</text><text class="dg-s" x="16" y="274">Same school</text>
+<rect class="dg-node" x="192" y="232" width="168" height="56" rx="12"/><text class="dg-t" x="208" y="256">Little Brother</text><text class="dg-s" x="208" y="274">New school</text>
+</svg>
+<figcaption>A dashed line marks a change of school. The red path leads back to the founder.</figcaption>
 </figure>
 </section>
-<dl class="totals" aria-label="Tree totals"><div><dt>Members</dt><dd>559</dd></div><div><dt>Big Brother links</dt><dd>553</dd></div><div><dt>Founders</dt><dd>6</dd></div></dl>
-<section class="read" id="how-to-read" aria-labelledby="read-title">
-<h2 id="read-title">How to read the tree</h2>
-<div><h3>Lineage</h3><p>Follow the connections within one school. When a member’s Big Brother comes from another school, that member starts a new lineage segment.</p></div>
-<div><h3>Ancestry</h3><p>Follow the entire Big Brother chain back to the founder, including every school change. Search a member’s actual name or line name to highlight the path.</p></div>
+<div class="kp-wrap kp-statband"><dl class="kp-stats" data-component="block" data-name="Totals" aria-label="Tree totals">
+<div class="kp-stat"><dd>559</dd><dt>Members</dt></div><div class="kp-stat"><dd>553</dd><dt>Big Brother links</dt></div><div class="kp-stat"><dd>6</dd><dt>Founders</dt></div>
+</dl></div>
+<section class="kp-wrap kp-section" aria-labelledby="founders-title" style="padding-top:0">
+<div class="kp-shead"><p class="kp-label">Six branches</p><h2 class="kp-d2" id="founders-title">Start from a founder</h2><p>Open any founder to see the line that grew from them.</p></div>
+<div class="kp-grid g3">
+<a class="kp-card" data-component="card" href="tree.html?member=0"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">So Smooth</span><span>Christopher Flores</span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=1"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">Maestro</span><span>Alfred Gozun</span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=2"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">Goofy</span><span>Phillip Gozun</span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=3"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">Lil Hyper 1</span><span>Sean Orquiola</span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=4"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">Fossil</span><span>Renmar Salceda</span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=5"><span class="body"><span class="kp-label kp-muted">Founder</span><span class="kp-h3">Incognito</span><span>Soulysak Trichanh</span><span class="go">Open branch</span></span></a>
+</div>
 </section>
+<section class="kp-wrap kp-section" id="how-to-read" aria-labelledby="read-title" style="padding-top:0">
+<div class="kp-shead"><p class="kp-label">Reading guide</p><h2 class="kp-d2" id="read-title">How to read the tree</h2></div>
+<div class="kp-grid g3">
+<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3">Same school</h3><span class="kp-sample" aria-hidden="true"></span><p class="kp-muted">A solid line joins a Big Brother and Little Brother at the same school.</p></div></div>
+<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3">School change</h3><span class="kp-sample dash" aria-hidden="true"></span><p class="kp-muted">A dashed line shows a Little Brother whose Big Brother crossed at another school. The label names the new school.</p></div></div>
+<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3">Path to the founder</h3><span class="kp-sample path" aria-hidden="true"></span><p class="kp-muted">Search a member’s name or line name to highlight the full chain back to a founder, across every school.</p></div></div>
+</div>
+</section>
+<section class="kp-motto-band" aria-label="Motto"><div class="kp-wrap"><p class="kp-label" style="margin:0 0 16px;color:var(--on-band-muted)">Our motto</p><p class="kp-d2">Unity is the beginning of brotherhood.</p></div></section>
 </main>
-<footer><div class="wrap">Based on the Kappa Pi Beta Master Binder.</div></footer>
-<script>
-const mobileMenu=document.querySelector('.mobile-menu');
-mobileMenu.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mobileMenu.open=false;}));
-mobileMenu.addEventListener('keydown',event=>{if(event.key==='Escape'&&mobileMenu.open){mobileMenu.open=false;mobileMenu.querySelector('summary').focus();}});
-</script>
+<footer class="kp-ftr"><div class="kp-wrap">
+<div class="cols">
+<div><a class="kp-plate" href="./" aria-label="Kappa Pi Beta home"><img src="assets/kpib-lockup.png" alt="Kappa Pi Beta. Unity is the beginning of brotherhood." width="900" height="193"></a><p>An Asian-interest fraternity founded March 16, 2000 at Northern Illinois University.</p></div>
+<nav aria-label="Explore" data-component="nav" data-name="Footer explore"><h2>Explore</h2><ul><li><a href="tree.html">Lineage tree</a></li><li><a href="table.html">Member table</a></li><li><a href="#how-to-read">How to read</a></li></ul></nav>
+<nav aria-label="Elsewhere" data-component="nav" data-name="Footer elsewhere"><h2>Elsewhere</h2><ul><li><a href="https://kappapibeta.org">Kappa Pi Beta national site</a></li></ul></nav>
+</div>
+<p class="legal">Kappa Pi Beta Fraternity, Inc. © 2026. Based on the Kappa Pi Beta Master Binder.</p>
+</div></footer>
+<script src="kpib.js"></script>
 </body>
 </html>
