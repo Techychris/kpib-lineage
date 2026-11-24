@@ -43,7 +43,7 @@
 </figure>
 </section>
 <div class="kp-wrap kp-statband"><dl class="kp-stats" data-component="block" data-name="Totals" aria-label="Tree totals">
-<div class="kp-stat"><dd>559</dd><dt><i data-icon="users"></i>Members</dt></div><div class="kp-stat"><dd>553</dd><dt><i data-icon="link"></i>Lineage links</dt></div><div class="kp-stat"><dd>6</dd><dt><i data-icon="star"></i>Founders</dt></div>
+<div class="kp-stat"><dd id="statMembers">559</dd><dt><i data-icon="users"></i>Members</dt></div><div class="kp-stat"><dd id="statLinks">553</dd><dt><i data-icon="link"></i>Lineage links</dt></div><div class="kp-stat"><dd>6</dd><dt><i data-icon="star"></i>Founders</dt></div>
 </dl></div>
 <section class="kp-wrap kp-section" aria-labelledby="founders-title" style="padding-top:0">
 <div class="kp-shead"><p class="kp-label">Six branches</p><h2 class="kp-d2" id="founders-title">Start from a founder</h2><p>Open any founder to see the line that grew from them.</p></div>
@@ -74,7 +74,9 @@
 </div>
 <p class="legal">Kappa Pi Beta Fraternity, Inc. © 2026. Based on the Kappa Pi Beta Master Binder.</p>
 </div></footer>
+<script src="lineage-data.js?v=fa26"></script>
 <script src="icons.js?v=1"></script>
 <script src="kpib.js?v=5"></script>
+<script>document.getElementById("statMembers").textContent=records.length;document.getElementById("statLinks").textContent=records.filter(function(r){return r[1]!==null}).length;</script>
 </body>
 </html>

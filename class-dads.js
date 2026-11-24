@@ -100,6 +100,12 @@ const classDadsBySchool = [
     ],
     "Spring 2025|ALPHA KAPPA KATALYST CLASS": [
       "Brandon Ngai"
+    ],
+    "Fall 2025|ALPHA LAMBDA LIMITLESS CLASS": [
+      "Seth Whalen"
+    ],
+    "Fall 2026|ALPHA MU MILLENNIUM CLASS": [
+      "Luis Carrasco"
     ]
   },
   {
@@ -174,6 +180,12 @@ const classDadsBySchool = [
     ],
     "Fall 2024|P.A.L.A.D.I.N. PSI Class": [
       "Brendin Lam"
+    ],
+    "Fall 2025|Omega O.D.Y.S.S.E.Y. Class": [
+      "Ryan Chan"
+    ],
+    "Spring 2026|Alpha Alpha A.S.C.Σ.N.S.I.Ø.N Class": [
+      "Caleb Yin"
     ]
   },
   {
@@ -256,6 +268,15 @@ const classDadsBySchool = [
     ],
     "Spring 2025|Nu Nemesis Class": [
       "Clement Wang"
+    ],
+    "Fall 2025|Xi Xiphos Class": [
+      "Daren-Alan Buendicho"
+    ],
+    "Spring 2026|Omicron Oasis Class": [
+      "Ethan Moraleda"
+    ],
+    "Fall 2026|Pi Pyros Class": [
+      "Alexander Yabes"
     ]
   },
   {
@@ -291,6 +312,12 @@ const classDadsBySchool = [
     ],
     "Spring 2025|Kappa K.A.I.Z.E.N. Class": [
       "Douglas Edward Gaudia Turner"
+    ],
+    "Fall 2025|Lambda L.E.G.A.C.Y. Class": [
+      "Darren Teshiba"
+    ],
+    "Spring 2026|Mu M.I.R.A.I. Class": [
+      "Thomas Cheng"
     ]
   },
   {
@@ -299,6 +326,12 @@ const classDadsBySchool = [
     ],
     "Spring 2024|ALPHA CLASS": [
       "Shubham Nigam"
+    ],
+    "Spring 2026|B.EAK.ON Beta Class": [
+      "Sandeep Valmiki"
+    ],
+    "Spring 2026|G.E.N Gamma Class": [
+      "Evan Yang"
     ]
   }
 ];

@@ -21,7 +21,7 @@
 <details class="kp-menu"><summary><i data-icon="menu"></i>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html" aria-current="page"><i data-icon="tree"></i>Lineage tree</a><a href="table.html"><i data-icon="table"></i>Member table</a></nav></details></div>
 </div></header>
 <main>
-<div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b>559</b> members</span><span><b>553</b> connections</span></p></div>
+<div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b id="statMembers">559</b> members</span><span><b id="statLinks">553</b> connections</span></p></div>
 <section id="explorer" aria-label="Lineage explorer">
 <div class="tools">
 <nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html" aria-label="Member table"><i data-icon="table"></i><span class="lbl">Table</span></a></nav>
@@ -59,8 +59,8 @@
 </section></main>
 <script src="d3.min.js"></script>
 <script src="icons.js?v=1"></script>
-<script src="lineage-data.js?v=crossing"></script>
-<script src="class-dads.js?v=class-kids"></script>
+<script src="lineage-data.js?v=fa26"></script>
+<script src="class-dads.js?v=fa26"></script>
 <script src="relationships.js?v=1"></script>
 <script>
 'use strict';
@@ -91,6 +91,7 @@ const select=pick('branch'), canvas=pick('canvas'), svg=canvas.querySelector('sv
 const caption=pick('caption'), matches=pick('matches'), query=pick('query');
 const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
 // "phone" means the compact layout: small screens, plus short touch screens such as phones and tablets in landscape.
+document.getElementById("statMembers").textContent=records.length;document.getElementById("statLinks").textContent=records.filter(r=>r[1]!==null).length;
 const desktopQuery=matchMedia('(min-width:701px) and (min-height:521px) and (pointer:fine),(min-width:701px) and (min-height:821px)');
 const phone={get matches(){return !desktopQuery.matches;},addEventListener:(type,handler)=>desktopQuery.addEventListener(type,handler)};
 const founderList=pick('founderList');
