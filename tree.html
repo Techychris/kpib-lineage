@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=47">
+<link rel="stylesheet" href="kpib.css?v=48">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -228,7 +228,7 @@ function draw(){
   const vertical=orientation.value==='vertical';
   const nodes=positionTree(hierarchy,vertical,branch===OVERVIEW);
   rootPoint={x:nodes[0].left+NODE_WIDTH/2,y:nodes[0].centerY,vertical};
-  dimensions=[d3.max(nodes,d=>d.left)+NODE_WIDTH+18,d3.max(nodes,d=>d.centerY)+NODE_HEIGHT/2+32];
+  dimensions=[d3.max(nodes,d=>d.left)+NODE_WIDTH+18,d3.max(nodes,d=>d.centerY)+NODE_HEIGHT/2+18];
   const links=hierarchy.links();
   const isCross=({source,target})=>source.data>=0&&schoolOf(source.data)!==schoolOf(target.data);
   const isPath=({source,target})=>ancestry.has(source.data)&&ancestry.has(target.data);
@@ -259,8 +259,8 @@ function draw(){
     item.append('rect').attr('class','school-bar').attr('x',10).attr('y',-NODE_HEIGHT/2+12).attr('width',4).attr('height',NODE_HEIGHT-24).attr('rx',2);
     item.append('text').attr('class','name').attr('x',24).attr('y',-29);
     const badge=item.append('g').attr('class','more-badge');
-    badge.append('rect').attr('class','more-pill').attr('x',NODE_WIDTH-88).attr('y',NODE_HEIGHT/2-8).attr('width',76).attr('height',36).attr('rx',18);
-    badge.append('text').attr('class','more').attr('x',NODE_WIDTH-50).attr('y',NODE_HEIGHT/2+17).attr('text-anchor','middle');
+    badge.append('rect').attr('class','more-pill').attr('x',NODE_WIDTH-80).attr('y',-NODE_HEIGHT/2+8).attr('width',68).attr('height',32).attr('rx',16);
+    badge.append('text').attr('class','more').attr('x',NODE_WIDTH-46).attr('y',-NODE_HEIGHT/2+31).attr('text-anchor','middle');
     item.append('text').attr('class','member-name').attr('x',24).attr('y',-12);
     item.append('text').attr('class','school').attr('x',24).attr('y',5);
     item.append('text').attr('class','school semester').attr('x',24).attr('y',22);
@@ -275,7 +275,7 @@ function draw(){
   cards.select('.school-bar').attr('class',d=>'school-bar '+(d.data>=0?'s'+schoolIds[d.data]:'sx'));
   cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[]),hidden.has(d.data)?hidden.get(d.data)+' more below. Click to open.':''].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
-  cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?19:19));
+  cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?10:19));
   cards.select('.more').text(d=>hidden.has(d.data)?'+'+hidden.get(d.data):'');
   cards.select('.more-badge').attr('display',d=>hidden.has(d.data)?null:'none');
   const depthNote=pick('depthNote');depthNote.hidden=!hidden.size;
