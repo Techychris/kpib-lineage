@@ -126,6 +126,7 @@ for(const id of rootIds){
 if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
 const NODE_WIDTH=206, NODE_HEIGHT=104;
 const orientation=pick('orientation');
+if(phone.matches) orientation.value='horizontal';
 const names=id=>id===OVERVIEW?['Kappa Pi Beta','']:id===UNRESOLVED?['Unmatched branches','']:[records[id][0],records[id][3]];
 function rootOf(id){
   while(records[id][1]!==null) id=records[id][1];
@@ -137,7 +138,7 @@ function founderPath(id){
   return path.reverse();
 }
 function positionTree(hierarchy,vertical,overview){
-  const spacing=vertical?[NODE_WIDTH+30,185]:[125,overview?260:400];
+  const spacing=vertical?[NODE_WIDTH+30,185]:[125,overview?260:phone.matches?NODE_WIDTH+44:400];
   d3.tree().nodeSize(spacing)(hierarchy);
   const nodes=hierarchy.descendants();
   const minBreadth=d3.min(nodes,d=>d.x);
@@ -159,9 +160,17 @@ function draw(){
   const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
   const rootId=focused?selected:branch;
+  // On a phone, show two generations at a time; tapping a member opens their own downstream tree.
+  const depthLimit=phone.matches&&focused?1:Infinity;
+  const depthOf=new Map([[rootId,0]]);
+  const hidden=new Map();
+  const below=id=>children[id].reduce((sum,kid)=>sum+1+below(kid),0);
   const hierarchy=d3.hierarchy(rootId,id=>{
     if(id===OVERVIEW) return rootIds;
     if(id===UNRESOLVED) return floating;
+    const depth=depthOf.get(id);
+    if(depth>=depthLimit){if(children[id].length) hidden.set(id,below(id));return null;}
+    for(const kid of children[id]) depthOf.set(kid,depth+1);
     return children[id];
   });
   const vertical=orientation.value==='vertical';
@@ -185,7 +194,7 @@ function draw(){
     .attr('d',d=>connector(connectionPoints(d,vertical)))
     .lower();
   const labels=scene.selectAll('.link-name').data(
-    focused?links.filter(d=>d.source.data>=0):links.filter(isCross),d=>d.target.data
+    focused?(phone.matches&&!vertical?links.filter(isCross):links.filter(d=>d.source.data>=0)):links.filter(isCross),d=>d.target.data
   ).join(enter=>{const label=enter.append('text').attr('class','link-name').attr('text-anchor','middle');label.append('tspan').attr('class','connector-name');label.append('tspan').attr('class','transition').attr('dy',14);return label;})
     .attr('x',labelX).attr('y',labelY).attr('text-anchor',vertical?'start':'middle');
   labels.select('.connector-name').text(d=>records[d.source.data][3]);
@@ -196,6 +205,7 @@ function draw(){
     item.append('title');
     item.append('rect').attr('width',NODE_WIDTH).attr('height',NODE_HEIGHT).attr('y',-NODE_HEIGHT/2).attr('rx',12);
     item.append('text').attr('class','name').attr('x',12).attr('y',-29);
+    item.append('text').attr('class','more').attr('x',NODE_WIDTH-12).attr('y',-29).attr('text-anchor','end');
     item.append('text').attr('class','member-name').attr('x',12).attr('y',-12);
     item.append('text').attr('class','school').attr('x',12).attr('y',5);
     item.append('text').attr('class','school semester').attr('x',12).attr('y',22);
@@ -209,7 +219,8 @@ function draw(){
     .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();mark(d.data,true);}});
   cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
-  cards.select('.name').text(d=>short(names(d.data)[0],21));
+  cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?15:21));
+  cards.select('.more').text(d=>hidden.has(d.data)?'+'+hidden.get(d.data):'');
   cards.select('.member-name').text(d=>short(names(d.data)[1],27));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
   cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
@@ -220,8 +231,8 @@ function draw(){
 function fit(){
   const w=canvas.clientWidth,h=canvas.clientHeight;
   const fitted=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
-  // On a phone, never shrink below a readable size: anchor the root and let the person pan.
-  const scale=phone.matches?Math.max(fitted,.8):fitted;
+  // On a phone, never shrink below a readable size (about 72%): anchor the root and let the person pan.
+  const scale=phone.matches?Math.max(fitted,.72):fitted;
   let x=(w-dimensions[0]*scale)/2,y=(h-dimensions[1]*scale)/2;
   if(phone.matches&&rootPoint){
     if(dimensions[0]*scale>w-24) x=rootPoint.vertical?w/2-rootPoint.x*scale:16;
@@ -252,7 +263,7 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
   modeButton.textContent=full?'Focus on member':'Full branch';
-  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.';
+  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Big Brother to move up a level.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.');
 }
 function openConnections(){
   const id=selected;

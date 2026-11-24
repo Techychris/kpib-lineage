@@ -180,6 +180,8 @@ main>section{position:relative;flex:1;min-height:0;display:flex;flex-direction:c
 .node rect{fill:var(--surface);stroke:var(--border-strong);stroke-width:1}
 .node text{fill:var(--ink);pointer-events:none}
 .node .name{font-size:14px;font-weight:700}
+.node .more{fill:var(--accent);font-size:12px;font-weight:700}
+.node.root .more{fill:var(--on-band)}
 .node .member-name,.node .school{fill:var(--ink-muted);font-size:12px}
 .node.root rect{fill:var(--surface-band);stroke:var(--surface-band)}
 .node.root text{fill:var(--on-band)}
