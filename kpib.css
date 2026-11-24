@@ -531,3 +531,8 @@ html.kp-snap{scroll-padding-top:var(--hdr,74px)}
 /* motto band: circuit-line image behind the text */
 .kp-motto-band{background:#0a0a0a url("assets/motto-bg.jpg") right center/cover no-repeat}
 @media(max-width:699px){.kp-motto-band{background-position:70% center}}
+
+#depthNote{margin:0;padding:var(--space-1) var(--space-3);background:var(--surface);border-bottom:1px solid var(--border-hairline);color:var(--ink-muted);font-size:14px;line-height:20px}
+@media(min-width:701px){#depthNote{padding:var(--space-2) var(--space-5)}}
+.diagram-open #depthNote{display:none}
+@media(min-width:701px){.diagram-open #depthNote{display:block}}

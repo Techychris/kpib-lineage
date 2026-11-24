@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=42">
+<link rel="stylesheet" href="kpib.css?v=44">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -37,7 +37,7 @@
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
 <div class="seg" role="group" aria-label="Member view"><button type="button" id="viewTree" aria-pressed="true"><i data-icon="tree"></i>Tree</button><button type="button" id="viewList" aria-pressed="false"><i data-icon="list"></i>Generations</button></div>
-<button type="button" id="parent" hidden></button><label class="toggle"><input type="checkbox" id="mode" checked><span>Show downstream</span></label>
+<button type="button" id="parent" hidden></button><label class="toggle"><input type="checkbox" id="mode" checked><span>Show downstream</span></label><label class="toggle"><input type="checkbox" id="depth"><span>Full depth</span></label>
 </div>
 <div class="menu-schools"><span class="kp-label">Schools</span><ul class="school-key" data-school-key></ul></div>
 <div class="menu-key">Dashed links mark school changes.</div>
@@ -46,6 +46,7 @@
 <div id="matches" aria-live="polite"></div>
 <div id="desktopMember"></div>
 <p id="caption" aria-live="polite"></p>
+<p id="depthNote" hidden></p>
 <div id="founderList" hidden><h2>Choose a founder</h2></div>
 <div id="generations" hidden></div>
 <div id="canvas" tabindex="0" aria-label="Pan and zoom lineage diagram"><svg aria-label="Lineage connections"></svg></div>
@@ -124,6 +125,9 @@ document.addEventListener('keydown',event=>{
 document.addEventListener('pointerdown',event=>{
   if(!event.target.closest('.tools')) closeView();
 });
+const DEFAULT_DEPTH=5;
+let fullDepth=false;
+try{fullDepth=localStorage.getItem('kpib-depth')==='full';}catch(e){}
 let listView=false, branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
@@ -199,7 +203,7 @@ function draw(){
   const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
   const rootId=focused?selected:branch;
-  const depthLimit=Infinity;
+  const depthLimit=fullDepth?Infinity:DEFAULT_DEPTH;
   const depthOf=new Map([[rootId,0]]);
   const hidden=new Map();
   const below=id=>children[id].reduce((sum,kid)=>sum+1+below(kid),0);
@@ -261,6 +265,8 @@ function draw(){
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
   cards.select('.name').text(d=>short(names(d.data)[0],hidden.has(d.data)?14:19));
   cards.select('.more').text(d=>hidden.has(d.data)?'+'+hidden.get(d.data):'');
+  const depthNote=pick('depthNote');depthNote.hidden=!hidden.size;
+  depthNote.textContent='Showing '+DEFAULT_DEPTH+' generations. A +N on a card means more members below it. Turn on Full depth to see everything.';
   cards.select('.member-name').text(d=>short(names(d.data)[1],25));
   cards.select('.school').text(d=>schoolOf(d.data)??'');
   cards.select('.semester').text(d=>crossings[d.data]?.[0]??'');
@@ -332,7 +338,7 @@ function describe(){
   pick('generations').hidden=!showList;
   document.querySelector('.diagram-key').hidden=choosing||showList;
   document.querySelector('.zoom-controls').hidden=choosing||showList;
-  document.querySelector('.toggle').hidden=showList;
+  document.querySelectorAll('.toggle').forEach(el=>{el.hidden=showList;});
   pick('viewTree').setAttribute('aria-pressed',String(!showList));
   pick('viewList').setAttribute('aria-pressed',String(showList));
   member.hidden=selected===null;
@@ -351,7 +357,8 @@ function describe(){
   parentButton.hidden=parent===null;
   parentButton.replaceChildren();
   if(parent!==null){parentButton.insertAdjacentHTML('afterbegin',kpibIcon('up'));parentButton.append(dadWord()+' · '+records[parent][3]);}
-  modeButton.checked=!full;
+  modeButton.checked=!full;pick('depth').checked=fullDepth;
+  if(showList) pick('depthNote').hidden=true;
   if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
   caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use '+dadWord()+' to move up a level. Drag to pan. Pinch or use the zoom controls.';
 }
@@ -433,6 +440,7 @@ orientation.addEventListener('change',()=>{
   else frame(selected);
 });
 parentButton.addEventListener('click',()=>mark(parentOf[selected],true));
+pick('depth').addEventListener('change',()=>{fullDepth=pick('depth').checked;try{localStorage.setItem('kpib-depth',fullDepth?'full':'5');}catch(e){}draw();describe();if(selected!==null)frame(selected);else fit();});
 modeButton.addEventListener('change',()=>{full=!modeButton.checked;draw();describe();frame(selected);});
 function setList(on){
   if(listView===on) return;
