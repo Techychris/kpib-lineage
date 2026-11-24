@@ -41,7 +41,7 @@
 <th scope="col"><button type="button" data-sort="school">School</button></th>
 <th scope="col" class="crossing" aria-sort="ascending"><button type="button" data-sort="crossing">Crossing</button></th>
 <th scope="col"><button type="button" data-sort="big">Big Brother</button></th>
-<th scope="col" class="kids"><button type="button" data-sort="kids">Kids</button></th>
+<th scope="col" class="kids"><button type="button" data-sort="kids" aria-description="Members of classes this member served as class dad for">Kids</button></th>
 <th scope="col" class="class-dad"><button type="button" data-sort="classDad">Class dad</button></th>
 <th scope="col" class="lineage"><button type="button" data-sort="lineage">Lineage</button></th>
 <th scope="col" class="ancestor"><button type="button" data-sort="founder">Founder</button></th>
@@ -49,7 +49,7 @@
 </div>
 </main>
 <script src="lineage-data.js?v=crossing"></script>
-<script src="class-dads.js"></script>
+<script src="class-dads.js?v=class-kids"></script>
 <script>
 'use strict';
 const query=document.getElementById('query');
@@ -61,9 +61,16 @@ const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
 const kidsByMember=records.map(()=>[]);
 const dadsByMember=crossings.map(([semester,cohort],id)=>classDadsBySchool[schoolIds[id]][semester+'|'+cohort]??[]);
+const memberIdsByName=new Map();
 for(const [id,record] of records.entries()){
-  const big=record[1];
-  if(big!==null) kidsByMember[big].push(id);
+  const name=normalizeMemberQuery(record[3]);
+  memberIdsByName.set(name,memberIdsByName.has(name)?null:id);
+}
+for(const [id,dads] of dadsByMember.entries()){
+  const dadIds=new Set(dads.map(name=>memberIdsByName.get(normalizeMemberQuery(classDadAliases[name]??name))));
+  for(const dad of dadIds){
+    if(Number.isInteger(dad)) kidsByMember[dad].push(id);
+  }
 }
 const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
 for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){

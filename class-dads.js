@@ -302,3 +302,22 @@ const classDadsBySchool = [
     ]
   }
 ];
+
+// Binder spellings and nicknames that differ from the verified roster display name.
+const classDadAliases = {
+  "Noel Nicholas Daguio": "Noel Daguio",
+  "Somprasong Yuttapibol": "Somprasong Yuttapibool",
+  "John Raymond “J.R.” Ellasos": "John Ellasos",
+  "Norman Chen": "Wen Chen",
+  "Muhamad Abdullah “Abie” Yanuardi": "Muhamad Yanuardi",
+  "Nicky Zhu": "Chu Zhu",
+  "Kevin Anthony Moy": "Kevin Moy",
+  "Chuan Yi Li": "Chuan Li",
+  "Christopher Marvin Vinzons": "Christopher Vinzons",
+  "Johnny Park": "Cheoneui Park",
+  "Kevo Truong": "Kevin Truong",
+  "William “Liam” Atkinson": "William Atkinson",
+  "Kevin “Archangel” Nguyen": "Kevin Nguyen",
+  "Ukana Odpurev": "Uugan Odpurev",
+  "Douglas Edward Gaudia Turner": "Douglas Turner"
+};
