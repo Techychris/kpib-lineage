@@ -475,3 +475,10 @@ i[data-icon]{display:contents;font-style:normal}
 #matches button span,#founderList button span,#generations button span,#connectionsBody button span{margin-top:0}
 #founderList{grid-auto-rows:max-content}
 #founderList button{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0}
+
+/* hero parallax: text drifts down slowly, the diagram a little slower (set from scroll by index.html) */
+@media (prefers-reduced-motion:no-preference){
+  .kp-hero .txt{transform:translate3d(0,calc(var(--py,0) * .1px),0);will-change:transform}
+  .kp-hero .pic svg{transform:translate3d(0,calc(var(--py,0) * -.08px),0);will-change:transform}
+  .kp-hero{overflow:hidden}
+}
