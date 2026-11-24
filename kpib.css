@@ -469,3 +469,9 @@ i[data-icon]{display:contents;font-style:normal}
   .js .kp-card.reveal.in:hover{transform:translateY(-3px);transition-delay:0s}
 }
 .kp-motto-band+.kp-section{padding-top:var(--space-8)!important}
+
+/* list buttons (founders, matches, generations, connections): explicit sizing so iOS Safari does not squash the second line */
+#matches button,#founderList button,#generations button,#connectionsBody button{-webkit-appearance:none;appearance:none;box-sizing:border-box;height:auto;min-height:calc(var(--hit-min) + var(--space-4));padding:var(--space-3);overflow:visible;font-size:16px;line-height:24px;flex:none}
+#matches button span,#founderList button span,#generations button span,#connectionsBody button span{margin-top:0}
+#founderList{grid-auto-rows:max-content}
+#founderList button{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:0}
