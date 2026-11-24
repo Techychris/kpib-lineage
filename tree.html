@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=26">
+<link rel="stylesheet" href="kpib.css?v=28">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -478,6 +478,8 @@ const memberLink=new URLSearchParams(location.search).get('member');
 const linkedMember=memberLink!==null&&/^\d+$/.test(memberLink)?Number(memberLink):null;
 if(linkedMember!==null&&linkedMember<records.length) mark(linkedMember,false);
 else show(phone.matches?FOUNDERS:OVERVIEW);
+const startQuery=new URLSearchParams(location.search).get('q');
+if(startQuery&&linkedMember===null){query.value=startQuery;document.getElementById('find').requestSubmit();}
 new ResizeObserver(()=>{if(branch===OVERVIEW) fit();}).observe(canvas);
 </script>
 <script src="kpib.js?v=5"></script>

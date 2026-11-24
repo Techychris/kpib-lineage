@@ -435,3 +435,12 @@ i[data-icon]{display:contents;font-style:normal}
   .page-table .filters.open .mobile-sort{margin-left:auto}
   .page-table .filters.open .filter-toggle{margin-left:0}
 }
+.kp-hero+.kp-motto-band{border-bottom:2px solid var(--accent)}
+
+/* home hero search */
+.kp-herosearch{display:grid;gap:var(--space-2)}
+.kp-herosearch .kp-label{color:var(--on-band-muted)}
+.kp-herosearch .row{display:flex;gap:var(--space-2)}
+.kp-herosearch input{flex:1 1 auto;min-width:0;box-sizing:border-box;height:var(--hit-min);padding:0 var(--space-3);background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);font:400 16px/24px var(--font-body);-webkit-appearance:none;appearance:none}
+.kp-herosearch .kp-btn{flex:none;height:var(--hit-min);min-height:var(--hit-min)}
+@media(min-width:900px){.kp-herosearch{max-width:480px}}
