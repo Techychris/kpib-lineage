@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=dark-wordmark">
+<link rel="stylesheet" href="kpib.css?v=25">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
@@ -34,7 +34,7 @@
 <option value="classDad:1">Class dad A to Z</option><option value="classDad:-1">Class dad Z to A</option>
 <option value="lineage:1">Lineage A to Z</option><option value="lineage:-1">Lineage Z to A</option>
 <option value="founder:1">Founder A to Z</option><option value="founder:-1">Founder Z to A</option>
-</select></label></div></div>
+</select></label><button type="button" id="filterToggle" class="filter-toggle" aria-expanded="false" aria-controls="schools"><i data-icon="sliders"></i><span>Filters</span><b id="filterCount" hidden></b></button></div></div>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table" id="roster-region">
 <table class="kp-t" id="roster" data-component="table" data-dynamic data-states="empty" aria-label="Members and relationships"><thead><tr>
 <th scope="col"><button type="button" data-sort="member">Member</button></th>
@@ -237,6 +237,12 @@ function drawMembers(){
 query.addEventListener('input',drawMembers);
 document.addEventListener('click',event=>{if(event.target.closest('a[href^="tree.html"]')) rememberRoster();});
 restoreRoster();
+</script>
+<script>
+(function(){var box=document.querySelector('.filters'),btn=document.getElementById('filterToggle'),n=document.getElementById('filterCount'),sort=document.getElementById('mobileSort');
+function count(){var c=0,all=document.querySelector('#schools button');document.querySelectorAll('#schools button[aria-pressed="true"]').forEach(function(b){if(b!==all)c++});if(sort.value!=='crossing:1')c++;n.textContent=c;n.hidden=!c}
+btn.addEventListener('click',function(){var o=box.classList.toggle('open');btn.setAttribute('aria-expanded',o)});
+box.addEventListener('click',function(){setTimeout(count,0)});box.addEventListener('change',count);count();})();
 </script>
 <script src="icons.js?v=1"></script>
 <script src="kpib.js?v=5"></script>

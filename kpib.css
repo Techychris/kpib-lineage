@@ -423,3 +423,15 @@ i[data-icon]{display:contents;font-style:normal}
   .page-table .mobile-sort{font-size:0;gap:0!important}
   .page-table .mobile-sort select{height:36px;min-height:36px;font-size:14px;line-height:20px}
 }
+
+/* table filters: a Filters button reveals the school chips and sort on phones */
+.filter-toggle{display:none}
+@media (max-width:700px){
+  .page-table .filter-footer{flex-wrap:wrap}
+  .page-table .filters:not(.open) .school-filters,.page-table .filters:not(.open) .mobile-sort{display:none!important}
+  .page-table .filter-toggle{display:inline-flex;align-items:center;gap:var(--space-2);height:36px;min-height:36px;padding:0 var(--space-3);margin-left:auto;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);font:700 12px/16px var(--font-body);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;appearance:none}
+  .page-table .filter-toggle[aria-expanded="true"]{border-color:var(--ink)}
+  .page-table .filter-toggle b{min-width:20px;height:20px;padding:0 6px;box-sizing:border-box;border-radius:10px;background:var(--surface-band);color:var(--on-band);font:700 12px/20px var(--font-body);letter-spacing:0;text-align:center}
+  .page-table .filters.open .mobile-sort{margin-left:auto}
+  .page-table .filters.open .filter-toggle{margin-left:0}
+}
