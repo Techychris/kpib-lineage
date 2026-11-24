@@ -563,3 +563,16 @@ a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2
 .kp-herosearch .kp-btn{height:56px;min-height:56px;padding-inline:var(--space-5);box-shadow:0 8px 24px rgba(0,0,0,.35)}
 .kp-herosearch input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 8px 24px rgba(0,0,0,.35)}
 @media(min-width:900px){.kp-herosearch{max-width:560px}.kp-hero .kp-herosearch,.kp-hero .kp-actions{max-width:560px}}
+
+/* hero search suggestions */
+.kp-combo{position:relative;flex:1 1 auto;min-width:0;display:flex}
+.kp-combo input{width:100%}
+#homeSuggest{position:absolute;z-index:5;top:calc(100% + var(--space-1));left:0;right:0;margin:0;padding:var(--space-1);list-style:none;background:#fff;color:#111;border-radius:var(--radius-md);box-shadow:0 8px 24px rgba(0,0,0,.35);max-height:60vh;overflow:auto}
+#homeSuggest[hidden]{display:none}
+#homeSuggest li{display:flex;flex-direction:column;gap:0;padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm,6px);cursor:pointer;min-height:44px;justify-content:center}
+#homeSuggest li b{font:700 16px/24px var(--font-body)}
+#homeSuggest li span{font:400 14px/20px var(--font-body);color:#555}
+#homeSuggest li[aria-selected="true"],#homeSuggest li:hover{background:#eee}
+#homeSuggest li.none{cursor:default;color:#555;font-size:14px;line-height:20px}
+#homeSuggest li.none:hover{background:none}
+.kp-herosearch{position:relative;z-index:4}

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=54">
+<link rel="stylesheet" href="kpib.css?v=56">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -56,7 +56,7 @@
 <p class="kp-label" style="margin:0">Kappa Pi Beta Fraternity, Inc.</p>
 <h1 class="kp-d1" id="title">The lineage tree</h1>
 <p class="kp-lead">Follow Big Brother or class dad lines across schools and trace each member back to one of Kappa Pi Beta’s six founders.</p>
-<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-label" for="homeSearch">Find a member</label><div class="row"><input id="homeSearch" name="q" type="search" placeholder="Name or line name" autocomplete="off" required><button class="kp-btn p" type="submit"><i data-icon="search"></i>Search</button></div></form>
+<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-label" for="homeSearch">Find a member</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching members" hidden></ul></div><button class="kp-btn p" type="submit"><i data-icon="search"></i>Search</button></div></form>
 <div class="kp-actions"><a class="kp-btn p" data-component="button" data-name="Explore the tree" href="tree.html"><i data-icon="tree"></i>Explore the tree</a><a class="kp-btn s" data-component="button" data-name="Browse the member table" href="table.html"><i data-icon="table"></i>Browse the member table</a></div>
 
 </div>
@@ -124,6 +124,41 @@ update();
 </script>
 <script>
 (function(){var h=document.querySelector('.kp-hdr');if(!h)return;function s(){document.documentElement.style.setProperty('--hdr',h.offsetHeight+'px')}s();addEventListener('resize',s);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(s);})();
+</script>
+<script>
+(function(){
+var inp=document.getElementById('homeSearch'),list=document.getElementById('homeSuggest');if(!inp||!list)return;
+var loading=null,idx=-1,items=[];
+function load(){if(loading)return loading;loading=new Promise(function(ok,no){var s=document.createElement('script');s.src='lineage-data.js?v=fa26c';s.onload=ok;s.onerror=no;document.head.appendChild(s);});return loading;}
+function close(){list.hidden=true;inp.setAttribute('aria-expanded','false');inp.removeAttribute('aria-activedescendant');idx=-1;}
+function mark(){[].forEach.call(list.children,function(li,i){li.setAttribute('aria-selected',i===idx?'true':'false');});if(idx>=0)inp.setAttribute('aria-activedescendant','hs'+idx);else inp.removeAttribute('aria-activedescendant');}
+function render(){
+ var term=normalizeMemberQuery(inp.value);if(!term){close();return;}
+ var hits=[];
+ for(var i=0;i<records.length;i++){var r=records[i];if(!matchesMember(r,term))continue;
+  var a=normalizeMemberQuery(r[0]),b=normalizeMemberQuery(r[3]);
+  hits.push({id:i,r:r,rank:(a.indexOf(term)===0||b.indexOf(term)===0)?0:1});}
+ hits.sort(function(x,y){return x.rank-y.rank||x.id-y.id;});
+ items=hits.slice(0,6);list.textContent='';
+ if(!items.length){var e=document.createElement('li');e.className='none';e.textContent='No member matches';e.setAttribute('role','presentation');list.appendChild(e);}
+ items.forEach(function(h,i){var li=document.createElement('li');li.id='hs'+i;li.setAttribute('role','option');
+  var n=document.createElement('b');n.textContent=h.r[0];var s=document.createElement('span');s.textContent=h.r[3]+' \u00b7 '+campuses[schoolIds[h.id]];
+  li.appendChild(n);li.appendChild(s);li.addEventListener('mousedown',function(ev){ev.preventDefault();go(h.id);});list.appendChild(li);});
+ if(hits.length>6){var m=document.createElement('li');m.className='none';m.setAttribute('role','presentation');m.textContent=(hits.length-6)+' more. Press Search to see all.';list.appendChild(m);}
+ list.hidden=false;inp.setAttribute('aria-expanded','true');idx=-1;mark();
+}
+function go(id){location.href='tree.html?member='+id;}
+inp.addEventListener('focus',load);
+inp.addEventListener('input',function(){load().then(render);});
+inp.addEventListener('keydown',function(e){
+ if(list.hidden)return;
+ if(e.key==='ArrowDown'){e.preventDefault();idx=Math.min(items.length-1,idx+1);mark();}
+ else if(e.key==='ArrowUp'){e.preventDefault();idx=Math.max(-1,idx-1);mark();}
+ else if(e.key==='Enter'&&idx>=0){e.preventDefault();go(items[idx].id);}
+ else if(e.key==='Escape'){close();}
+});
+inp.addEventListener('blur',function(){setTimeout(close,120);});
+})();
 </script>
 <script src="icons.js?v=1"></script>
 <script src="kpib.js?v=5"></script>
