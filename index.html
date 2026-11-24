@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=51">
+<link rel="stylesheet" href="kpib.css?v=53">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -73,7 +73,6 @@
 <figcaption>A dashed line marks a change of school. The red path leads back to the founder.</figcaption>
 </figure>
 </section>
-<section class="kp-motto-band" aria-label="Motto"><div class="kp-wrap"><p class="kp-d2">Unity is the beginning of brotherhood.</p></div></section>
 <section class="kp-wrap kp-section" aria-labelledby="founders-title" style="padding-top:0">
 <div class="kp-shead"><p class="kp-label">Six branches</p><h2 class="kp-d2" id="founders-title">Start from a founder</h2><p>Open any founder to see the line that grew from them.</p></div>
 <div class="kp-grid g3">
@@ -106,7 +105,7 @@
 (function(){
 document.querySelectorAll('.kp-hero .txt>*').forEach(function(el,i){el.style.setProperty('--i',i)});
 document.querySelectorAll('.kp-hero .pic svg>*').forEach(function(el,i){el.style.setProperty('--i',i)});
-var els=[].slice.call(document.querySelectorAll('.kp-motto-band .kp-wrap,main .kp-shead,.kp-grid>*'));
+var els=[].slice.call(document.querySelectorAll('main .kp-shead,.kp-grid>*'));
 els.forEach(function(el){el.classList.add('reveal');var s=el.parentNode;var n=[].indexOf.call(s.children,el);if(el.parentNode.classList.contains('kp-grid'))el.style.setProperty('--d',n%3)});
 if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion:reduce)').matches){els.forEach(function(el){el.classList.add('in')});return;}
 var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
