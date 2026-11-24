@@ -537,3 +537,10 @@ html.kp-snap{scroll-padding-top:var(--hdr,74px)}
 @media(min-width:701px){#depthNote{padding:var(--space-2) var(--space-5)}}
 .diagram-open #depthNote{display:none}
 @media(min-width:701px){.diagram-open #depthNote{display:block}}
+
+/* spacing pass: symmetric card padding, tight text group, looser action */
+.kp-card .body{padding:var(--space-5);gap:var(--space-1)}
+a.kp-card .go{margin-top:var(--space-3)}
+.kp-card .kp-label{margin-bottom:var(--space-1)}
+.kp-hero .pic figcaption{margin-top:var(--space-5)}
+a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2)}
