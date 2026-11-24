@@ -549,3 +549,6 @@ a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2
 .kp-t td a{min-height:32px}
 .kp-t td small{margin-top:0}
 .tools{padding:var(--space-2)}
+
+/* motto band desktop: fade the flat left of the image into the band so there is no seam behind the text */
+@media(min-width:700px){.kp-motto-band{background:linear-gradient(90deg,#0a0a0a 0%,rgba(10,10,10,.92) 30%,rgba(10,10,10,0) 62%),#0a0a0a url("assets/motto-bg.jpg") right center/cover no-repeat}}
