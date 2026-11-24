@@ -270,7 +270,7 @@ const classDadsBySchool = [
       "Clement Wang"
     ],
     "Fall 2025|Xi Xiphos Class": [
-      "Daren-Alan Buendicho"
+      "Daren Buendicho"
     ],
     "Spring 2026|Omicron Oasis Class": [
       "Ethan Moraleda"
@@ -324,7 +324,7 @@ const classDadsBySchool = [
     "Fall 2024|C.H.I.V.A.L.R.O.U.S. Charter Class": [
       "Deepesh Patel"
     ],
-    "Spring 2024|ALPHA CLASS": [
+    "Spring 2025|ALPHA CLASS": [
       "Shubham Nigam"
     ],
     "Spring 2026|B.EAK.ON Beta Class": [
