@@ -444,3 +444,28 @@ i[data-icon]{display:contents;font-style:normal}
 .kp-herosearch input{flex:1 1 auto;min-width:0;box-sizing:border-box;height:var(--hit-min);padding:0 var(--space-3);background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);font:400 16px/24px var(--font-body);-webkit-appearance:none;appearance:none}
 .kp-herosearch .kp-btn{flex:none;height:var(--hit-min);min-height:var(--hit-min)}
 @media(min-width:900px){.kp-herosearch{max-width:480px}}
+
+/* landing page micro animations (all off under prefers-reduced-motion) */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes kpUp{from{opacity:0;transform:translateY(12px)}}
+  @keyframes kpFade{from{opacity:0}}
+  @keyframes kpStripe{from{transform:scaleX(0)}}
+  .kp-hero .txt>*{animation:kpUp .6s var(--ease-out) both;animation-delay:calc(var(--i,0) * 70ms)}
+  .kp-hero .kp-stripes{transform-origin:left;animation:kpStripe .7s var(--ease-out) both}
+  .kp-hero .pic svg>*{animation:kpFade .5s ease both;animation-delay:calc(350ms + var(--i,0) * 45ms)}
+  .kp-btn{transition:transform .15s var(--ease-out),background-color var(--duration-base),border-color var(--duration-base)}
+  .kp-btn:hover{transform:translateY(-1px)}
+  .kp-btn:active{transform:translateY(0) scale(.98)}
+  .kp-btn .ico{transition:transform .2s var(--ease-out)}
+  .kp-btn:hover .ico{transform:translateX(2px)}
+  .kp-herosearch input{transition:border-color var(--duration-base),box-shadow .2s var(--ease-out)}
+  .kp-herosearch input:focus{box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+  .kp-card{transition:transform .25s var(--ease-out),border-color var(--duration-base),box-shadow .25s var(--ease-out)}
+  .kp-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-popover)}
+  .kp-card .go .ico{transition:transform .25s var(--ease-out)}
+  .kp-card:hover .go .ico{transform:translateX(4px)}
+  .js .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out);transition-delay:calc(var(--d,0) * 60ms)}
+  .js .reveal.in{opacity:1;transform:none}
+  .js .kp-card.reveal.in:hover{transform:translateY(-3px);transition-delay:0s}
+}
+.kp-motto-band+.kp-section{padding-top:var(--space-8)!important}

@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
 <link rel="stylesheet" href="kpib.css?v=25">
+<script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
 <a class="kp-skip" href="#main">Skip to content</a>
@@ -73,6 +74,17 @@
 </div>
 <p class="legal">Kappa Pi Beta Fraternity, Inc. © 2026. Based on the Kappa Pi Beta Master Binder.</p>
 </div></footer>
+<script>
+(function(){
+document.querySelectorAll('.kp-hero .txt>*').forEach(function(el,i){el.style.setProperty('--i',i)});
+document.querySelectorAll('.kp-hero .pic svg>*').forEach(function(el,i){el.style.setProperty('--i',i)});
+var els=[].slice.call(document.querySelectorAll('.kp-motto-band .kp-wrap,main .kp-shead,.kp-grid>*'));
+els.forEach(function(el){el.classList.add('reveal');var s=el.parentNode;var n=[].indexOf.call(s.children,el);if(el.parentNode.classList.contains('kp-grid'))el.style.setProperty('--d',n%3)});
+if(!('IntersectionObserver' in window)||matchMedia('(prefers-reduced-motion:reduce)').matches){els.forEach(function(el){el.classList.add('in')});return;}
+var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}})},{threshold:.12});
+els.forEach(function(el){io.observe(el)});
+})();
+</script>
 <script src="icons.js?v=1"></script>
 <script src="kpib.js?v=5"></script>
 </body>
