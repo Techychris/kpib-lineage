@@ -241,8 +241,12 @@ table.kp-t{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-n
 .table-scroll th[aria-sort="ascending"] button::after{background:var(--accent);-webkit-mask:none;mask:none;clip-path:polygon(50% 20%,100% 75%,0 75%)}
 .table-scroll th[aria-sort="descending"] button::after{background:var(--accent);-webkit-mask:none;mask:none;clip-path:polygon(0 25%,100% 25%,50% 80%)}
 .kp-t th:nth-child(1){width:42%}.kp-t th:nth-child(2){width:25%}.kp-t th:nth-child(4){width:33%}
-th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:none}
+th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor,th.kids,td.kids,th.class-dad,td.class-dad{display:none}
 .crossing-note,.lineage-note{display:block}
+.relationship-notes{display:grid;gap:var(--space-1);font-size:14px;line-height:20px}
+.roster-kids summary{min-height:var(--hit-min);align-content:center;cursor:pointer;font-weight:700;text-decoration:underline;text-underline-offset:4px;text-decoration-color:var(--border-strong)}
+.roster-kids summary:focus-visible{outline:2px solid var(--focus-ring);outline-offset:2px}
+.roster-kids ul{margin:0;padding-inline-start:var(--space-3)}
 .table-scroll:focus-visible{outline-offset:-2px}
 
 /* home page, larger screens */
@@ -313,7 +317,6 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
   .school-filters button{padding-inline:var(--space-3);letter-spacing:.14em}
   .school-filters button:last-child{grid-column:auto}
   .filter-footer{width:100%}
-  .mobile-sort{display:none!important}
 }
 @media(min-width:641px){
   .kp-t th,.kp-t td{padding-inline:var(--space-4)}
@@ -353,9 +356,10 @@ th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:no
 #generations ul{display:grid;gap:var(--space-2);margin:0;padding:0;list-style:none}
 @media (min-width:701px){#generations{padding:var(--space-5)}#generations ul{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}}
 
-/* six table columns need real width; tablets in portrait keep the three-column layout */
+/* tablets in portrait keep the three-column layout */
 @media(min-width:1000px){
-  .kp-t th:nth-child(1){width:21%}.kp-t th:nth-child(2){width:14%}.kp-t th:nth-child(3){width:19%}.kp-t th:nth-child(4){width:17%}.kp-t th:nth-child(5){width:13%}.kp-t th:nth-child(6){width:16%}
-  th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor{display:table-cell}
-  .kp-t td .crossing-note,.kp-t td .lineage-note{display:none}
+  .mobile-sort{display:none!important}
+  .kp-t th:nth-child(1){width:17%}.kp-t th:nth-child(2){width:11%}.kp-t th:nth-child(3){width:15%}.kp-t th:nth-child(4){width:13%}.kp-t th:nth-child(5){width:9%}.kp-t th:nth-child(6){width:14%}.kp-t th:nth-child(7){width:10%}.kp-t th:nth-child(8){width:11%}
+  th.crossing,td.crossing,th.lineage,td.lineage,th.ancestor,td.ancestor,th.kids,td.kids,th.class-dad,td.class-dad{display:table-cell}
+  .kp-t td .crossing-note,.kp-t td .lineage-note,.kp-t td .relationship-notes{display:none}
 }

@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kappa Pi Beta · Member Table</title>
-<meta name="description" content="Browse Kappa Pi Beta members, their Big Brothers and founder lines.">
+<meta name="description" content="Browse Kappa Pi Beta members, their Big Brothers, kids, class dads and founder lines.">
 <link rel="icon" href="assets/kpib-crest-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=8">
+<link rel="stylesheet" href="kpib.css?v=roster-relationships">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
@@ -30,21 +30,26 @@
 <option value="member:1">Member A to Z</option><option value="member:-1">Member Z to A</option>
 <option value="school:1">School A to Z</option><option value="school:-1">School Z to A</option>
 <option value="big:1">Big Brother A to Z</option><option value="big:-1">Big Brother Z to A</option>
+<option value="kids:-1">Most kids first</option><option value="kids:1">Fewest kids first</option>
+<option value="classDad:1">Class dad A to Z</option><option value="classDad:-1">Class dad Z to A</option>
 <option value="lineage:1">Lineage A to Z</option><option value="lineage:-1">Lineage Z to A</option>
 <option value="founder:1">Founder A to Z</option><option value="founder:-1">Founder Z to A</option>
 </select></label></div></div>
 <div class="table-scroll" tabindex="0" role="region" aria-label="Scrollable member table" id="roster-region">
-<table class="kp-t" id="roster" data-component="table" data-dynamic data-states="empty" aria-label="Members and Big Brother connections"><thead><tr>
+<table class="kp-t" id="roster" data-component="table" data-dynamic data-states="empty" aria-label="Members and relationships"><thead><tr>
 <th scope="col"><button type="button" data-sort="member">Member</button></th>
 <th scope="col"><button type="button" data-sort="school">School</button></th>
 <th scope="col" class="crossing" aria-sort="ascending"><button type="button" data-sort="crossing">Crossing</button></th>
 <th scope="col"><button type="button" data-sort="big">Big Brother</button></th>
+<th scope="col" class="kids"><button type="button" data-sort="kids">Kids</button></th>
+<th scope="col" class="class-dad"><button type="button" data-sort="classDad">Class dad</button></th>
 <th scope="col" class="lineage"><button type="button" data-sort="lineage">Lineage</button></th>
 <th scope="col" class="ancestor"><button type="button" data-sort="founder">Founder</button></th>
 </tr></thead><tbody id="members"></tbody></table>
 </div>
 </main>
 <script src="lineage-data.js?v=crossing"></script>
+<script src="class-dads.js"></script>
 <script>
 'use strict';
 const query=document.getElementById('query');
@@ -54,6 +59,12 @@ const rosterStateKey='kpib-roster-view';
 const members=document.getElementById('members');
 const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
+const kidsByMember=records.map(()=>[]);
+const dadsByMember=crossings.map(([semester,cohort],id)=>classDadsBySchool[schoolIds[id]][semester+'|'+cohort]??[]);
+for(const [id,record] of records.entries()){
+  const big=record[1];
+  if(big!==null) kidsByMember[big].push(id);
+}
 const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
 for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
   const button=document.createElement('button');
@@ -90,6 +101,8 @@ const sortValues={
   member:id=>records[id][3],
   school:id=>campuses[schoolIds[id]],
   big:id=>records[records[id][1]]?.[3]??'',
+  kids:id=>kidsByMember[id].length,
+  classDad:id=>dadsByMember[id].join(', '),
   lineage:id=>records[lineageStart[id]][0],
   founder:id=>records[founders[id]][3],
 };
@@ -114,7 +127,7 @@ function applySort(column,direction){
 for(const button of document.querySelectorAll('[data-sort]')){
   button.addEventListener('click',()=>{
     const column=button.dataset.sort;
-    applySort(column,column===sortColumn?-sortDirection:1);
+    applySort(column,column===sortColumn?-sortDirection:column==='kids'?-1:1);
   });
 }
 mobileSort.addEventListener('change',()=>{
@@ -156,6 +169,22 @@ function addLineage(container,id){
   link.title=records[id][3];
   container.append(link);
 }
+function addKids(container,id){
+  const kids=kidsByMember[id];
+  if(kids.length===0){container.textContent='0 kids';return;}
+  const details=document.createElement('details');
+  details.className='roster-kids';
+  const summary=document.createElement('summary');
+  summary.textContent=kids.length+(kids.length===1?' kid':' kids');
+  const list=document.createElement('ul');
+  for(const kid of kids){
+    const item=document.createElement('li');
+    addMember(item,kid);
+    list.append(item);
+  }
+  details.append(summary,list);
+  container.append(details);
+}
 function drawMembers(){
   const term=normalizeMemberQuery(query.value);
   const filtered=records.map((_,id)=>id).filter(id=>(activeSchool===null||schoolIds[id]===activeSchool)&&matchesMember(records[id],term)).sort(compareMembers);
@@ -184,7 +213,23 @@ function drawMembers(){
     const classLabel=document.createElement('small');
     classLabel.textContent=cohort;
     crossing.append(classLabel);
-    addMember(row.insertCell(),records[id][1]);
+    const big=row.insertCell();
+    addMember(big,records[id][1]);
+    const dadNames=dadsByMember[id];
+    const dadText=dadNames.join(', ');
+    const compact=document.createElement('div');
+    compact.className='relationship-notes';
+    const dadNote=document.createElement('small');
+    dadNote.textContent=(dadNames.length>1?'Class dads: ':'Class dad: ')+(dadText||'None listed');
+    compact.append(dadNote);
+    addKids(compact,id);
+    big.append(compact);
+    const kids=row.insertCell();
+    kids.className='kids';
+    addKids(kids,id);
+    const classDad=row.insertCell();
+    classDad.className='class-dad';
+    classDad.textContent=dadText||'None listed';
     const lineage=row.insertCell();
     lineage.className='lineage';
     addLineage(lineage,start);
