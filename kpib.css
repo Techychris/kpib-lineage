@@ -63,6 +63,10 @@ a{color:inherit}
 .kp-hdr .in{display:flex;align-items:stretch;justify-content:space-between;gap:var(--space-2);min-height:64px;padding-inline:var(--space-3)}
 .kp-plate{display:flex;align-items:center;background:var(--logo-plate);padding:var(--space-2) var(--space-3);flex:none}
 .kp-plate img{display:block;height:36px;width:auto}
+/* The transparent gap between the crest and wordmark is at 22% of the image. */
+[data-theme="dark"] .kp-plate{position:relative;background:transparent}
+[data-theme="dark"] .kp-plate img{clip-path:inset(0 78% 0 0)}
+[data-theme="dark"] .kp-plate::after{content:"";position:absolute;inset:var(--space-2) var(--space-3);background:var(--ink);mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;clip-path:inset(0 0 0 22%);pointer-events:none}
 .kp-tools{display:flex;align-items:center;gap:var(--space-2)}
 .kp-nav{display:none}
 .kp-menu-list{position:absolute;left:0;right:0;top:100%;background:var(--surface);border-bottom:2px solid var(--brand-red);display:grid}
