@@ -487,3 +487,39 @@ i[data-icon]{display:contents;font-style:normal}
 .kp-hero .kp-herosearch,.kp-hero .kp-actions{width:100%;max-width:480px;box-sizing:border-box}
 .kp-hero .kp-actions{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
 .kp-hero .kp-actions .kp-btn{width:100%;box-sizing:border-box}
+
+/* animated hero background: dark panels, a faint grid and red circuit lines with light travelling along them */
+.kp-hero{position:relative;overflow:hidden}
+.kp-herobg{position:absolute;inset:0;z-index:0;pointer-events:none;background:#0a0a0a}
+.kp-herobg svg{display:block;width:100%;height:100%}
+.kp-hero .txt,.kp-hero .pic{position:relative;z-index:1}
+.kp-herobg .hb-panel{fill:rgba(255,255,255,.035);stroke:rgba(255,255,255,.07);stroke-width:1.5}
+.kp-herobg .hb-grid path{fill:none;stroke:rgba(255,255,255,.06);stroke-width:1}
+.kp-herobg .hb-dots{opacity:.14}
+.kp-herobg .n{fill:none;stroke:rgba(255,255,255,.12);stroke-width:1.5}
+.kp-herobg .base{stroke:rgba(179,35,35,.38);stroke-width:2}
+.kp-herobg .flow{stroke:#e04a4a;stroke-width:2.5;stroke-dasharray:10 90;stroke-dashoffset:100;opacity:.9}
+.kp-herobg .dash{stroke-width:1.6;stroke-dasharray:6 8}
+.kp-herobg .d-w{stroke:rgba(255,255,255,.4)}
+.kp-herobg .d-r,.kp-herobg .d-r2{stroke:rgba(224,74,74,.55)}
+@media (prefers-reduced-motion:no-preference){
+  @keyframes hbFlow{to{stroke-dashoffset:0}}
+  @keyframes hbMarch{to{stroke-dashoffset:-56}}
+  @keyframes hbDriftA{from{transform:translate(0,0)}to{transform:translate(10px,8px)}}
+  @keyframes hbDriftB{from{transform:translate(0,0)}to{transform:translate(-9px,10px)}}
+  @keyframes hbPulse{0%,100%{opacity:.08}50%{opacity:.26}}
+  @keyframes hbNode{0%,100%{stroke:rgba(255,255,255,.1)}50%{stroke:rgba(224,74,74,.55)}}
+  .kp-herobg .flow{animation:hbFlow 6s linear infinite}
+  .kp-herobg .f2{animation-duration:7.5s;animation-delay:-2s}
+  .kp-herobg .f3{animation-duration:9s;animation-delay:-4s}
+  .kp-herobg .f4{animation-duration:5s;animation-delay:-1s}
+  .kp-herobg .dash{animation:hbMarch 3.5s linear infinite}
+  .kp-herobg .d-r{animation-duration:4.5s}
+  .kp-herobg .p1,.kp-herobg .p3,.kp-herobg .p5{animation:hbDriftA 18s ease-in-out infinite alternate}
+  .kp-herobg .p2,.kp-herobg .p4{animation:hbDriftB 22s ease-in-out infinite alternate}
+  .kp-herobg .hb-dots{animation:hbPulse 5s ease-in-out infinite}
+  .kp-herobg .d2{animation-delay:-1.7s}.kp-herobg .d3{animation-delay:-3.4s}
+  .kp-herobg .n{animation:hbNode 7s ease-in-out infinite}
+  .kp-herobg .n2{animation-delay:-2s}.kp-herobg .n3{animation-delay:-4s}.kp-herobg .n4{animation-delay:-5.5s}
+}
+@media(min-width:700px){.kp-herobg{right:auto;width:calc(100% * 5 / 11)}}
