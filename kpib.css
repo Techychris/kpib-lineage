@@ -523,3 +523,13 @@ i[data-icon]{display:contents;font-style:normal}
   .kp-herobg .n2{animation-delay:-2s}.kp-herobg .n3{animation-delay:-4s}.kp-herobg .n4{animation-delay:-5.5s}
 }
 @media(min-width:700px){.kp-herobg{right:auto;width:calc(100% * 5 / 11)}}
+
+/* home page: full-screen sections that snap into place (off under prefers-reduced-motion) */
+@media (prefers-reduced-motion:no-preference){
+  html.kp-snap{scroll-snap-type:y mandatory}
+  .kp-snap .kp-hdr{scroll-snap-align:start}
+  .kp-snap .kp-hero,.kp-snap .kp-motto-band,.kp-snap main>.kp-section{scroll-snap-align:start;scroll-snap-stop:always;min-height:100svh;box-sizing:border-box}
+  .kp-snap .kp-motto-band{display:flex;flex-direction:column;justify-content:center}
+  .kp-snap main>.kp-section{display:flex;flex-direction:column;justify-content:center;padding-block:var(--space-8)!important}
+  .kp-snap .kp-ftr{scroll-snap-align:end}
+}
