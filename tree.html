@@ -90,7 +90,9 @@ const pick=id=>document.getElementById(id);
 const select=pick('branch'), canvas=pick('canvas'), svg=canvas.querySelector('svg');
 const caption=pick('caption'), matches=pick('matches'), query=pick('query');
 const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
-const phone=matchMedia('(max-width:700px)');
+// "phone" means the compact layout: small screens, plus short touch screens such as phones and tablets in landscape.
+const desktopQuery=matchMedia('(min-width:701px) and (min-height:521px) and (pointer:fine),(min-width:701px) and (min-height:821px)');
+const phone={get matches(){return !desktopQuery.matches;},addEventListener:(type,handler)=>desktopQuery.addEventListener(type,handler)};
 const founderList=pick('founderList');
 const connectionsButton=pick('connections');
 const connectionsPanel=pick('connectionsPanel');
