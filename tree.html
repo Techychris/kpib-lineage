@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=10">
+<link rel="stylesheet" href="kpib.css?v=12">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -171,8 +171,7 @@ function draw(){
   const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
   const rootId=focused?selected:branch;
-  // On a phone, show two generations at a time; tapping a member opens their own downstream tree.
-  const depthLimit=phone.matches&&focused?1:Infinity;
+  const depthLimit=Infinity;
   const depthOf=new Map([[rootId,0]]);
   const hidden=new Map();
   const below=id=>children[id].reduce((sum,kid)=>sum+1+below(kid),0);
@@ -246,9 +245,11 @@ function fit(){
   if(!w||!h) return;
   const fitted=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
   // On a phone, never shrink below a readable size (about 72%): anchor the root and let the person pan.
-  const scale=phone.matches?Math.max(fitted,.72):fitted;
+  // Big trees open as a whole-tree overview (pinch to zoom in); small ones stay readable.
+  const readable=phone.matches&&fitted>=.25;
+  const scale=readable?Math.max(fitted,.72):fitted;
   let x=(w-dimensions[0]*scale)/2,y=(h-dimensions[1]*scale)/2;
-  if(phone.matches&&rootPoint){
+  if(readable&&rootPoint){
     if(dimensions[0]*scale>w-24) x=rootPoint.vertical?w/2-rootPoint.x*scale:16;
     if(dimensions[1]*scale>h-24) y=rootPoint.vertical?16:h/2-rootPoint.y*scale;
     else if(rootPoint.vertical) y=16;
@@ -323,7 +324,7 @@ function describe(){
   parentButton.textContent=parent===null?'':'Class dad · '+records[parent][3];
   modeButton.checked=!full;
   if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
-  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Class dad to move up a level.':'Showing this member and everyone downstream of them. Use Class dad to move up a level. Drag to pan. Pinch or use the zoom controls.');
+  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use Class dad to move up a level. Drag to pan. Pinch or use the zoom controls.';
 }
 function openConnections(){
   const id=selected;
