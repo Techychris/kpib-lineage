@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kappa Pi Beta · Lineage Tree</title>
-<meta name="description" content="Explore Kappa Pi Beta founder branches and Big Brother connections using line names.">
+<meta name="description" content="Explore Kappa Pi Beta founder branches by class dad and kids using line names.">
 <link rel="icon" href="assets/kpib-crest-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=9">
+<link rel="stylesheet" href="kpib.css?v=10">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -65,7 +65,8 @@
 const schoolOf=id=>campuses[schoolIds[id]];
 const rootIds=[], floating=[];
 const children=records.map(()=>[]);
-records.forEach(([,parent,founder],id)=>{
+records.forEach(([,,founder],id)=>{
+  const parent=classDadByMember[id];
   if(parent!==null) children[parent].push(id);
   else if(founder) rootIds.push(id);
   else floating.push(id);
@@ -139,12 +140,12 @@ const orientation=pick('orientation');
 if(phone.matches) orientation.value='horizontal';
 const names=id=>id===OVERVIEW?['Kappa Pi Beta','']:id===UNRESOLVED?['Unmatched branches','']:[records[id][0],records[id][3]];
 function rootOf(id){
-  while(records[id][1]!==null) id=records[id][1];
+  while(classDadByMember[id]!==null) id=classDadByMember[id];
   return records[id][2]?id:UNRESOLVED;
 }
 function founderPath(id){
   const path=[];
-  for(let member=id;member!==null;member=records[member][1]) path.push(member);
+  for(let member=id;member!==null;member=classDadByMember[member]) path.push(member);
   return path.reverse();
 }
 function positionTree(hierarchy,vertical,overview){
@@ -313,15 +314,16 @@ function describe(){
     caption.textContent=choosing?'Select a founder or search for a member.':'Full organization. Search or choose a branch to read names.';
     return;
   }
-  const [line,parent,,actual]=records[selected];
+  const [line,,,actual]=records[selected];
+  const parent=classDadByMember[selected];
   pick('memberName').textContent=actual;
   const count=children[selected].length;
-  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' direct '+(count===1?'connection':'connections');
+  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' '+(count===1?'kid':'kids');
   parentButton.hidden=parent===null;
-  parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
+  parentButton.textContent=parent===null?'':'Class dad · '+records[parent][3];
   modeButton.checked=!full;
   if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
-  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Big Brother to move up a level.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.');
+  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Class dad to move up a level.':'Showing this member and everyone downstream of them. Use Class dad to move up a level. Drag to pan. Pinch or use the zoom controls.');
 }
 function openConnections(){
   const id=selected;
@@ -359,8 +361,9 @@ function openConnections(){
     }
     content.append(list);
   }
-  addGroup('Direct connections',children[id],false,'No direct connections recorded.');
+  addGroup('Kids',children[id],false,'No kids recorded.');
   const ancestry=founderPath(id).reverse().slice(1);
+  if(classDadIdsByMember[id].length>1) addGroup('Class dads',classDadIdsByMember[id],false,'');
   addGroup('Path back to the founder',ancestry,true,'This member is a founder.');
   closeView();
   connectionsPanel.showModal();
@@ -399,7 +402,7 @@ orientation.addEventListener('change',()=>{
   if(selected===null) fit();
   else frame(selected);
 });
-parentButton.addEventListener('click',()=>mark(records[selected][1],true));
+parentButton.addEventListener('click',()=>mark(classDadByMember[selected],true));
 modeButton.addEventListener('change',()=>{full=!modeButton.checked;draw();describe();frame(selected);});
 function setList(on){
   if(listView===on) return;

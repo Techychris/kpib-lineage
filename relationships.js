@@ -7,9 +7,13 @@ for(const [id,record] of records.entries()){
   const name=normalizeMemberQuery(record[3]);
   memberIdsByName.set(name,memberIdsByName.has(name)?null:id);
 }
+// classDadIdsByMember: every class dad as a member id. classDadByMember: the first one, used as the
+// single parent when drawing the tree (eight classes have two dads).
+const classDadIdsByMember=records.map(()=>[]);
 for(const [id,dads] of dadsByMember.entries()){
   const dadIds=new Set(dads.map(name=>memberIdsByName.get(normalizeMemberQuery(classDadAliases[name]??name))));
   for(const dad of dadIds){
-    if(Number.isInteger(dad)) kidsByMember[dad].push(id);
+    if(Number.isInteger(dad)){kidsByMember[dad].push(id);classDadIdsByMember[id].push(dad);}
   }
 }
+const classDadByMember=classDadIdsByMember.map(ids=>ids.length?ids[0]:null);
