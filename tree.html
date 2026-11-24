@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=3">
+<link rel="stylesheet" href="kpib.css?v=4">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -35,7 +35,7 @@
 <button type="button" id="overview" hidden>Full organization</button>
 <div id="member" class="context" hidden>
 <strong id="memberName"></strong><span id="memberMeta" class="meta"></span>
-<button type="button" id="parent" hidden></button><button type="button" id="mode">Full branch</button>
+<button type="button" id="parent" hidden></button><label class="toggle"><input type="checkbox" id="mode" checked><span>Show downstream</span></label>
 </div>
 <div class="menu-schools"><span class="kp-label">Schools</span><ul class="school-key" data-school-key></ul></div>
 <div class="menu-key">Dashed links mark school changes.</div>
@@ -270,7 +270,7 @@ function describe(){
   pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' direct '+(count===1?'connection':'connections');
   parentButton.hidden=parent===null;
   parentButton.textContent=parent===null?'':'Big Brother · '+records[parent][3];
-  modeButton.textContent=full?'Focus on member':'Full branch';
+  modeButton.checked=!full;
   caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':(phone.matches?'Showing this member and their direct connections. Tap a member to open their downstream tree; +N counts members not shown. Use Big Brother to move up a level.':'Showing this member and everyone downstream of them. Use Big Brother to move up a level. Drag to pan. Pinch or use the zoom controls.');
 }
 function openConnections(){
@@ -328,15 +328,14 @@ function frame(id,moveFocus=false){
   if(moveFocus) nodesById.get(id)?.element.focus({preventScroll:true});
 }
 function show(id){
-  if(id>=0){full=false;mark(id,false);return;}
-  branch=id;selected=null;full=false;select.value=String(id);
+  if(id>=0){mark(id,false);return;}
+  branch=id;selected=null;select.value=String(id);
   query.value='';matches.replaceChildren();
   describe();
   if(branch!==FOUNDERS){draw();fit();}
 }
 function mark(id,moveFocus){
   const target=rootOf(id);
-  if(target!==branch) full=false;
   branch=target;selected=id;select.value=String(branch);
   matches.replaceChildren();
   describe();draw();frame(id,moveFocus);
@@ -350,7 +349,7 @@ orientation.addEventListener('change',()=>{
   else frame(selected);
 });
 parentButton.addEventListener('click',()=>mark(records[selected][1],true));
-modeButton.addEventListener('click',()=>{full=!full;draw();describe();frame(selected);});
+modeButton.addEventListener('change',()=>{full=!modeButton.checked;draw();describe();frame(selected);});
 pick('zoomOut').addEventListener('click',()=>drawing.call(zoom.scaleBy,.8));
 pick('zoomIn').addEventListener('click',()=>drawing.call(zoom.scaleBy,1.25));
 pick('fit').addEventListener('click',fit);
