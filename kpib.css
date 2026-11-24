@@ -554,3 +554,12 @@ a.kp-card .go{line-height:16px;display:flex;align-items:center;gap:var(--space-2
 @media(min-width:700px){.kp-motto-band{background:linear-gradient(90deg,#0a0a0a 0%,rgba(10,10,10,.92) 30%,rgba(10,10,10,0) 62%),#0a0a0a url("assets/motto-bg.jpg") right center/cover no-repeat}}
 .kp-hero{border-bottom:2px solid var(--accent)}
 .kp-hero+.kp-section{padding-top:var(--space-8)!important}
+
+/* hero search: the primary call to action, light field on the dark hero */
+.kp-herosearch{gap:var(--space-3)}
+.kp-herosearch .kp-label{color:#fff;font-size:14px;line-height:20px}
+.kp-herosearch input{height:56px;padding:0 var(--space-4);background:#fff;color:#111;border:2px solid #fff;border-radius:var(--radius-md);font-size:18px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.kp-herosearch input::placeholder{color:#555;opacity:1}
+.kp-herosearch .kp-btn{height:56px;min-height:56px;padding-inline:var(--space-5);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.kp-herosearch input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,255,255,.35),0 8px 24px rgba(0,0,0,.35)}
+@media(min-width:900px){.kp-herosearch{max-width:560px}.kp-hero .kp-herosearch,.kp-hero .kp-actions{max-width:560px}}
