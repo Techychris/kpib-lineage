@@ -412,3 +412,14 @@ i[data-icon]{display:contents;font-style:normal}
 .page-app select{display:block}
 .tools button,.context button,.view-tabs a{justify-content:center;white-space:nowrap}
 .page-app input[type="checkbox"]{-webkit-appearance:auto;appearance:auto;width:20px;height:20px;min-height:0;padding:0;display:inline-block;accent-color:var(--accent,#b3261e)}
+
+/* phones: keep the table filters to three slim rows (search, one scrolling chip row, count and sort) */
+@media (max-width:700px){
+  .page-table .filters{gap:var(--space-2);padding:var(--space-2) var(--space-3)}
+  .page-table .filters>label:first-child{font-size:0;line-height:0;gap:0}
+  .page-table .school-filters{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;margin-inline:calc(var(--space-3) * -1);padding-inline:var(--space-3);width:calc(100% + var(--space-3) * 2)}
+  .page-table .school-filters::-webkit-scrollbar{display:none}
+  .page-table .school-filters button{height:36px;min-height:36px;padding-inline:var(--space-3)}
+  .page-table .mobile-sort{font-size:0;gap:0!important}
+  .page-table .mobile-sort select{height:36px;min-height:36px;font-size:14px;line-height:20px}
+}
