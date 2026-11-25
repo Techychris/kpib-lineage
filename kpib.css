@@ -17,15 +17,17 @@
   --hit-min:44px;--control-height:48px;--header-height:72px;--container:1200px;--gutter:20px;
   --icon-md:20px;--icon-lg:24px;--stripe-bar:8px;
   --font-body:"League Spartan",Arial,sans-serif;--font-display:"League Spartan",Arial,sans-serif;
-  /* App-level categorical palette extension for campus color coding */
-  --school-0:#1F6FB5;--school-1:#C2570C;--school-2:#0F766E;--school-3:#6D3FC0;--school-4:#A23B84;--school-5:#8A7200;
+  /* Official university colors (WCAG >= 3:1 UI contrast on light surfaces):
+     0: NIU Cardinal Red, 1: UIC Blue, 2: Mizzou Tiger Gold, 3: UIUC Illini Orange, 4: Purdue Old Gold, 5: Northwestern Purple */
+  --school-0:#C8102E;--school-1:#003DA5;--school-2:#B57E00;--school-3:#E04E18;--school-4:#8E6F3E;--school-5:#4E2A84;
 }
 [data-theme="dark"]{
   color-scheme:dark;
   --surface:#0B0B0B;--surface-raised:#1A1A1A;--surface-band:#363636;
   --ink:#FFFFFF;--ink-muted:#B8B8B8;--accent:#E57373;--on-band-muted:#D0D0D0;
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;--image-outline:#FFFFFF1A;
-  --school-0:#5BA4E6;--school-1:#F0903C;--school-2:#3CC4B4;--school-3:#A98BEF;--school-4:#E277BC;--school-5:#D9B93A;
+  /* Official university colors tuned for dark surfaces */
+  --school-0:#F05469;--school-1:#5B9BFF;--school-2:#F1B82D;--school-3:#FF7A3D;--school-4:#CEB888;--school-5:#A784E8;
 }
 
 *,*::before,*::after{box-sizing:border-box}
