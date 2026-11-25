@@ -1,0 +1,14 @@
+{
+  "name": "kpib-design-system",
+  "version": "2.0.0",
+  "description": "Kappa Pi Beta Fraternity, Inc. Design System v2 — tokens, component stylesheet, live previews, and automated WCAG/design-system verification.",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test scripts/verify.mjs",
+    "verify": "node scripts/build.mjs && node --test scripts/verify.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

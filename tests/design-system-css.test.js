@@ -131,3 +131,24 @@ test('kpib.css & tree.html: responsive breakpoints stay synchronized (desktopQue
   // DS-06 guard: mobile stacked table uses content:attr(data-label)
   assert.match(CSS, /\.kp-t td::before\{[^}]*content:attr\(data-label\)/);
 });
+
+test('kpib.css: 100% token parity with design-system/tokens.json v2', () => {
+  const dsTokens = JSON.parse(fs.readFileSync(path.join(REPO_ROOT, 'design-system', 'tokens.json'), 'utf8'));
+  assert.equal(dsTokens.version, 2);
+  const light = parseThemeTokens(CSS, /:root,\[data-theme="light"\]\{([\s\S]*?)\}/);
+  const dark = { ...light, ...parseThemeTokens(CSS, /\[data-theme="dark"\]\{([\s\S]*?)\}/) };
+
+  for (const t of dsTokens.color.tokens) {
+    assert.equal(light[`--${t.name}`], t.value.light, `Light --${t.name} drifted from design-system/tokens.json`);
+    assert.equal(dark[`--${t.name}`], t.value.dark, `Dark --${t.name} drifted from design-system/tokens.json`);
+  }
+  for (const s of dsTokens.shadow.tokens) {
+    assert.equal(light[`--${s.name}`], s.value.light, `Light --${s.name} drifted from design-system/tokens.json`);
+    assert.equal(dark[`--${s.name}`], s.value.dark, `Dark --${s.name} drifted from design-system/tokens.json`);
+  }
+  for (const group of ['spacing', 'radius', 'duration', 'easing', 'size']) {
+    for (const t of dsTokens[group].tokens) {
+      assert.equal(light[`--${t.name}`], t.value, `--${t.name} drifted from design-system/tokens.json`);
+    }
+  }
+});

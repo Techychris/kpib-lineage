@@ -1,10 +1,10 @@
-/* Kappa Pi Beta lineage site. Aligned with Kappa Pi Beta Design System v1 (tokens.json + kp- components).
+/* Kappa Pi Beta lineage site. Aligned with Kappa Pi Beta Design System v2 (design-system/tokens.json + kp- components).
    Mobile first: base rules are the phone layout; min-width queries add room.
    App pages (tree, table) switch layout to match desktopQuery in tree.html. */
 
 :root,[data-theme="light"]{
   color-scheme:light;
-  /* Official KPiB Design System tokens (tokens.css) */
+  /* Official KPiB Design System v2 tokens (design-system/tokens.json) */
   --brand-red:#B22222;--brand-red-hover:#A41F1F;--brand-black:#000000;--brand-charcoal:#363636;
   --logo-plate:#FFFFFF;--surface:#FFFFFF;--surface-raised:#F4F4F4;--surface-band:#000000;
   --ink:#000000;--ink-muted:#565656;--accent:#B22222;--on-accent:#FFFFFF;
@@ -27,6 +27,7 @@
   --surface:#0B0B0B;--surface-raised:#1A1A1A;--surface-band:#363636;
   --ink:#FFFFFF;--ink-muted:#B8B8B8;--accent:#E57373;--on-band-muted:#D0D0D0;
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;--image-outline:#FFFFFF1A;
+  --shadow-card:0 1px 2px rgba(0,0,0,0.45);--shadow-popover:0 8px 24px rgba(0,0,0,0.45);
   /* Official university colors tuned for dark surfaces */
   --school-0:#F05469;--school-1:#5B9BFF;--school-2:#F1B82D;--school-3:#FF7A3D;--school-4:#CEB888;--school-5:#A784E8;
   --node-root-bg:#2A2A2A;--node-root-border:#D0D0D0;--node-root-ink:#FFFFFF;--node-root-muted:#D0D0D0;--node-root-shadow:0 4px 14px rgba(0,0,0,0.45);
