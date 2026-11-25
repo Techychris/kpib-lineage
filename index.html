@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=66">
+<link rel="stylesheet" href="kpib.css?v=67">
 </head>
 <body>
 <a class="kp-skip" href="#main">Skip to content</a>
@@ -52,43 +52,49 @@
 
 <div class="txt">
 <span class="kp-stripes" aria-hidden="true"></span>
-<p class="kp-label" style="margin:0">Kappa Pi Beta Fraternity, Inc.</p>
 <h1 class="kp-d1" id="title">The lineage tree</h1>
-<p class="kp-lead">Follow Big Brother or class dad lines across chapters and trace each Brother back to one of Kappa Pi Beta’s six founders.</p>
-<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-label" for="homeSearch">Find a Brother</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching Brothers" hidden></ul></div><button class="kp-btn p" type="submit">Search</button></div><p id="homeSearchStatus" class="kp-sr" aria-live="polite"></p></form>
-<div class="kp-actions"><a class="kp-btn s" data-component="button" data-name="Explore the tree" href="tree.html">Explore the tree</a><a class="kp-btn s" data-component="button" data-name="Browse the member table" href="table.html">Browse the member table</a></div>
-
+<p class="kp-lead">Follow Big Brother or class dad lines across six campuses and trace every Brother back to our six founders.</p>
+<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-sr" for="homeSearch">Find a Brother</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Search by name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching Brothers" hidden></ul></div><button class="kp-btn p" type="submit">Search</button></div><p id="homeSearchStatus" class="kp-sr" aria-live="polite"></p></form>
+<div class="kp-hero-links"><a href="tree.html">Explore full tree</a><span aria-hidden="true">·</span><a href="table.html">Browse 618-member table</a></div>
 </div>
 <figure class="pic">
-<svg viewBox="0 0 360 300" role="img" aria-label="Example lineage: a founder with two Big Brothers. One link stays at the same school. The other changes school.">
-<path class="dg-edge path" d="M105 64 C105 90 84 90 84 116"/><path class="dg-edge dash" d="M255 64 C255 90 276 90 276 116"/>
-<path class="dg-edge path" d="M84 172 L84 232"/><path class="dg-edge dash" d="M276 172 L276 232"/>
-<rect class="dg-node root" x="80" y="8" width="200" height="56" rx="12"/><text class="dg-t root" x="96" y="32">Founder</text><text class="dg-s root" x="96" y="50">Line name</text>
-<rect class="dg-node" x="0" y="116" width="168" height="56" rx="12"/><text class="dg-t" x="16" y="140">Big Brother</text><text class="dg-s" x="16" y="158">NIU</text>
-<rect class="dg-node" x="192" y="116" width="168" height="56" rx="12"/><text class="dg-t" x="208" y="140">Big Brother</text><text class="dg-s" x="208" y="158">NIU</text>
-<rect class="dg-node" x="0" y="232" width="168" height="56" rx="12"/><text class="dg-t" x="16" y="256">Little Brother</text><text class="dg-s" x="16" y="274">Same school</text>
-<rect class="dg-node" x="192" y="232" width="168" height="56" rx="12"/><text class="dg-t" x="208" y="256">Little Brother</text><text class="dg-s" x="208" y="274">New school</text>
+<svg viewBox="0 0 920 266" role="img" aria-label="Example lineage diagram: a founder at Northern Illinois connects via a red same-school ancestry path to a Big Brother and Little Brother at NIU, and via dashed cross-school lines to Brothers at UIC, UIUC, and Purdue.">
+<path class="dg-edge path" d="M460 72 C460 98 230 98 230 116"/>
+<path class="dg-edge dash" d="M460 72 C460 98 690 98 690 116"/>
+<path class="dg-edge path" d="M230 174 C230 190 115 190 115 202"/>
+<path class="dg-edge" d="M230 174 C230 190 345 190 345 202"/>
+<path class="dg-edge dash" d="M690 174 C690 190 575 190 575 202"/>
+<path class="dg-edge dash" d="M690 174 C690 190 805 190 805 202"/>
+<g class="dg-card root"><rect class="dg-node root" x="340" y="10" width="240" height="62" rx="12"/><rect class="dg-bar s0" x="350" y="20" width="4" height="42" rx="2"/><text class="dg-t root" x="364" y="37">Founder</text><text class="dg-s root" x="364" y="56">Alpha Charter · NIU</text></g>
+<g class="dg-card"><rect class="dg-node on-path" x="120" y="116" width="220" height="58" rx="12"/><rect class="dg-bar s0" x="130" y="126" width="4" height="38" rx="2"/><text class="dg-t" x="144" y="141">Big Brother</text><text class="dg-s" x="144" y="159">NIU · Same school</text></g>
+<g class="dg-card"><rect class="dg-node" x="580" y="116" width="220" height="58" rx="12"/><rect class="dg-bar s1" x="590" y="126" width="4" height="38" rx="2"/><text class="dg-t" x="604" y="141">Big Brother</text><text class="dg-s" x="604" y="159">UIC · Cross-school</text></g>
+<g class="dg-card"><rect class="dg-node on-path" x="12" y="202" width="206" height="54" rx="12"/><rect class="dg-bar s0" x="22" y="211" width="4" height="36" rx="2"/><text class="dg-t" x="36" y="226">Little Brother</text><text class="dg-s" x="36" y="244">NIU · Path to founder</text></g>
+<g class="dg-card"><rect class="dg-node" x="242" y="202" width="206" height="54" rx="12"/><rect class="dg-bar s2" x="252" y="211" width="4" height="36" rx="2"/><text class="dg-t" x="266" y="226">Little Brother</text><text class="dg-s" x="266" y="244">Mizzou</text></g>
+<g class="dg-card"><rect class="dg-node" x="472" y="202" width="206" height="54" rx="12"/><rect class="dg-bar s3" x="482" y="211" width="4" height="36" rx="2"/><text class="dg-t" x="496" y="226">Little Brother</text><text class="dg-s" x="496" y="244">UIUC · New school</text></g>
+<g class="dg-card"><rect class="dg-node" x="702" y="202" width="206" height="54" rx="12"/><rect class="dg-bar s4" x="712" y="211" width="4" height="36" rx="2"/><text class="dg-t" x="726" y="226">Little Brother</text><text class="dg-s" x="726" y="244">Purdue · New school</text></g>
 </svg>
-<figcaption>A dashed line marks a change of school. The red path leads back to the founder.</figcaption>
+<figcaption>A dashed line marks a change of school. The crimson path traces every generation back to the founder.</figcaption>
 </figure>
 </section>
-<section class="kp-wrap kp-section" aria-labelledby="founders-title" style="padding-top:0">
-<div class="kp-shead"><p class="kp-label">Six branches</p><h2 class="kp-d2" id="founders-title">Start from a founder</h2><p>Open any founder to see the line that grew from them.</p></div>
-<div class="kp-grid g3">
-<a class="kp-card" data-component="card" href="tree.html?member=0"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">So Smooth</span><span>Christopher Flores</span><span class="go">Open branch</span></span></a>
-<a class="kp-card" data-component="card" href="tree.html?member=1"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">Maestro</span><span>Alfred Gozun</span><span class="go">Open branch</span></span></a>
-<a class="kp-card" data-component="card" href="tree.html?member=2"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">Goofy</span><span>Phillip Gozun</span><span class="go">Open branch</span></span></a>
-<a class="kp-card" data-component="card" href="tree.html?member=3"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">Lil Hyper 1</span><span>Sean Orquiola</span><span class="go">Open branch</span></span></a>
-<a class="kp-card" data-component="card" href="tree.html?member=4"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">Fossil</span><span>Renmar Salceda</span><span class="go">Open branch</span></span></a>
-<a class="kp-card" data-component="card" href="tree.html?member=5"><span class="body"><span class="kp-label kp-muted"><i data-icon="star"></i>Founder</span><span class="kp-h3">Incognito</span><span>Soulysak Trichanh</span><span class="go">Open branch</span></span></a>
+<section class="kp-wrap kp-section" aria-labelledby="founders-title">
+<div class="kp-shead split"><h2 class="kp-d2" id="founders-title">Start from a founder</h2><div class="kp-shead-side"><p>Every Brother in Kappa Pi Beta traces back to one of our six Alpha Charter founders at Northern Illinois University.</p><a class="kp-inline-link" href="tree.html">View full organization tree</a></div></div>
+<div class="kp-ledger">
+<a class="kp-card" data-component="card" href="tree.html?member=0"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">So Smooth</span><span class="founder-real">Christopher Flores</span></span></span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=1"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">Maestro</span><span class="founder-real">Alfred Gozun</span></span></span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=2"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">Goofy</span><span class="founder-real">Phillip Gozun</span></span></span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=3"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">Lil Hyper 1</span><span class="founder-real">Sean Orquiola</span></span></span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=4"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">Fossil</span><span class="founder-real">Renmar Salceda</span></span></span><span class="go">Open branch</span></span></a>
+<a class="kp-card" data-component="card" href="tree.html?member=5"><span class="body"><span class="founder-main"><span class="school-dot d0" aria-hidden="true"></span><span><span class="kp-h3">Incognito</span><span class="founder-real">Soulysak Trichanh</span></span></span><span class="go">Open branch</span></span></a>
 </div>
 </section>
-<section class="kp-wrap kp-section" id="how-to-read" aria-labelledby="read-title" style="padding-top:0">
-<div class="kp-shead"><p class="kp-label">Reading guide</p><h2 class="kp-d2" id="read-title">How to read the tree</h2></div>
-<div class="kp-grid g3">
-<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3"><i data-icon="link"></i>Same school</h3><span class="kp-sample" aria-hidden="true"></span><p class="kp-muted">A solid line joins a Big Brother and Little Brother at the same school.</p></div></div>
-<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3"><i data-icon="swap"></i>School change</h3><span class="kp-sample dash" aria-hidden="true"></span><p class="kp-muted">A dashed line shows a Little Brother whose Big Brother crossed at another school. The label names the new school.</p></div></div>
-<div class="kp-card" data-component="card"><div class="body"><h3 class="kp-h3"><i data-icon="route"></i>Path to the founder</h3><span class="kp-sample path" aria-hidden="true"></span><p class="kp-muted">Search a member’s name or line name to highlight the full chain back to a founder, across every school.</p></div></div>
+<section class="kp-guide-band" id="how-to-read" aria-labelledby="read-title">
+<div class="kp-wrap kp-guide-grid">
+<div class="kp-shead"><h2 class="kp-d2" id="read-title">How to read the tree</h2><p>Three line styles and six official university colors show how chapters connect across generations.</p><a class="kp-inline-link" href="table.html">Browse the member table</a></div>
+<div class="kp-guide-list">
+<div class="kp-card" data-component="card"><div class="body"><div class="guide-specimen"><span class="kp-sample" aria-hidden="true"></span></div><div class="guide-copy"><h3 class="kp-h3"><i data-icon="link"></i>Same school</h3><p class="kp-muted">A solid line joins a Big Brother and Little Brother who crossed at the same campus.</p></div></div></div>
+<div class="kp-card" data-component="card"><div class="body"><div class="guide-specimen"><span class="kp-sample dash" aria-hidden="true"></span></div><div class="guide-copy"><h3 class="kp-h3"><i data-icon="swap"></i>School change</h3><p class="kp-muted">A dashed line marks a Little Brother whose Big Brother crossed at another university, labeled with the new school.</p></div></div></div>
+<div class="kp-card" data-component="card"><div class="body"><div class="guide-specimen"><span class="kp-sample path" aria-hidden="true"></span></div><div class="guide-copy"><h3 class="kp-h3"><i data-icon="route"></i>Path to the founder</h3><p class="kp-muted">Search any Brother by name or line name to highlight the unbroken chain back to their founder across every chapter.</p></div></div></div>
+</div>
 </div>
 </section>
 </main>

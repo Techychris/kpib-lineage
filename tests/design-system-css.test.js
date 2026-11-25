@@ -115,10 +115,10 @@ test('kpib.css: enforces KPiB Design System rules (dark-mode logo, zero ambient 
   assert.match(CSS, /\.page-table \.mobile-sort select\{[^}]*font-size:16px/);
 });
 
-test('kpib.css & tree.html: responsive breakpoints stay synchronized (desktopQuery, hero 900px split, stacked table)', () => {
-  // UX-03 guard: .kp-herobg 5/11 width only inside min-width:900px, never 700px
-  const mq900 = CSS.match(/@media\s*\(min-width:900px\)\{([\s\S]*?)\n\}/);
-  assert.ok(mq900 && mq900[1].includes('.kp-herobg{right:auto;width:calc(100% * 5 / 11)}'));
+test('kpib.css & tree.html: responsive breakpoints stay synchronized (desktopQuery, full-bleed hero, stacked table)', () => {
+  // Full-bleed monumental hero guard: .kp-herobg spans 100% width at every viewport (no 5/11 split seam)
+  assert.equal(CSS.includes('width:calc(100% * 5 / 11)'), false);
+  assert.match(CSS, /\.kp-herobg\{position:absolute;inset:0;/);
 
   // desktopQuery in tree.html matches kpib.css verbatim
   const jsQuery = TREE_HTML.match(/const desktopQuery=matchMedia\('([^']+)'\)/);
