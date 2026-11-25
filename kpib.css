@@ -60,12 +60,17 @@ a{color:inherit}
 .kp-menu>summary::-webkit-details-marker{display:none}
 .kp-stripes{display:block;width:88px;height:24px;border-radius:var(--radius-sharp);background:repeating-linear-gradient(90deg,var(--brand-red) 0 var(--stripe-bar),transparent var(--stripe-bar) calc(var(--stripe-bar) * 2))}
 
-/* header — DS-01: square white logo-plate in both themes; never recolor lockup */
+/* header — light theme uses logo-plate; dark theme renders crest intact with white wordmark on transparent ground */
 .kp-hdr{position:relative;z-index:10;background:var(--surface);border-bottom:2px solid var(--brand-red);border-radius:var(--radius-sharp)}
-.kp-hdr .in{display:flex;align-items:stretch;justify-content:space-between;gap:var(--space-2);min-height:64px;max-width:1440px;margin-inline:auto;padding-inline:max(var(--space-3),env(safe-area-inset-left)) max(var(--space-3),env(safe-area-inset-right))}
+.kp-hdr .in{display:flex;align-items:stretch;justify-content:space-between;gap:var(--space-2);min-height:64px;padding-inline:max(var(--space-3),env(safe-area-inset-left)) max(var(--space-3),env(safe-area-inset-right))}
 .kp-plate{display:flex;align-items:center;background:var(--logo-plate);border-radius:var(--radius-sharp);padding:var(--space-2) var(--space-3);flex:none}
 .kp-plate img{display:block;height:36px;width:auto}
 @media(max-width:400px){.kp-plate{padding:var(--space-2)}.kp-plate img{height:30px}}
+/* The transparent gap between the crest and wordmark is at 22% of the image. */
+[data-theme="dark"] .kp-plate{position:relative;background:transparent}
+[data-theme="dark"] .kp-plate img{clip-path:inset(0 78% 0 0)}
+[data-theme="dark"] .kp-plate::after{content:"";position:absolute;inset:var(--space-2) var(--space-3);background:var(--ink);-webkit-mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;clip-path:inset(0 0 0 22%);pointer-events:none}
+@media(max-width:400px){[data-theme="dark"] .kp-plate::after{inset:var(--space-2)}}
 .kp-tools{display:flex;align-items:center;gap:var(--space-2)}
 .kp-nav{display:none}
 .kp-menu-list{position:absolute;left:0;right:0;top:100%;background:var(--surface);border-bottom:2px solid var(--brand-red);box-shadow:var(--shadow-popover);display:grid}

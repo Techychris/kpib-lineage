@@ -73,10 +73,10 @@ test('kpib.css: WCAG 2.2 AA color contrast ratios pass in both Light and Dark th
   }
 });
 
-test('kpib.css: enforces KPiB Design System rules (logo-plate, zero ambient motion, zero color literals, typography floor)', () => {
-  // DS-01: No dark-mode lockup recoloring or clip-path hack
-  assert.equal(CSS.includes('[data-theme="dark"] .kp-plate'), false);
-  assert.equal(CSS.includes('clip-path:inset(0 78%'), false);
+test('kpib.css: enforces KPiB Design System rules (dark-mode logo, zero ambient motion, zero color literals, typography floor)', () => {
+  // Dark mode uses transparent plate with intact crest + white masked wordmark (no harsh white box)
+  assert.match(CSS, /\[data-theme="dark"\] \.kp-plate\{position:relative;background:transparent\}/);
+  assert.match(CSS, /\[data-theme="dark"\] \.kp-plate::after\{[^}]*-webkit-mask:url\("assets\/kpib-lockup\.png"\)/);
 
   // DS-02: No @keyframes ambient/load animations, and reduced-motion disables animation + transition + scroll-behavior
   assert.equal(CSS.includes('@keyframes'), false);
