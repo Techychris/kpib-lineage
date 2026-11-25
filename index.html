@@ -3,14 +3,14 @@
 <head>
 <meta name="robots" content="noindex, nofollow, nosnippet">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kappa Pi Beta Lineage</title>
 <meta name="description" content="Explore the Big Brother and class dad lines that link Kappa Pi Beta members across schools and back to their founders.">
 <link rel="icon" href="assets/kpib-crest-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=59">
+<link rel="stylesheet" href="kpib.css?v=60">
 <script>document.documentElement.classList.add("js");</script>
 </head>
 <body>
@@ -56,7 +56,7 @@
 <p class="kp-label" style="margin:0">Kappa Pi Beta Fraternity, Inc.</p>
 <h1 class="kp-d1" id="title">The lineage tree</h1>
 <p class="kp-lead">Follow Big Brother or class dad lines across schools and trace each member back to one of Kappa Pi Beta’s six founders.</p>
-<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-label" for="homeSearch">Find a member</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching members" hidden></ul></div><button class="kp-btn p" type="submit"><i data-icon="search"></i>Search</button></div></form>
+<form class="kp-herosearch" action="tree.html" role="search"><label class="kp-label" for="homeSearch">Find a member</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching members" hidden></ul></div><button class="kp-btn p" type="submit"><i data-icon="search"></i>Search</button></div><p id="homeSearchStatus" class="kp-sr" aria-live="polite"></p></form>
 <div class="kp-actions"><a class="kp-btn p" data-component="button" data-name="Explore the tree" href="tree.html"><i data-icon="tree"></i>Explore the tree</a><a class="kp-btn s" data-component="button" data-name="Browse the member table" href="table.html"><i data-icon="table"></i>Browse the member table</a></div>
 
 </div>
@@ -101,6 +101,7 @@
 </div>
 <p class="legal">Kappa Pi Beta Fraternity, Inc. © 2026. Based on the Kappa Pi Beta Master Binder.</p>
 </div></footer>
+<script src="state-machines.js?v=1"></script>
 <script>
 (function(){
 document.querySelectorAll('.kp-hero .txt>*').forEach(function(el,i){el.style.setProperty('--i',i)});
@@ -116,9 +117,9 @@ els.forEach(function(el){io.observe(el)});
 (function(){
 if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
 var hero=document.querySelector('.kp-hero');if(!hero)return;
-var ticking=false;
-function update(){ticking=false;var h=hero.offsetHeight,y=Math.min(Math.max(window.scrollY,0),h,300);hero.style.setProperty('--py',y.toFixed(1));}
-addEventListener('scroll',function(){if(!ticking){ticking=true;requestAnimationFrame(update);}},{passive:true});
+var frameMachine=kpibMachines.createToggleMachine('idle','scheduled',false);
+function update(){frameMachine.send({type:'CLOSE'});var h=hero.offsetHeight,y=Math.min(Math.max(window.scrollY,0),h,300);hero.style.setProperty('--py',y.toFixed(1));}
+addEventListener('scroll',function(){if(frameMachine.getState()==='idle'){frameMachine.send({type:'OPEN'});requestAnimationFrame(update);}},{passive:true});
 update();
 })();
 </script>
@@ -127,43 +128,77 @@ update();
 </script>
 <script>
 (function(){
-var inp=document.getElementById('homeSearch'),list=document.getElementById('homeSuggest');if(!inp||!list)return;
-var loading=null,idx=-1,items=[];
-function load(){if(loading)return loading;loading=new Promise(function(ok,no){var s=document.createElement('script');s.src='lineage-data.js?v=fa26c';s.onload=ok;s.onerror=no;document.head.appendChild(s);});return loading;}
-function close(){list.hidden=true;inp.setAttribute('aria-expanded','false');inp.removeAttribute('aria-activedescendant');idx=-1;}
-function mark(){[].forEach.call(list.children,function(li,i){li.setAttribute('aria-selected',i===idx?'true':'false');});if(idx>=0)inp.setAttribute('aria-activedescendant','hs'+idx);else inp.removeAttribute('aria-activedescendant');}
-function render(){
- var term=normalizeMemberQuery(inp.value);if(!term){close();return;}
+var inp=document.getElementById('homeSearch'),list=document.getElementById('homeSuggest'),liveStatus=document.getElementById('homeSearchStatus');if(!inp||!list)return;
+var loader=kpibMachines.createLoaderMachine();
+var combo=kpibMachines.createComboboxMachine();
+function load(){
+ var cur=loader.getState();
+ if(cur.status==='loading'||cur.status==='loaded')return cur.promise;
+ var ok,no,p=new Promise(function(res,rej){ok=res;no=rej;});
+ loader.send({type:'START',promise:p});
+ var s=document.createElement('script');s.src='lineage-data.js?v=fa26c';
+ s.onload=function(){loader.send({type:'RESOLVE'});ok();};
+ s.onerror=function(err){s.remove();loader.send({type:'REJECT'});no(err);};
+ document.head.appendChild(s);
+ return p;
+}
+var renderedItems=null;
+function paint(state){
+ if(state.status==='closed'){
+  renderedItems=null;list.hidden=true;inp.setAttribute('aria-expanded','false');inp.removeAttribute('aria-activedescendant');
+  if(liveStatus)liveStatus.textContent='';
+  return;
+ }
+ if(state.items!==renderedItems){
+  renderedItems=state.items;list.textContent='';
+  if(!state.items.length){var e=document.createElement('li');e.className='none';e.textContent='No member matches';e.setAttribute('role','presentation');list.appendChild(e);}
+  state.items.forEach(function(h,i){
+   var li=document.createElement('li');li.id='hs'+i;li.setAttribute('role','option');
+   var n=document.createElement('b');n.textContent=h.r[0];var s=document.createElement('span');s.textContent=h.r[3]+' \u00b7 '+campuses[schoolIds[h.id]];
+   li.appendChild(n);li.appendChild(s);li.addEventListener('click',function(){go(h.id);});li.addEventListener('mousedown',function(ev){ev.preventDefault();});list.appendChild(li);
+  });
+  if(state.totalHits>6){var m=document.createElement('li');m.className='none';m.setAttribute('role','presentation');m.textContent=(state.totalHits-6)+' more. Press Search to see all.';list.appendChild(m);}
+  if(liveStatus)liveStatus.textContent=state.totalHits===0?'No member matches':state.totalHits+(state.totalHits===1?' matching member':' matching members');
+ }
+ [].forEach.call(list.children,function(li,i){if(li.getAttribute('role')==='option')li.setAttribute('aria-selected',i===state.activeIndex?'true':'false');});
+ list.hidden=false;inp.setAttribute('aria-expanded','true');
+ if(state.activeIndex>=0){
+  inp.setAttribute('aria-activedescendant','hs'+state.activeIndex);
+  if(list.children[state.activeIndex])list.children[state.activeIndex].scrollIntoView({block:'nearest'});
+ }else inp.removeAttribute('aria-activedescendant');
+}
+combo.subscribe(paint);
+function search(){
+ var term=normalizeMemberQuery(inp.value);
+ if(!term){combo.send({type:'RESULTS',hasQuery:false,items:[],totalHits:0});return;}
  var hits=[];
  for(var i=0;i<records.length;i++){var r=records[i];if(!matchesMember(r,term))continue;
   var a=normalizeMemberQuery(r[0]),b=normalizeMemberQuery(r[3]);
   hits.push({id:i,r:r,rank:(a.indexOf(term)===0||b.indexOf(term)===0)?0:1});}
  hits.sort(function(x,y){return x.rank-y.rank||x.id-y.id;});
- items=hits.slice(0,6);list.textContent='';
- if(!items.length){var e=document.createElement('li');e.className='none';e.textContent='No member matches';e.setAttribute('role','presentation');list.appendChild(e);}
- items.forEach(function(h,i){var li=document.createElement('li');li.id='hs'+i;li.setAttribute('role','option');
-  var n=document.createElement('b');n.textContent=h.r[0];var s=document.createElement('span');s.textContent=h.r[3]+' \u00b7 '+campuses[schoolIds[h.id]];
-  li.appendChild(n);li.appendChild(s);li.addEventListener('click',function(){go(h.id);});li.addEventListener('mousedown',function(ev){ev.preventDefault();});list.appendChild(li);});
- if(hits.length>6){var m=document.createElement('li');m.className='none';m.setAttribute('role','presentation');m.textContent=(hits.length-6)+' more. Press Search to see all.';list.appendChild(m);}
- list.hidden=false;inp.setAttribute('aria-expanded','true');idx=-1;mark();
+ combo.send({type:'RESULTS',hasQuery:true,items:hits.slice(0,6),totalHits:hits.length});
 }
 function go(id){location.href='tree.html?member='+id;}
-inp.addEventListener('focus',load);
-inp.addEventListener('input',function(){load().then(render);});
+inp.addEventListener('focus',function(){load().catch(function(){});});
+inp.addEventListener('input',function(){load().then(search,function(){combo.send({type:'CLOSE'});});});
 inp.addEventListener('keydown',function(e){
- if(list.hidden)return;
- if(e.key==='ArrowDown'){e.preventDefault();idx=Math.min(items.length-1,idx+1);mark();}
- else if(e.key==='ArrowUp'){e.preventDefault();idx=Math.max(-1,idx-1);mark();}
- else if(e.key==='Enter'&&idx>=0){e.preventDefault();go(items[idx].id);}
- else if(e.key==='Escape'){close();}
+ var st=combo.getState();
+ if(st.status==='closed'){
+  if(e.key==='ArrowDown'&&inp.value.trim()){e.preventDefault();load().then(search,function(){});}
+  return;
+ }
+ if(e.key==='ArrowDown'){e.preventDefault();combo.send({type:'ARROW_DOWN'});}
+ else if(e.key==='ArrowUp'){e.preventDefault();combo.send({type:'ARROW_UP'});}
+ else if(e.key==='Enter'&&st.activeIndex>=0){e.preventDefault();go(st.items[st.activeIndex].id);}
+ else if(e.key==='Escape'){combo.send({type:'CLOSE'});}
 });
-var keep=false;list.addEventListener('pointerdown',function(){keep=true;});
-inp.addEventListener('blur',function(){setTimeout(function(){if(keep){keep=false;return;}close();},150);});
-document.addEventListener('pointerdown',function(e){if(!list.hidden&&!list.contains(e.target)&&e.target!==inp){keep=false;close();}});
-inp.addEventListener('focus',function(){setTimeout(function(){inp.scrollIntoView({block:'start',behavior:'smooth'});},250);});
+list.addEventListener('pointerdown',function(){combo.send({type:'POINTER_DOWN_LIST'});});
+inp.addEventListener('blur',function(){setTimeout(function(){combo.send({type:'BLUR'});},150);});
+document.addEventListener('pointerdown',function(e){if(combo.getState().status!=='closed'&&!list.contains(e.target)&&e.target!==inp){combo.send({type:'CLOSE'});}});
+inp.addEventListener('focus',function(){if(matchMedia('(pointer:coarse)').matches)setTimeout(function(){inp.scrollIntoView({block:'start',behavior:'smooth'});},250);});
 })();
 </script>
 <script src="icons.js?v=1"></script>
-<script src="kpib.js?v=5"></script>
+<script src="kpib.js?v=6"></script>
 </body>
 </html>

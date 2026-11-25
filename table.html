@@ -3,14 +3,14 @@
 <head>
 <meta name="robots" content="noindex, nofollow, nosnippet">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kappa Pi Beta · Member Table</title>
 <meta name="description" content="Browse Kappa Pi Beta members, their Big Brothers, kids, class dads and founder lines.">
 <link rel="icon" href="assets/kpib-crest-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=59">
+<link rel="stylesheet" href="kpib.css?v=60">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
@@ -51,32 +51,32 @@
 <script src="lineage-data.js?v=fa26c"></script>
 <script src="class-dads.js?v=fa26b"></script>
 <script src="relationships.js?v=1"></script>
+<script src="state-machines.js?v=1"></script>
 <script>
 'use strict';
 const query=document.getElementById('query');
+const filterBox=document.querySelector('.filters');
+const filterToggle=document.getElementById('filterToggle');
+const filterCount=document.getElementById('filterCount');
 const schoolFilters=document.getElementById('schools');
-let activeSchool=null;
 const rosterStateKey='kpib-roster-view';
 const members=document.getElementById('members');
 const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
-const schoolLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
-for(const [id,label] of [[null,'All schools'],...schoolLabels.entries()]){
+const mobileSort=document.getElementById('mobileSort');
+const schoolShortLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
+const tableMachine=kpibMachines.createTableMachine({});
+for(const [id,label] of [[null,'All schools'],...campuses.map((name,i)=>[i,schoolShortLabels[i]??name])]){
   const button=document.createElement('button');
   button.type='button';
   if(id===null) button.textContent=label;
   else{const dot=document.createElement('span');dot.className='school-dot d'+id;dot.setAttribute('aria-hidden','true');button.append(dot,label);}
   if(id!==null) button.setAttribute('aria-label',campuses[id]);
-  button.setAttribute('aria-pressed',String(id===activeSchool));
-  button.addEventListener('click',()=>{
-    if(id===activeSchool) return;
-    schoolFilters.querySelector('[aria-pressed="true"]').setAttribute('aria-pressed','false');
-    button.setAttribute('aria-pressed','true');
-    activeSchool=id;
-    drawMembers();
-  });
+  button.setAttribute('aria-pressed',String(id===null));
+  button.addEventListener('click',()=>tableMachine.send({type:'SET_SCHOOL',school:id}));
   schoolFilters.append(button);
 }
+const searchHaystack=records.map(r=>[r[0],r[3],...(memberAliases[r[3]]??[])].map(normalizeMemberQuery));
 const lineageStart=records.map((_,id)=>{
   let start=id;
   for(let parent=records[start][1];parent!==null&&schoolIds[parent]===schoolIds[start];parent=records[start][1]) start=parent;
@@ -90,7 +90,7 @@ const founders=records.map((_,id)=>{
 const semesterOrder={Winter:0,Spring:1,Summer:2,Fall:3};
 function semesterKey(value){
   const [term,year]=value.split(' ');
-  return Number(year)*4+semesterOrder[term];
+  return Number(year)*4+(semesterOrder[term]??0);
 }
 const sortValues={
   member:id=>records[id][3],
@@ -101,49 +101,14 @@ const sortValues={
   lineage:id=>records[lineageStart[id]][0],
   founder:id=>records[founders[id]][3],
 };
-let sortColumn='crossing', sortDirection=1;
 const collator=new Intl.Collator(undefined,{sensitivity:'base',numeric:true});
-function compareMembers(a,b){
-  const order=sortColumn==='crossing'
+function compareMembers(state,a,b){
+  const order=state.sortColumn==='crossing'
     ? semesterKey(crossings[a][0])-semesterKey(crossings[b][0])||collator.compare(crossings[a][1],crossings[b][1])
-    : collator.compare(sortValues[sortColumn](a),sortValues[sortColumn](b));
-  return sortDirection*order||collator.compare(records[a][3],records[b][3]);
-}
-const mobileSort=document.getElementById('mobileSort');
-function applySort(column,direction){
-  sortColumn=column;
-  sortDirection=direction;
-  document.querySelector('th[aria-sort]')?.removeAttribute('aria-sort');
-  document.querySelector('[data-sort="'+column+'"]').closest('th')
-    .setAttribute('aria-sort',direction===1?'ascending':'descending');
-  mobileSort.value=column+':'+direction;
-  drawMembers();
-}
-for(const button of document.querySelectorAll('[data-sort]')){
-  button.addEventListener('click',()=>{
-    const column=button.dataset.sort;
-    applySort(column,column===sortColumn?-sortDirection:column==='kids'?-1:1);
-  });
-}
-mobileSort.addEventListener('change',()=>{
-  const [column,direction]=mobileSort.value.split(':');
-  applySort(column,Number(direction));
-});
-function rememberRoster(){
-  try{
-    sessionStorage.setItem(rosterStateKey,JSON.stringify({query:query.value,school:activeSchool,column:sortColumn,direction:sortDirection,scroll:tableScroll.scrollTop}));
-  }catch{}
-}
-function restoreRoster(){
-  let previous;
-  try{previous=JSON.parse(sessionStorage.getItem(rosterStateKey));}catch{}
-  if(!previous||typeof previous.query!=='string'){drawMembers();return;}
-  query.value=previous.query;
-  activeSchool=Number.isInteger(previous.school)&&previous.school>=0&&previous.school<campuses.length?previous.school:null;
-  Array.from(schoolFilters.children).forEach((button,index)=>button.setAttribute('aria-pressed',String(index===(activeSchool===null?0:activeSchool+1))));
-  const column=previous.column==='crossing'||Object.hasOwn(sortValues,previous.column)?previous.column:'crossing';
-  applySort(column,previous.direction===-1?-1:1);
-  if(Number.isFinite(previous.scroll)) tableScroll.scrollTop=previous.scroll;
+    : state.sortColumn==='kids'
+      ? sortValues.kids(a)-sortValues.kids(b)
+      : collator.compare(sortValues[state.sortColumn](a),sortValues[state.sortColumn](b));
+  return state.sortDirection*order||collator.compare(records[a][3],records[b][3]);
 }
 function addMember(cell,id,showLine=false){
   if(id===null){cell.textContent='Founder';return;}
@@ -180,9 +145,23 @@ function addKids(container,id){
   details.append(summary,list);
   container.append(details);
 }
-function drawMembers(){
-  const term=normalizeMemberQuery(query.value);
-  const filtered=records.map((_,id)=>id).filter(id=>(activeSchool===null||schoolIds[id]===activeSchool)&&matchesMember(records[id],term)).sort(compareMembers);
+function syncControls(state){
+  const isOpen=state.drawer==='open';
+  filterBox.classList.toggle('open',isOpen);
+  filterToggle.setAttribute('aria-expanded',String(isOpen));
+  Array.from(schoolFilters.children).forEach((button,index)=>button.setAttribute('aria-pressed',String(index===(state.school===null?0:state.school+1))));
+  document.querySelector('th[aria-sort]')?.removeAttribute('aria-sort');
+  document.querySelector('[data-sort="'+state.sortColumn+'"]').closest('th')
+    .setAttribute('aria-sort',state.sortDirection===1?'ascending':'descending');
+  const sortValue=state.sortColumn+':'+state.sortDirection;
+  mobileSort.value=sortValue;
+  const activeCount=(state.school!==null?1:0)+(sortValue!=='crossing:1'?1:0);
+  filterCount.textContent=String(activeCount);
+  filterCount.hidden=!activeCount;
+}
+function drawMembers(state){
+  const term=normalizeMemberQuery(state.query);
+  const filtered=records.map((_,id)=>id).filter(id=>(state.school===null||schoolIds[id]===state.school)&&(!term||searchHaystack[id].some(v=>v.includes(term)))).sort((a,b)=>compareMembers(state,a,b));
   const body=document.createDocumentFragment();
   for(const id of filtered){
     const row=document.createElement('tr');
@@ -199,6 +178,10 @@ function drawMembers(){
     lineageNote.append('Lineage: ');
     addLineage(lineageNote,start);
     memberCell.append(lineageNote);
+    const compact=document.createElement('div');
+    compact.className='relationship-notes';
+    addKids(compact,id);
+    memberCell.append(compact);
     const schoolCell=row.insertCell(),schoolDot=document.createElement('span');
     schoolDot.className='school-dot d'+schoolIds[id];schoolDot.setAttribute('aria-hidden','true');
     schoolCell.append(schoolDot,campuses[schoolIds[id]]);
@@ -212,10 +195,6 @@ function drawMembers(){
     addMember(big,records[id][1]);
     const dadNames=dadsByMember[id];
     const dadText=dadNames.join(', ');
-    const compact=document.createElement('div');
-    compact.className='relationship-notes';
-    addKids(compact,id);
-    big.append(compact);
     const kids=row.insertCell();
     kids.className='kids';
     addKids(kids,id);
@@ -232,18 +211,47 @@ function drawMembers(){
   }
   members.replaceChildren(body);
   tableScroll.scrollTop=0;
+  status.dataset.state=filtered.length?'ready':'empty';
   status.textContent=filtered.length===0?'No matches. Try another name or school.':filtered.length===records.length?records.length+' members':filtered.length+' of '+records.length+' members';
 }
-query.addEventListener('input',drawMembers);
+tableMachine.subscribe((state,event)=>{
+  syncControls(state);
+  if(event.type!=='TOGGLE_DRAWER') drawMembers(state);
+});
+for(const button of document.querySelectorAll('[data-sort]')){
+  button.addEventListener('click',()=>tableMachine.send({type:'TOGGLE_SORT',column:button.dataset.sort}));
+}
+mobileSort.addEventListener('change',()=>{
+  const [column,direction]=mobileSort.value.split(':');
+  tableMachine.send({type:'SET_SORT',column,direction:Number(direction)});
+});
+filterToggle.addEventListener('click',()=>tableMachine.send({type:'TOGGLE_DRAWER'}));
+query.addEventListener('input',()=>tableMachine.send({type:'SET_QUERY',query:query.value}));
+function rememberRoster(){
+  const state=tableMachine.getState();
+  try{
+    sessionStorage.setItem(rosterStateKey,JSON.stringify({query:state.query,school:state.school,column:state.sortColumn,direction:state.sortDirection,scroll:tableScroll.scrollTop}));
+  }catch{}
+}
+function restoreRoster(){
+  let previous;
+  try{previous=JSON.parse(sessionStorage.getItem(rosterStateKey));}catch{}
+  if(!previous||typeof previous.query!=='string'){
+    const initial=tableMachine.getState();
+    syncControls(initial);
+    drawMembers(initial);
+    return;
+  }
+  query.value=previous.query;
+  const school=Number.isInteger(previous.school)&&previous.school>=0&&previous.school<campuses.length?previous.school:null;
+  const sortColumn=previous.column==='crossing'||Object.hasOwn(sortValues,previous.column)?previous.column:'crossing';
+  const sortDirection=previous.direction===-1?-1:1;
+  tableMachine.send({type:'RESTORE',query:previous.query,school,sortColumn,sortDirection});
+  if(Number.isFinite(previous.scroll)) tableScroll.scrollTop=previous.scroll;
+}
 document.addEventListener('click',event=>{if(event.target.closest('a[href^="tree.html"]')) rememberRoster();});
 restoreRoster();
 </script>
-<script>
-(function(){var box=document.querySelector('.filters'),btn=document.getElementById('filterToggle'),n=document.getElementById('filterCount'),sort=document.getElementById('mobileSort');
-function count(){var c=0,all=document.querySelector('#schools button');document.querySelectorAll('#schools button[aria-pressed="true"]').forEach(function(b){if(b!==all)c++});if(sort.value!=='crossing:1')c++;n.textContent=c;n.hidden=!c}
-btn.addEventListener('click',function(){var o=box.classList.toggle('open');btn.setAttribute('aria-expanded',o)});
-box.addEventListener('click',function(){setTimeout(count,0)});box.addEventListener('change',count);count();})();
-</script>
 <script src="icons.js?v=1"></script>
-<script src="kpib.js?v=5"></script>
+<script src="kpib.js?v=6"></script>
 </body></html>
