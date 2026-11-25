@@ -168,7 +168,7 @@ inp.addEventListener('keydown',function(e){
  if(e.key==='ArrowDown'){e.preventDefault();combo.send({type:'ARROW_DOWN'});}
  else if(e.key==='ArrowUp'){e.preventDefault();combo.send({type:'ARROW_UP'});}
  else if(e.key==='Enter'&&st.activeIndex>=0){e.preventDefault();go(st.items[st.activeIndex].id);}
- else if(e.key==='Escape'){combo.send({type:'CLOSE'});}
+ else if(e.key==='Escape'){e.preventDefault();combo.send({type:'CLOSE'});}
 });
 list.addEventListener('pointerdown',function(){combo.send({type:'POINTER_DOWN_LIST'});});
 inp.addEventListener('blur',function(){setTimeout(function(){combo.send({type:'BLUR'});},150);});

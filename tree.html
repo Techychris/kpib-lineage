@@ -544,11 +544,12 @@ pick('find').addEventListener('submit',event=>{
 });
 
 syncBranchOptions(treeMachine.getState().isPhone);
-const memberLink=new URLSearchParams(location.search).get('member');
+const startParams=new URLSearchParams(location.search);
+const memberLink=startParams.get('member');
+const startQuery=startParams.get('q');
 const linkedMember=memberLink!==null&&/^\d+$/.test(memberLink)?Number(memberLink):null;
 if(linkedMember!==null&&linkedMember<records.length) selectMember(linkedMember,false);
 else renderAll(treeMachine.getState());
-const startQuery=new URLSearchParams(location.search).get('q');
 if(startQuery&&linkedMember===null){query.value=startQuery;document.getElementById('find').requestSubmit();}
 new ResizeObserver(()=>{
   const st=treeMachine.getState();

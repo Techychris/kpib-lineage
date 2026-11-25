@@ -5,6 +5,10 @@
   "description": "Kappa Pi Beta Fraternity, Inc. interactive lineage tree and member roster",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "test:coverage": "node --test --experimental-test-coverage --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 --test-coverage-exclude=\"d3.min.js\" --test-coverage-exclude=\"tests/*.test.js\" --test-coverage-exclude=\"tests/helpers/**\" tests/*.test.js"
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-lines=100 --test-coverage-branches=100 --test-coverage-functions=100 --test-coverage-exclude=\"d3.min.js\" --test-coverage-exclude=\"tests/*.test.js\" --test-coverage-exclude=\"tests/helpers/**\" tests/*.test.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
   }
 }

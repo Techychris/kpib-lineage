@@ -26,6 +26,7 @@ Requires Node.js (zero external npm dependencies):
 ```bash
 npm test
 npm run test:coverage
+npm run test:e2e
 ```
 
-`npm run test:coverage` enforces **100% line, branch, and function coverage** across all first-party JS files and all inline HTML `<script>` blocks, plus full dataset integrity checks (acyclic forests, chronological ordering, campus/class dad resolution, and alias normalization).
+`npm run test:coverage` enforces **100% line, branch, and function coverage** across all first-party JS files and all inline HTML `<script>` blocks, plus full dataset integrity checks. `npm run test:e2e` runs the Playwright browser suite across Desktop, iPhone SE, iPhone 15 Pro Max, and iPad Air Landscape.
