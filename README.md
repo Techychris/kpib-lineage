@@ -14,6 +14,7 @@ Interactive static web app for exploring the Big Brother and Class Dad lineage o
 ## Documentation
 
 - [Product & Technical Spec](docs/spec.md)
+- [Design System Audit](docs/design-system-audit.md)
 - [UX & Accessibility Audit](docs/ux-audit.md)
 - [Code Review & Engineering Audit](docs/code-review-audit.md)
 - [Apple Mobile, Tablet & Desktop Screen Audit](docs/device-screen-audit.md)

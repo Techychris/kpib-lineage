@@ -14,10 +14,17 @@
   if(btn)btn.addEventListener('click',function(){themeMachine.send({type:'TOGGLE'});});
   var menu=document.querySelector('.kp-menu');
   if(menu){
+    var summary=menu.querySelector('summary');
     var menuMachine=kpibMachines.createToggleMachine('closed','open',menu.open);
-    menuMachine.subscribe(function(state){menu.open=state==='open';});
+    function paintMenu(state){
+      var isOpen=state==='open';
+      menu.open=isOpen;
+      if(summary)summary.setAttribute('aria-expanded',String(isOpen));
+    }
+    menuMachine.subscribe(paintMenu);
+    paintMenu(menuMachine.getState());
     menu.addEventListener('toggle',function(){menuMachine.send({type:menu.open?'OPEN':'CLOSE'});});
     menu.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){menuMachine.send({type:'CLOSE'});});});
-    menu.addEventListener('keydown',function(e){if(e.key==='Escape'&&menuMachine.getState()==='open'){menuMachine.send({type:'CLOSE'});menu.querySelector('summary').focus();}});
+    menu.addEventListener('keydown',function(e){if(e.key==='Escape'&&menuMachine.getState()==='open'){menuMachine.send({type:'CLOSE'});if(summary)summary.focus();}});
   }
 })();

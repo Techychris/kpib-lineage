@@ -73,11 +73,14 @@ test('kpib.js: toggles light/dark theme with kpibIcon, persists to localStorage,
   assert.equal(doc.documentElement.dataset.theme, 'light');
   assert.equal(win.localStorage.getItem('kpib-theme'), 'light');
 
-  // Native <details> toggle syncs menuMachine open/closed
+  // Native <details> toggle syncs menuMachine open/closed and aria-expanded (DS-07)
+  assert.equal(summary.getAttribute('aria-expanded'), 'false');
   menu.open = true;
   menu.dispatchEvent(new EventObj('toggle'));
+  assert.equal(summary.getAttribute('aria-expanded'), 'true');
   link.click();
   assert.equal(menu.open, false);
+  assert.equal(summary.getAttribute('aria-expanded'), 'false');
 
   // Mobile menu Escape while open closes and focuses summary
   menu.open = true;
@@ -99,21 +102,25 @@ test('kpib.js: toggles light/dark theme with kpibIcon, persists to localStorage,
   assert.equal(menu.open, true);
 });
 
-test('kpib.js: handles initial dark theme, missing kpibIcon, throwing localStorage, and absent controls', () => {
-  // Case A: initial dark theme, no window.kpibIcon, throwing localStorage.setItem
+test('kpib.js: handles initial dark theme, missing kpibIcon, throwing localStorage, and absent controls/summary', () => {
+  // Case A: initial dark theme, no window.kpibIcon, throwing localStorage.setItem, .kp-menu without <summary>
   const winA = createWindowEnv({ localStorageOpts: { throwOnSet: true } });
   winA.document.documentElement.dataset.theme = 'dark';
   const btn = winA.document.createElement('button');
   btn.id = 'themeToggle';
-  winA.document.body.append(btn);
+  const menuNoSum = winA.document.createElement('details');
+  menuNoSum.className = 'kp-menu';
+  menuNoSum.open = true;
+  winA.document.body.append(btn, menuNoSum);
 
   const ctxA = vm.createContext(winA);
   vm.runInContext(MACHINES_CODE, ctxA, { filename: MACHINES_PATH });
   vm.runInContext(KPIB_CODE, ctxA, { filename: KPIB_PATH });
   assert.equal(winA.document.documentElement.dataset.theme, 'dark');
   assert.equal(btn.innerHTML, '<span class="tlabel">Light</span>');
-  // Clicking swallows localStorage error gracefully
+  // Clicking swallows localStorage error gracefully; Escape on menu without summary is safe
   assert.doesNotThrow(() => btn.click());
+  assert.doesNotThrow(() => menuNoSum.dispatchEvent(new EventObj('keydown', { key: 'Escape' })));
   assert.equal(winA.document.documentElement.dataset.theme, 'light');
 
   // Case B: no #themeToggle and no .kp-menu

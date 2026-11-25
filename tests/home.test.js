@@ -69,14 +69,12 @@ function buildHomeDom(doc, { withHeader = true, withHero = true, withSearch = tr
   main.append(sec);
 }
 
-test('index.html inline scripts 0 & 1: theme initialization (dark, light, error) and .js class', () => {
+test('index.html inline script 0: theme initialization (dark, light, error)', () => {
   // Dark
   const winDark = createWindowEnv({ localStorage: { 'kpib-theme': 'dark' } });
   const ctxDark = vm.createContext(winDark);
   vm.runInContext(INDEX_SCRIPTS[0].code, ctxDark, { filename: INDEX_SCRIPTS[0].filePath });
-  vm.runInContext(INDEX_SCRIPTS[1].code, ctxDark, { filename: INDEX_SCRIPTS[1].filePath });
   assert.equal(winDark.document.documentElement.dataset.theme, 'dark');
-  assert.equal(winDark.document.documentElement.classList.contains('js'), true);
 
   // Light (non-dark)
   const winLight = createWindowEnv({ localStorage: { 'kpib-theme': 'light' } });
@@ -90,81 +88,37 @@ test('index.html inline scripts 0 & 1: theme initialization (dark, light, error)
   });
 });
 
-test('index.html inline scripts 2, 3, 4: reveal IO, parallax scroll, reduced motion, and header height', async () => {
-  // Standard motion + IntersectionObserver + document.fonts
-  const win = createWindowEnv({ scrollY: 120 });
+test('index.html inline script 1: sticky header height measurement (--hdr)', async () => {
+  const win = createWindowEnv();
   buildHomeDom(win.document);
   const ctx = vm.createContext(win);
-  vm.runInContext(MACHINES_CODE, ctx, { filename: MACHINES_PATH });
-  vm.runInContext(INDEX_SCRIPTS[2].code, ctx, { filename: INDEX_SCRIPTS[2].filePath });
-  vm.runInContext(INDEX_SCRIPTS[3].code, ctx, { filename: INDEX_SCRIPTS[3].filePath });
-  vm.runInContext(INDEX_SCRIPTS[4].code, ctx, { filename: INDEX_SCRIPTS[4].filePath });
+  vm.runInContext(INDEX_SCRIPTS[1].code, ctx, { filename: INDEX_SCRIPTS[1].filePath });
 
-  // IntersectionObserver registered and handles intersecting + non-intersecting entries
-  assert.equal(win._ioInstances.length, 1);
-  const io = win._ioInstances[0];
-  const targets = [...io.observed];
-  assert.ok(targets.length >= 5);
-  io._trigger([
-    { target: targets[0], isIntersecting: false },
-    { target: targets[1], isIntersecting: true },
-  ]);
-  assert.equal(targets[0].classList.contains('in'), false);
-  assert.equal(targets[1].classList.contains('in'), true);
-  assert.equal(io.observed.has(targets[1]), false);
-
-  // Parallax scroll coalesces via rAF ticking flag
-  const hero = win.document.querySelector('.kp-hero');
-  assert.equal(hero.style.getPropertyValue('--py'), '120.0');
-  win.scrollY = 450; // clamped to 300
-  win.dispatchEvent(new EventObj('scroll'));
-  win.dispatchEvent(new EventObj('scroll')); // hits !ticking === false branch
-  win._flushRaf();
-  assert.equal(hero.style.getPropertyValue('--py'), '300.0');
-
-  // Header height measurement + resize + fonts.ready
   assert.equal(win.document.documentElement.style.getPropertyValue('--hdr'), '72px');
   win.document.querySelector('.kp-hdr').offsetHeight = 64;
   win.dispatchEvent(new EventObj('resize'));
   assert.equal(win.document.documentElement.style.getPropertyValue('--hdr'), '64px');
   await win.document.fonts.ready;
 
-  // Reduced motion + missing IntersectionObserver + missing hero/header/fonts
-  const winRM = createWindowEnv({
-    hasIntersectionObserver: false,
-    mediaMatches: { '(prefers-reduced-motion:reduce)': true },
-  });
-  winRM.document.fonts = null;
-  buildHomeDom(winRM.document, { withHeader: false, withHero: false });
-  const ctxRM = vm.createContext(winRM);
-  vm.runInContext(INDEX_SCRIPTS[2].code, ctxRM, { filename: INDEX_SCRIPTS[2].filePath });
-  vm.runInContext(INDEX_SCRIPTS[3].code, ctxRM, { filename: INDEX_SCRIPTS[3].filePath });
-  vm.runInContext(INDEX_SCRIPTS[4].code, ctxRM, { filename: INDEX_SCRIPTS[4].filePath });
-  assert.ok(winRM.document.querySelector('.kp-shead').classList.contains('in'));
+  // Missing header & missing document.fonts branches
+  const winNoHdr = createWindowEnv();
+  winNoHdr.document.fonts = null;
+  buildHomeDom(winNoHdr.document, { withHeader: false });
+  vm.runInContext(INDEX_SCRIPTS[1].code, vm.createContext(winNoHdr), { filename: INDEX_SCRIPTS[1].filePath });
 
-  // No-reduced-motion but missing .kp-hero & IO present with reduced-motion true
-  const winNoHero = createWindowEnv();
-  buildHomeDom(winNoHero.document, { withHero: false });
-  winNoHero.document.fonts = null;
-  const ctxNH = vm.createContext(winNoHero);
-  vm.runInContext(INDEX_SCRIPTS[3].code, ctxNH, { filename: INDEX_SCRIPTS[3].filePath });
-  vm.runInContext(INDEX_SCRIPTS[4].code, ctxNH, { filename: INDEX_SCRIPTS[4].filePath });
-
-  const winIOAndRM = createWindowEnv({
-    hasIntersectionObserver: true,
-    mediaMatches: { '(prefers-reduced-motion:reduce)': true },
-  });
-  buildHomeDom(winIOAndRM.document);
-  vm.runInContext(INDEX_SCRIPTS[2].code, vm.createContext(winIOAndRM), { filename: INDEX_SCRIPTS[2].filePath });
-  assert.equal(winIOAndRM._ioInstances.length, 0);
+  const winNoFonts = createWindowEnv();
+  winNoFonts.document.fonts = null;
+  buildHomeDom(winNoFonts.document, { withHeader: true });
+  vm.runInContext(INDEX_SCRIPTS[1].code, vm.createContext(winNoFonts), { filename: INDEX_SCRIPTS[1].filePath });
+  assert.equal(winNoFonts.document.documentElement.style.getPropertyValue('--hdr'), '72px');
 });
 
-test('index.html inline script 5: hero live search combobox (lazy load, ranking, keyboard, pointer, blur)', async () => {
+test('index.html inline script 2: hero live search combobox (lazy load, ranking, keyboard, pointer, blur)', async () => {
   // Guard clauses: missing inp or missing list
   for (const cfg of [{ withSearch: false, withList: true }, { withSearch: true, withList: false }]) {
     const w = createWindowEnv();
     buildHomeDom(w.document, cfg);
-    vm.runInContext(INDEX_SCRIPTS[5].code, vm.createContext(w), { filename: INDEX_SCRIPTS[5].filePath });
+    vm.runInContext(INDEX_SCRIPTS[2].code, vm.createContext(w), { filename: INDEX_SCRIPTS[2].filePath });
   }
 
   const win = createWindowEnv({ mediaMatches: { '(pointer:coarse)': false } });
@@ -189,7 +143,7 @@ test('index.html inline script 5: hero live search combobox (lazy load, ranking,
     return node;
   };
 
-  vm.runInContext(INDEX_SCRIPTS[5].code, ctx, { filename: INDEX_SCRIPTS[5].filePath });
+  vm.runInContext(INDEX_SCRIPTS[2].code, ctx, { filename: INDEX_SCRIPTS[2].filePath });
 
   const inp = win.document.getElementById('homeSearch');
   const list = win.document.getElementById('homeSuggest');
@@ -273,7 +227,7 @@ test('index.html inline script 5: hero live search combobox (lazy load, ranking,
     }
     return node;
   };
-  vm.runInContext(INDEX_SCRIPTS[5].code, ctxNL, { filename: INDEX_SCRIPTS[5].filePath });
+  vm.runInContext(INDEX_SCRIPTS[2].code, ctxNL, { filename: INDEX_SCRIPTS[2].filePath });
   const inpNL = winNoLive.document.getElementById('homeSearch');
   inpNL.value = 'Smooth';
   inpNL.dispatchEvent(new EventObj('input'));

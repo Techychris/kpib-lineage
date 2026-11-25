@@ -174,10 +174,12 @@ test('table.html inline scripts 1 & 2: rendering, filtering, all 8 sort columns,
   assert.equal(saved.direction, 1);
   assert.equal(saved.scroll, 250);
 
-  // Verify kids disclosure lives in Member cell (UX-12 fixed!)
+  // Verify Design System stacked mobile data-label attributes on every data cell (DS-06)
   const firstRow = tbody.children[0];
-  assert.ok(firstRow.children[0].querySelector('.relationship-notes'));
-  assert.equal(firstRow.children[3].querySelector('.relationship-notes'), null);
+  assert.deepEqual(
+    firstRow.children.slice(1).map(td => td.getAttribute('data-label')),
+    ['School', 'Crossing', 'Big Brother', 'Kids', 'Class dad', 'Lineage', 'Founder']
+  );
 
   // Clicking non-tree element does not overwrite sessionStorage
   doc.body.click();
