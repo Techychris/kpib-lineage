@@ -20,6 +20,7 @@
   /* Official university colors (WCAG >= 3:1 UI contrast on light surfaces):
      0: NIU Cardinal Red, 1: UIC Blue, 2: Mizzou Tiger Gold, 3: UIUC Illini Orange, 4: Purdue Old Gold, 5: Northwestern Purple */
   --school-0:#C8102E;--school-1:#003DA5;--school-2:#B57E00;--school-3:#E04E18;--school-4:#8E6F3E;--school-5:#4E2A84;
+  --node-root-bg:#FFFFFF;--node-root-border:#363636;--node-root-ink:#000000;--node-root-muted:#565656;--node-root-shadow:0 4px 12px rgba(0,0,0,0.12);
 }
 [data-theme="dark"]{
   color-scheme:dark;
@@ -28,6 +29,7 @@
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;--image-outline:#FFFFFF1A;
   /* Official university colors tuned for dark surfaces */
   --school-0:#F05469;--school-1:#5B9BFF;--school-2:#F1B82D;--school-3:#FF7A3D;--school-4:#CEB888;--school-5:#A784E8;
+  --node-root-bg:#2A2A2A;--node-root-border:#D0D0D0;--node-root-ink:#FFFFFF;--node-root-muted:#D0D0D0;--node-root-shadow:0 4px 14px rgba(0,0,0,0.45);
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -94,17 +96,17 @@ html.kp-snap{scroll-padding-top:var(--hdr,var(--header-height))}
 .kp-hero .kp-actions{display:grid;grid-template-columns:1fr;gap:var(--space-3)}
 .kp-hero .kp-actions .kp-btn{width:100%}
 .kp-hero .pic{position:relative;z-index:1;overflow:hidden;margin:0;padding:var(--space-6) var(--gutter);background:var(--surface-raised);color:var(--ink)}
-.kp-hero .pic svg{display:block;width:100%;max-width:480px;height:auto;margin-inline:auto}
+.kp-hero .pic svg{display:block;width:100%;max-width:480px;height:auto;margin-inline:auto;overflow:visible}
 .kp-hero .pic figcaption{margin:var(--space-5) auto 0;max-width:480px;color:var(--ink-muted);font-size:14px;line-height:20px}
 .dg-edge{fill:none;stroke:var(--ink-muted);stroke-width:2}
 .dg-edge.dash{stroke:var(--ink);stroke-dasharray:8 6}
 .dg-edge.path{stroke:var(--accent);stroke-width:3}
 .dg-node{fill:var(--surface);stroke:var(--border-strong)}
-.dg-node.root{fill:var(--surface-band);stroke:var(--surface-band)}
+.dg-node.root{fill:var(--node-root-bg);stroke:var(--node-root-border);stroke-width:2;filter:drop-shadow(var(--node-root-shadow))}
 .dg-t{fill:var(--ink);font:700 13px var(--font-body)}
-.dg-t.root{fill:var(--on-band)}
+.dg-t.root{fill:var(--node-root-ink)}
 .dg-s{fill:var(--ink-muted);font:400 12px var(--font-body)}
-.dg-s.root{fill:var(--on-band-muted)}
+.dg-s.root{fill:var(--node-root-muted)}
 
 /* hero search & suggestions — DS-05: tokens only, shadow-popover on dropdown menu only, preserve focus-ring */
 .kp-herosearch{position:relative;z-index:4;display:grid;gap:var(--space-3)}
@@ -230,12 +232,15 @@ main>section{position:relative;flex:1;min-height:0;display:flex;flex-direction:c
 .node:hover .more-pill{fill:var(--ink)}
 .node:hover .more{fill:var(--surface)}
 .node .member-name,.node .school{fill:var(--ink-muted);font-size:12px}
-.node.root rect{fill:var(--surface-band);stroke:var(--surface-band)}
-.node.root text{fill:var(--on-band)}
-.node.root .member-name,.node.root .school{fill:var(--on-band-muted)}
+.node.root rect{fill:var(--node-root-bg);stroke:var(--node-root-border);stroke-width:2}
+.node.root>rect:first-of-type{filter:drop-shadow(var(--node-root-shadow))}
+.node.root text{fill:var(--node-root-ink)}
+.node.root .member-name,.node.root .school{fill:var(--node-root-muted)}
+.node.root .more-pill{fill:var(--brand-red);stroke:none}
+.node.root .more{fill:var(--on-accent)}
 .node.on-path rect{stroke:var(--accent);stroke-width:2}
 .node:hover rect{stroke:var(--ink);stroke-width:2}
-.node.selected rect{stroke:var(--ink);stroke-width:3}
+.node.selected rect{stroke:var(--node-root-border);stroke-width:2.5}
 .node:focus{outline:none}
 .node:focus-visible rect{stroke:var(--focus-ring);stroke-width:4}
 .link-name{fill:var(--ink-muted);font-size:12px;paint-order:stroke;stroke:var(--surface-raised);stroke-width:5px;stroke-linejoin:round;pointer-events:none}

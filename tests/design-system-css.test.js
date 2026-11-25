@@ -54,7 +54,12 @@ test('kpib.css: WCAG 2.2 AA color contrast ratios pass in both Light and Dark th
     ['--on-accent', '--brand-red-hover'],
     ['--on-band', '--surface-band'],
     ['--on-band-muted', '--surface-band'],
+    ['--node-root-ink', '--node-root-bg'],
+    ['--node-root-muted', '--node-root-bg'],
   ];
+
+  // Light-mode root node stays a light surface (no harsh solid-black box on light canvas)
+  assert.ok(luminance(hexToRgb(light['--node-root-bg'])) > 0.8, `light --node-root-bg (${light['--node-root-bg']}) must stay light`);
 
   for (const [themeName, tokens] of [['light', light], ['dark', dark]]) {
     for (const [fg, bg] of textPairs) {
@@ -66,14 +71,15 @@ test('kpib.css: WCAG 2.2 AA color contrast ratios pass in both Light and Dark th
       const ratio = contrastRatio(tokens['--border-strong'], tokens[bg]);
       assert.ok(ratio >= 3.0, `${themeName}: --border-strong on ${bg} ratio ${ratio.toFixed(2)} < 3.0`);
     }
+    assert.ok(contrastRatio(tokens['--node-root-border'], tokens['--surface-raised']) >= 3.0);
     // Focus ring contrast >= 3.0:1 on surfaces
     assert.ok(contrastRatio(tokens['--focus-ring'], tokens['--surface']) >= 3.0);
     // Hovered +N pill (--surface text on --ink pill) >= 4.5:1 (UX-01 regression guard)
     assert.ok(contrastRatio(tokens['--surface'], tokens['--ink']) >= 4.5);
-    // All 6 official university school colors pass >= 3.0:1 UI contrast on both surfaces
+    // All 6 official university school colors pass >= 3.0:1 UI contrast on regular, raised, and root node surfaces
     for (let i = 0; i < 6; i++) {
       const tok = `--school-${i}`;
-      for (const bg of ['--surface', '--surface-raised']) {
+      for (const bg of ['--surface', '--surface-raised', '--node-root-bg']) {
         const ratio = contrastRatio(tokens[tok], tokens[bg]);
         assert.ok(ratio >= 3.0, `${themeName}: ${tok} (${tokens[tok]}) on ${bg} ratio ${ratio.toFixed(2)} < 3.0`);
       }
