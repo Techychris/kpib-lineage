@@ -7,12 +7,18 @@ test.describe('Theme, Contrast & Accessibility E2E', () => {
     await page.goto('/');
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
+    // Footer logo sits on a dark band in both light and dark modes, so it never renders a white box
+    const lightFooterPlateBg = await page.locator('.kp-ftr .kp-plate').evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(lightFooterPlateBg).toBe('rgba(0, 0, 0, 0)');
+
     await page.locator('#themeToggle').click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
-    // Dark mode header logo uses transparent ground (crest intact + white wordmark) and aligns flush-left
+    // Dark mode header & footer logos use transparent ground (crest intact + white wordmark)
     const plateBg = await page.locator('.kp-hdr .kp-plate').evaluate(el => getComputedStyle(el).backgroundColor);
     expect(plateBg).toBe('rgba(0, 0, 0, 0)');
+    const darkFooterPlateBg = await page.locator('.kp-ftr .kp-plate').evaluate(el => getComputedStyle(el).backgroundColor);
+    expect(darkFooterPlateBg).toBe('rgba(0, 0, 0, 0)');
 
     // Persists across table.html and tree.html with aligned logo
     await page.goto('/table.html');

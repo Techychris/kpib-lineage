@@ -71,9 +71,9 @@ a{color:inherit}
 .kp-plate img{display:block;height:36px;width:auto}
 @media(max-width:400px){.kp-plate{padding:var(--space-2)}.kp-plate img{height:30px}}
 /* The transparent gap between the crest and wordmark is at 22% of the image. */
-[data-theme="dark"] .kp-plate{position:relative;background:transparent}
-[data-theme="dark"] .kp-plate img{clip-path:inset(0 78% 0 0)}
-[data-theme="dark"] .kp-plate::after{content:"";position:absolute;inset:var(--space-2) var(--space-3);background:var(--ink);-webkit-mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;clip-path:inset(0 0 0 22%);pointer-events:none}
+[data-theme="dark"] .kp-plate,.kp-ftr .kp-plate{position:relative;background:transparent}
+[data-theme="dark"] .kp-plate img,.kp-ftr .kp-plate img{clip-path:inset(0 78% 0 0)}
+[data-theme="dark"] .kp-plate::after,.kp-ftr .kp-plate::after{content:"";position:absolute;inset:var(--space-2) var(--space-3);background:var(--on-band);-webkit-mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;mask:url("assets/kpib-lockup.png") center/100% auto no-repeat;clip-path:inset(0 0 0 22%);pointer-events:none}
 @media(max-width:400px){[data-theme="dark"] .kp-plate::after{inset:var(--space-2)}}
 .kp-tools{display:flex;align-items:center;gap:var(--space-2)}
 .kp-nav{display:none}
@@ -159,7 +159,8 @@ a.kp-card .go{display:inline-flex;align-items:center;gap:var(--space-2);margin-t
 /* footer */
 .kp-ftr{background:var(--surface-band);color:var(--on-band);padding:var(--space-7) 0 max(var(--space-5),env(safe-area-inset-bottom));border-top:2px solid var(--brand-red);border-radius:var(--radius-sharp)}
 .kp-ftr .cols{display:grid;gap:var(--space-6);grid-template-columns:minmax(0,1fr)}
-.kp-ftr .kp-plate{display:inline-flex;margin-bottom:var(--space-4);border-radius:var(--radius-sharp)}
+.kp-ftr .kp-plate{display:inline-flex;padding:0;margin-bottom:var(--space-4);border-radius:var(--radius-sharp)}
+.kp-ftr .kp-plate::after,[data-theme="dark"] .kp-ftr .kp-plate::after{inset:0}
 .kp-ftr .kp-plate img{height:36px}
 .kp-ftr p{margin:0;color:var(--on-band-muted);max-width:44ch}
 .kp-ftr h2{margin:0 0 var(--space-2);font:700 12px/16px var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--on-band-muted)}
