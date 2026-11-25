@@ -3,19 +3,19 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Lineage Tree (tree.html)', () => {
-  test('desktop overview enforces depth limit (CR-01) and renders 618 member stat with zero errors', async ({ page, isMobile }) => {
+  test('desktop overview enforces depth limit (CR-01) and renders 621 member stat with zero errors', async ({ page, isMobile }) => {
     test.skip(isMobile, 'Desktop overview check');
     const errors = [];
     page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
     page.on('pageerror', err => errors.push(err.message));
 
     await page.goto('/tree.html');
-    await expect(page.locator('#statMembers')).toHaveText('618');
+    await expect(page.locator('#statMembers')).toHaveText('621');
     await expect(page.locator('#depthNote')).toBeVisible();
 
     const nodeCount = await page.locator('#canvas svg .node').count();
     expect(nodeCount).toBeGreaterThan(7);
-    expect(nodeCount).toBeLessThan(619);
+    expect(nodeCount).toBeLessThan(622);
     expect(errors).toEqual([]);
   });
 

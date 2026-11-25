@@ -3,15 +3,15 @@
 const { test, expect } = require('@playwright/test');
 
 test.describe('Member Table (table.html)', () => {
-  test('renders all 618 brothers with data-label attributes, live search, aliases, and XSS-safe line names', async ({ page }) => {
+  test('renders all 621 brothers with data-label attributes, live search, aliases, and XSS-safe line names', async ({ page }) => {
     const errors = [];
     page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
     page.on('pageerror', err => errors.push(err.message));
 
     await page.goto('/table.html');
-    await expect(page.locator('#status')).toHaveText('618 members');
+    await expect(page.locator('#status')).toHaveText('621 members');
     await expect(page.locator('#status')).toHaveAttribute('data-state', 'ready');
-    await expect(page.locator('#members tr')).toHaveCount(618);
+    await expect(page.locator('#members tr')).toHaveCount(621);
 
     // Every data cell carries official Design System data-label (DS-06)
     const labels = await page.locator('#members tr').first().locator('td[data-label]').evaluateAll(
@@ -47,7 +47,7 @@ test.describe('Member Table (table.html)', () => {
     // Filter to Northwestern (8 brothers)
     await page.locator('#schools button', { hasText: 'Northwestern' }).click();
     await expect(page.locator('#members tr')).toHaveCount(8);
-    await expect(page.locator('#status')).toHaveText('8 of 618 members');
+    await expect(page.locator('#status')).toHaveText('8 of 621 members');
 
     // Reset to All schools and sort by Kids (defaults to descending: most kids first)
     await page.locator('#schools button', { hasText: 'All schools' }).click();

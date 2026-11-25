@@ -178,7 +178,7 @@ test('tree.html desktop: overview, search, member selection, depth/mode toggles,
   const { win, ctx } = bootTree({ desktop: true });
   const doc = win.document;
 
-  assert.equal(doc.getElementById('statMembers').textContent, '618');
+  assert.equal(doc.getElementById('statMembers').textContent, '621');
   assert.equal(doc.getElementById('branch').value, '-1');
   assert.equal(doc.getElementById('caption').textContent, 'Full organization. Search or choose a branch to read names.');
 

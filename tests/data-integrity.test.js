@@ -20,7 +20,7 @@ test('lineage-data.js: dataset dimensions, campuses, founders, and crossing form
   const ctx = loadDataContext();
   const data = vm.runInContext(`({ records, campuses, schoolIds, crossings, memberAliases })`, ctx);
 
-  assert.equal(data.records.length, 618);
+  assert.equal(data.records.length, 621);
   assert.equal(data.schoolIds.length, data.records.length);
   assert.equal(data.crossings.length, data.records.length);
   assert.deepEqual([...data.campuses], [
@@ -30,7 +30,22 @@ test('lineage-data.js: dataset dimensions, campuses, founders, and crossing form
     'Illinois Urbana-Champaign',
     'Purdue',
     'Northwestern',
+    'Arkansas',
   ]);
+
+  // Verify Arkansas Fall 2013 Charter Class (Big Bros: Edmar Viloria #182, Wen/Norman Chen #191, John Ellasos #206; Class Dad: George Joseph #180)
+  const arkansas = [
+    [618, 'Fullmetal', 182, 'Andre Dinh'],
+    [619, 'Gaara', 191, 'Hao Quach'],
+    [620, 'C4R.B1N.E', 206, 'Joshua Vang'],
+  ];
+  for (const [id, line, big, real] of arkansas) {
+    assert.deepEqual([...data.records[id]], [line, big, false, real]);
+    assert.equal(data.schoolIds[id], 6);
+    assert.deepEqual([...data.crossings[id]], ['Fall 2013', 'Charter Class']);
+  }
+  const arkDads = vm.runInContext('([classDadByMember[618], classDadByMember[619], classDadByMember[620]])', ctx);
+  assert.deepEqual([...arkDads], [180, 180, 180]);
 
   // Every schoolId is in range
   for (const sid of data.schoolIds) {

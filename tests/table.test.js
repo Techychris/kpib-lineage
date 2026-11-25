@@ -113,20 +113,20 @@ test('table.html inline scripts 1 & 2: rendering, filtering, all 8 sort columns,
   const filterToggle = doc.getElementById('filterToggle');
   const filterCount = doc.getElementById('filterCount');
 
-  // Initial render shows all 618 members
-  assert.equal(tbody.children.length, 618);
-  assert.equal(status.textContent, '618 members');
-  assert.equal(schools.children.length, 7); // All schools + 6 campuses
+  // Initial render shows all 621 members
+  assert.equal(tbody.children.length, 621);
+  assert.equal(status.textContent, '621 members');
+  assert.equal(schools.children.length, 8); // All schools + 7 campuses
 
   // Click already-active "All schools" button -> early return
   schools.children[0].click();
-  assert.equal(tbody.children.length, 618);
+  assert.equal(tbody.children.length, 621);
 
   // Filter by Northwestern (index 6 -> schoolId 5, 8 members)
   schools.children[6].click();
   win._flushTimeouts();
   assert.equal(tbody.children.length, 8);
-  assert.equal(status.textContent, '8 of 618 members');
+  assert.equal(status.textContent, '8 of 621 members');
   assert.equal(filterCount.textContent, '1');
   assert.equal(filterCount.hidden, false);
 
@@ -139,7 +139,7 @@ test('table.html inline scripts 1 & 2: rendering, filtering, all 8 sort columns,
   // Reset to All schools
   schools.children[0].click();
   win._flushTimeouts();
-  assert.equal(tbody.children.length, 618);
+  assert.equal(tbody.children.length, 621);
   assert.equal(filterCount.hidden, true);
 
   // Search query with 0 matches & partial match
@@ -150,7 +150,7 @@ test('table.html inline scripts 1 & 2: rendering, filtering, all 8 sort columns,
 
   query.value = '';
   query.dispatchEvent(new EventObj('input'));
-  assert.equal(tbody.children.length, 618);
+  assert.equal(tbody.children.length, 621);
 
   // Exercise EVERY sort column (click once + click again to flip direction)
   for (const col of ['crossing', 'member', 'school', 'big', 'kids', 'classDad', 'lineage', 'founder']) {
@@ -191,12 +191,12 @@ test('table.html: fallback labels for extra campuses & unknown semester key', ()
   const ctx = vm.createContext(win);
   vm.runInContext(TABLE_SCRIPTS[0].code, ctx, { filename: TABLE_SCRIPTS[0].filePath });
   for (const df of DATA_FILES) vm.runInContext(df.code, ctx, { filename: df.filePath });
-  // Append a synthetic 7th campus (index 6 -> falls back to full name) and test unknown semester prefix
+  // Append a synthetic 8th campus (index 7 -> falls back to full name) and test unknown semester prefix
   vm.runInContext(`campuses.push('Extra University');`, ctx);
   vm.runInContext(TABLE_SCRIPTS[1].code, ctx, { filename: TABLE_SCRIPTS[1].filePath });
   const schoolBtns = win.document.querySelectorAll('#schools button');
-  assert.equal(schoolBtns.length, 8);
-  assert.ok(schoolBtns[7].textContent.includes('Extra University'));
+  assert.equal(schoolBtns.length, 9);
+  assert.ok(schoolBtns[8].textContent.includes('Extra University'));
   assert.equal(vm.runInContext(`semesterKey('Unknown 2025')`, ctx), 2025 * 4);
 });
 
@@ -252,16 +252,16 @@ test('table.html: singular 1-kid label, sessionStorage restore variants, and sto
       }),
     },
   });
-  assert.equal(w3.document.getElementById('members').children.length, 618);
+  assert.equal(w3.document.getElementById('members').children.length, 621);
 
   // 4. Corrupt JSON in sessionStorage & object without string query
   const { win: w4 } = bootTable({
     sessionStorage: { 'kpib-roster-view': '{not-json' },
   });
-  assert.equal(w4.document.getElementById('members').children.length, 618);
+  assert.equal(w4.document.getElementById('members').children.length, 621);
 
   const { win: w5 } = bootTable({
     sessionStorage: { 'kpib-roster-view': JSON.stringify({ query: 123 }) },
   });
-  assert.equal(w5.document.getElementById('members').children.length, 618);
+  assert.equal(w5.document.getElementById('members').children.length, 621);
 });

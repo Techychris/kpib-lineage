@@ -76,8 +76,8 @@ test('kpib.css: WCAG 2.2 AA color contrast ratios pass in both Light and Dark th
     assert.ok(contrastRatio(tokens['--focus-ring'], tokens['--surface']) >= 3.0);
     // Hovered +N pill (--surface text on --ink pill) >= 4.5:1 (UX-01 regression guard)
     assert.ok(contrastRatio(tokens['--surface'], tokens['--ink']) >= 4.5);
-    // All 6 official university school colors pass >= 3.0:1 UI contrast on regular, raised, and root node surfaces
-    for (let i = 0; i < 6; i++) {
+    // All 7 official university school colors pass >= 3.0:1 UI contrast on regular, raised, and root node surfaces
+    for (let i = 0; i < 7; i++) {
       const tok = `--school-${i}`;
       for (const bg of ['--surface', '--surface-raised', '--node-root-bg']) {
         const ratio = contrastRatio(tokens[tok], tokens[bg]);

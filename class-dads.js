@@ -333,6 +333,11 @@ const classDadsBySchool = [
     "Spring 2026|G.E.N Gamma Class": [
       "Evan Yang"
     ]
+  },
+  {
+    "Fall 2013|Charter Class": [
+      "George Joseph"
+    ]
   }
 ];
 

@@ -89,7 +89,7 @@ test('WCAG 2.2 AA contrast verified in Light and Dark themes (text, borders, foc
     assert.ok(contrastRatio(map['node-root-border'], map['surface-raised']) >= 3.0);
     assert.ok(contrastRatio(map['focus-ring'], map['surface']) >= 3.0);
 
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 7; i++) {
       const tok = `school-${i}`;
       for (const bg of ['surface', 'surface-raised', 'node-root-bg']) {
         const ratio = contrastRatio(map[tok], map[bg]);

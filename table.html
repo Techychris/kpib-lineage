@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=68">
+<link rel="stylesheet" href="kpib.css?v=69">
 </head>
 <body class="page-app page-table">
 <a class="kp-skip" href="#roster">Skip to content</a>
@@ -48,8 +48,8 @@
 </tr></thead><tbody id="members"></tbody></table>
 </div>
 </main>
-<script src="lineage-data.js?v=fa26c"></script>
-<script src="class-dads.js?v=fa26b"></script>
+<script src="lineage-data.js?v=fa26d"></script>
+<script src="class-dads.js?v=fa26c"></script>
 <script src="relationships.js?v=1"></script>
 <script src="state-machines.js?v=1"></script>
 <script>
@@ -64,7 +64,7 @@ const members=document.getElementById('members');
 const tableScroll=document.querySelector('.table-scroll');
 const status=document.getElementById('status');
 const mobileSort=document.getElementById('mobileSort');
-const schoolShortLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern'];
+const schoolShortLabels=['NIU','UIC','Mizzou','UIUC','Purdue','Northwestern','Arkansas'];
 const tableMachine=kpibMachines.createTableMachine({});
 for(const [id,label] of [[null,'All schools'],...campuses.map((name,i)=>[i,schoolShortLabels[i]??name])]){
   const button=document.createElement('button');

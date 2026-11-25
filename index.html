@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=68">
+<link rel="stylesheet" href="kpib.css?v=69">
 </head>
 <body>
 <a class="kp-skip" href="#main">Skip to content</a>
@@ -53,9 +53,9 @@
 <div class="txt">
 <span class="kp-stripes" aria-hidden="true"></span>
 <h1 class="kp-d1" id="title">The lineage tree</h1>
-<p class="kp-lead">Follow Big Brother or class dad lines across six campuses and trace every Brother back to our six founders.</p>
+<p class="kp-lead">Follow Big Brother or class dad lines across seven campuses and trace every Brother back to our six founders.</p>
 <form class="kp-herosearch" action="tree.html" role="search"><label class="kp-sr" for="homeSearch">Find a Brother</label><div class="row"><div class="kp-combo"><input id="homeSearch" name="q" type="search" placeholder="Search by name or line name" autocomplete="off" required role="combobox" aria-expanded="false" aria-controls="homeSuggest" aria-autocomplete="list"><ul id="homeSuggest" role="listbox" aria-label="Matching Brothers" hidden></ul></div><button class="kp-btn p" type="submit">Search</button></div><p id="homeSearchStatus" class="kp-sr" aria-live="polite"></p></form>
-<div class="kp-hero-links"><a href="tree.html">Explore full tree</a><span aria-hidden="true">·</span><a href="table.html">Browse 618-member table</a></div>
+<div class="kp-hero-links"><a href="tree.html">Explore full tree</a><span aria-hidden="true">·</span><a href="table.html">Browse 621-member table</a></div>
 </div>
 <figure class="pic">
 <svg viewBox="0 0 920 266" role="img" aria-label="Example lineage diagram: a founder at Northern Illinois connects via a red same-school ancestry path to a Big Brother and Little Brother at NIU, and via dashed cross-school lines to Brothers at UIC, UIUC, and Purdue.">
@@ -89,7 +89,7 @@
 </section>
 <section class="kp-guide-band" id="how-to-read" aria-labelledby="read-title">
 <div class="kp-wrap kp-guide-grid">
-<div class="kp-shead"><h2 class="kp-d2" id="read-title">How to read the tree</h2><p>Three line styles and six official university colors show how chapters connect across generations.</p><a class="kp-inline-link" href="table.html">Browse the member table</a></div>
+<div class="kp-shead"><h2 class="kp-d2" id="read-title">How to read the tree</h2><p>Three line styles and seven official university colors show how chapters connect across generations.</p><a class="kp-inline-link" href="table.html">Browse the member table</a></div>
 <div class="kp-guide-list">
 <div class="kp-card" data-component="card"><div class="body"><div class="guide-specimen"><span class="kp-sample" aria-hidden="true"></span></div><div class="guide-copy"><h3 class="kp-h3"><i data-icon="link"></i>Same school</h3><p class="kp-muted">A solid line joins a Big Brother and Little Brother who crossed at the same campus.</p></div></div></div>
 <div class="kp-card" data-component="card"><div class="body"><div class="guide-specimen"><span class="kp-sample dash" aria-hidden="true"></span></div><div class="guide-copy"><h3 class="kp-h3"><i data-icon="swap"></i>School change</h3><p class="kp-muted">A dashed line marks a Little Brother whose Big Brother crossed at another university, labeled with the new school.</p></div></div></div>
@@ -120,7 +120,7 @@ function load(){
  if(cur.status==='loading'||cur.status==='loaded')return cur.promise;
  var ok,no,p=new Promise(function(res,rej){ok=res;no=rej;});
  loader.send({type:'START',promise:p});
- var s=document.createElement('script');s.src='lineage-data.js?v=fa26c';
+ var s=document.createElement('script');s.src='lineage-data.js?v=fa26d';
  s.onload=function(){loader.send({type:'RESOLVE'});ok();};
  s.onerror=function(err){s.remove();loader.send({type:'REJECT'});no(err);};
  document.head.appendChild(s);

@@ -161,7 +161,7 @@ table.kp-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums
 .kp-suggest li.none:hover{background:transparent}
 
 /* campus palette (v2 — official 6-university colors, WCAG >= 3:1 UI contrast in both themes) */
-.s0,.d0{--c:var(--school-0)}.s1,.d1{--c:var(--school-1)}.s2,.d2{--c:var(--school-2)}.s3,.d3{--c:var(--school-3)}.s4,.d4{--c:var(--school-4)}.s5,.d5{--c:var(--school-5)}
+.s0,.d0{--c:var(--school-0)}.s1,.d1{--c:var(--school-1)}.s2,.d2{--c:var(--school-2)}.s3,.d3{--c:var(--school-3)}.s4,.d4{--c:var(--school-4)}.s5,.d5{--c:var(--school-5)}.s6,.d6{--c:var(--school-6)}
 .kp-school-dot{display:inline-block;flex:none;width:10px;height:10px;border-radius:var(--radius-pill);background:var(--c,var(--ink-muted))}
 .kp-school-key{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-4);margin:0;padding:0;list-style:none;color:var(--ink-muted);font-size:14px;line-height:20px}
 .kp-school-key li{display:inline-flex;align-items:center;gap:var(--space-2)}

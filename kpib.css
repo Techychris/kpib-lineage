@@ -18,8 +18,8 @@
   --icon-md:20px;--icon-lg:24px;--stripe-bar:8px;
   --font-body:"League Spartan",Arial,sans-serif;--font-display:"League Spartan",Arial,sans-serif;
   /* Official university colors (WCAG >= 3:1 UI contrast on light surfaces):
-     0: NIU Cardinal Red, 1: UIC Blue, 2: Mizzou Tiger Gold, 3: UIUC Illini Orange, 4: Purdue Old Gold, 5: Northwestern Purple */
-  --school-0:#C8102E;--school-1:#003DA5;--school-2:#B57E00;--school-3:#E04E18;--school-4:#8E6F3E;--school-5:#4E2A84;
+     0: NIU Cardinal Red, 1: UIC Blue, 2: Mizzou Tiger Gold, 3: UIUC Illini Orange, 4: Purdue Old Gold, 5: Northwestern Purple, 6: Arkansas Razorback Cardinal */
+  --school-0:#C8102E;--school-1:#003DA5;--school-2:#B57E00;--school-3:#E04E18;--school-4:#8E6F3E;--school-5:#4E2A84;--school-6:#9D2235;
   --node-root-bg:#FFFFFF;--node-root-border:#363636;--node-root-ink:#000000;--node-root-muted:#565656;--node-root-shadow:0 4px 12px rgba(0,0,0,0.12);
   /* Hero circuit animation accents */
   --hero-flow:#E04A4A;--hero-base:rgba(179,35,35,0.42);--hero-dash-w:rgba(255,255,255,0.42);--hero-dash-r:rgba(224,74,74,0.58);--hero-node-pulse:rgba(224,74,74,0.58);--hero-node-rest:rgba(255,255,255,0.12);--hero-shadow:0 8px 24px rgba(0,0,0,0.35);
@@ -31,7 +31,7 @@
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;--image-outline:#FFFFFF1A;
   --shadow-card:0 1px 2px rgba(0,0,0,0.45);--shadow-popover:0 8px 24px rgba(0,0,0,0.45);
   /* Official university colors tuned for dark surfaces */
-  --school-0:#F05469;--school-1:#5B9BFF;--school-2:#F1B82D;--school-3:#FF7A3D;--school-4:#CEB888;--school-5:#A784E8;
+  --school-0:#F05469;--school-1:#5B9BFF;--school-2:#F1B82D;--school-3:#FF7A3D;--school-4:#CEB888;--school-5:#A784E8;--school-6:#E06C88;
   --node-root-bg:#2A2A2A;--node-root-border:#D0D0D0;--node-root-ink:#FFFFFF;--node-root-muted:#D0D0D0;--node-root-shadow:0 4px 14px rgba(0,0,0,0.45);
 }
 
@@ -346,7 +346,7 @@ table.kp-t{width:100%;max-width:1600px;margin-inline:auto;border-collapse:collap
 /* school colour coding */
 .node rect.school-bar,.node:hover rect.school-bar,.node.selected rect.school-bar,.node.on-path rect.school-bar,.node:focus-visible rect.school-bar{fill:var(--c,var(--ink-muted));stroke:none}
 .node rect.school-bar.sx{display:none}
-.s0,.d0{--c:var(--school-0)}.s1,.d1{--c:var(--school-1)}.s2,.d2{--c:var(--school-2)}.s3,.d3{--c:var(--school-3)}.s4,.d4{--c:var(--school-4)}.s5,.d5{--c:var(--school-5)}
+.s0,.d0{--c:var(--school-0)}.s1,.d1{--c:var(--school-1)}.s2,.d2{--c:var(--school-2)}.s3,.d3{--c:var(--school-3)}.s4,.d4{--c:var(--school-4)}.s5,.d5{--c:var(--school-5)}.s6,.d6{--c:var(--school-6)}
 .school-dot{display:inline-block;flex:none;width:10px;height:10px;margin-right:var(--space-2);border-radius:var(--radius-pill);background:var(--c)}
 .school-filters button .school-dot,.school-key .school-dot{margin-right:var(--space-1)}
 .school-key{display:flex;flex-wrap:wrap;gap:var(--space-1) var(--space-3);margin:0;padding:0;list-style:none;color:var(--ink-muted);font-size:14px;line-height:20px}

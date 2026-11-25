@@ -30,7 +30,7 @@ function loadFullData() {
   );
 }
 
-test('QA Search & Unicode: every one of the 618 brothers is searchable by line name, legal name, and aliases', () => {
+test('QA Search & Unicode: every one of the 621 brothers is searchable by line name, legal name, and aliases', () => {
   const d = loadFullData();
 
   for (let id = 0; id < d.records.length; id++) {
@@ -142,7 +142,7 @@ test('QA Security & XSS: special <> line names and malicious query/URL payloads 
   }
 });
 
-test('QA Table Sorting & Filtering: deterministic order across all 8 columns, campus counts sum to 618, lineageStart invariants', () => {
+test('QA Table Sorting & Filtering: deterministic order across all 8 columns, campus counts sum to 621, lineageStart invariants', () => {
   const win = createWindowEnv();
   const doc = win.document;
   const filters = doc.createElement('div'); filters.className = 'filters';
@@ -193,15 +193,15 @@ test('QA Table Sorting & Filtering: deterministic order across all 8 columns, ca
   const firstDesc = tbody.children[0].children[0].querySelector('a').textContent;
   assert.ok(firstAsc.localeCompare(firstDesc) < 0);
 
-  // 4. Campus filter counts are mutually exclusive and sum to 618
-  const expectedCounts = [184, 159, 35, 137, 95, 8];
+  // 4. Campus filter counts are mutually exclusive and sum to 621
+  const expectedCounts = [184, 159, 35, 137, 95, 8, 3];
   let sum = 0;
-  for (let s = 0; s < 6; s++) {
+  for (let s = 0; s < 7; s++) {
     schools.children[s + 1].click();
     assert.equal(tbody.children.length, expectedCounts[s]);
     sum += tbody.children.length;
   }
-  assert.equal(sum, 618);
+  assert.equal(sum, 621);
 
   // 5. lineageStart invariant: always same school, and its parent is either null (founder) or a different school
   const invariantsOk = vm.runInContext(`
