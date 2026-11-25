@@ -32,12 +32,13 @@ test.describe('Home page (index.html)', () => {
     const list = page.locator('#homeSuggest');
     const liveStatus = page.locator('#homeSearchStatus');
 
-    // Prefix + overflow handling
-    await input.fill('a');
+    // Prefix ranking + shows ALL matching members as you type (no truncation row)
+    await input.fill('chris');
     await expect(list).toBeVisible();
-    await expect(list.locator('li[role="option"]')).toHaveCount(6);
-    await expect(list.locator('li.none')).toContainText('more. Press Search to see all.');
-    await expect(liveStatus).toContainText('matching members');
+    const optionCount = await list.locator('li[role="option"]').count();
+    expect(optionCount).toBeGreaterThan(6);
+    await expect(list.locator('li.none')).toHaveCount(0);
+    await expect(liveStatus).toHaveText(`${optionCount} matching members`);
 
     // Non-matching query shows empty message
     await input.fill('zzzznotabrother');

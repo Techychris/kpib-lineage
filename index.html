@@ -135,7 +135,6 @@ function paint(state){
    var n=document.createElement('b');n.textContent=h.r[0];var s=document.createElement('span');s.textContent=h.r[3]+' \u00b7 '+campuses[schoolIds[h.id]];
    li.appendChild(n);li.appendChild(s);li.addEventListener('click',function(){go(h.id);});li.addEventListener('mousedown',function(ev){ev.preventDefault();});list.appendChild(li);
   });
-  if(state.totalHits>6){var m=document.createElement('li');m.className='none';m.setAttribute('role','presentation');m.textContent=(state.totalHits-6)+' more. Press Search to see all.';list.appendChild(m);}
   if(liveStatus)liveStatus.textContent=state.totalHits===0?'No member matches':state.totalHits+(state.totalHits===1?' matching member':' matching members');
  }
  [].forEach.call(list.children,function(li,i){if(li.getAttribute('role')==='option')li.setAttribute('aria-selected',i===state.activeIndex?'true':'false');});
@@ -154,7 +153,7 @@ function search(){
   var a=normalizeMemberQuery(r[0]),b=normalizeMemberQuery(r[3]);
   hits.push({id:i,r:r,rank:(a.indexOf(term)===0||b.indexOf(term)===0)?0:1});}
  hits.sort(function(x,y){return x.rank-y.rank||x.id-y.id;});
- combo.send({type:'RESULTS',hasQuery:true,items:hits.slice(0,6),totalHits:hits.length});
+ combo.send({type:'RESULTS',hasQuery:true,items:hits,totalHits:hits.length});
 }
 function go(id){location.href='tree.html?member='+id;}
 inp.addEventListener('focus',function(){load().catch(function(){});});

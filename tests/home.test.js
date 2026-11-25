@@ -203,13 +203,13 @@ test('index.html inline script 2: hero live search combobox (lazy load, ranking,
   // ArrowDown on 0-match list keeps activeIndex -1
   inp.dispatchEvent(new EventObj('keydown', { key: 'ArrowDown' }));
 
-  // Input with >6 matches -> prefix ranked first + overflow footer row
-  inp.value = 'a';
+  // Input with many matches -> prefix ranked first and ALL matches rendered (no truncation row)
+  inp.value = 'chris';
   inp.dispatchEvent(new EventObj('input'));
   await Promise.resolve();
-  assert.equal(list.children.length, 7); // 6 options + 1 "more" row
-  assert.match(list.children[6].textContent, /more\. Press Search to see all\./);
-  assert.match(liveStatus.textContent, /matching members$/);
+  assert.ok(list.children.length > 6, `expected > 6 options for "chris", got ${list.children.length}`);
+  assert.equal(list.children.every(li => li.getAttribute('role') === 'option'), true);
+  assert.equal(liveStatus.textContent, `${list.children.length} matching members`);
 
   // Also test missing #homeSearchStatus element safely
   liveStatus.remove();

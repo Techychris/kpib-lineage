@@ -532,9 +532,9 @@ pick('find').addEventListener('submit',event=>{
   const found=records.map((record,id)=>({name:record[0],record,id})).filter(({record})=>matchesMember(record,term));
   if(found.length===1){selectMember(found[0].id,true);return;}
   const label=document.createElement('span');
-  label.textContent=found.length?found.length+' matches'+(found.length>16?' · Refine your search to see more.':''):'No matching names.';
+  label.textContent=found.length?found.length+' matches':'No matching names.';
   matches.append(label);
-  for(const {name,id} of found.slice(0,16)){
+  for(const {name,id} of found){
     const result=document.createElement('button');result.type='button';
     const actual=document.createElement('strong');actual.textContent=records[id][3];
     const line=document.createElement('span');line.textContent=name;

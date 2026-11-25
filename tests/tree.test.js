@@ -363,11 +363,12 @@ test('tree.html desktop: overview, search, member selection, depth/mode toggles,
   assert.equal(matchesEl.children.length, 0);
   q.value = 'zzzznotfound'; find.requestSubmit();
   assert.equal(matchesEl.textContent, 'No matching names.');
-  q.value = 'a'; find.requestSubmit();
-  assert.match(matchesEl.children[0].textContent, /Refine your search to see more\./);
-  assert.equal(matchesEl.children.length, 17); // 1 span + 16 buttons
+  q.value = 'an'; find.requestSubmit();
+  const anCount = Number(matchesEl.children[0].textContent.match(/^(\d+) matches$/)[1]);
+  assert.ok(anCount > 16, `expected > 16 matches for "an", got ${anCount}`);
+  assert.equal(matchesEl.children.length, anCount + 1); // 1 span + all matching buttons
   q.dispatchEvent(new EventObj('keydown', { key: 'Tab' }));
-  assert.equal(matchesEl.children.length, 17);
+  assert.equal(matchesEl.children.length, anCount + 1);
   q.dispatchEvent(new EventObj('keydown', { key: 'Escape' }));
   assert.equal(matchesEl.children.length, 0);
   q.value = 'Gozun'; find.requestSubmit();
