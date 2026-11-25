@@ -21,11 +21,13 @@
      0: NIU Cardinal Red, 1: UIC Blue, 2: Mizzou Tiger Gold, 3: UIUC Illini Orange, 4: Purdue Old Gold, 5: Northwestern Purple */
   --school-0:#C8102E;--school-1:#003DA5;--school-2:#B57E00;--school-3:#E04E18;--school-4:#8E6F3E;--school-5:#4E2A84;
   --node-root-bg:#FFFFFF;--node-root-border:#363636;--node-root-ink:#000000;--node-root-muted:#565656;--node-root-shadow:0 4px 12px rgba(0,0,0,0.12);
+  /* Hero circuit animation accents */
+  --hero-flow:#E04A4A;--hero-base:rgba(179,35,35,0.42);--hero-dash-w:rgba(255,255,255,0.42);--hero-dash-r:rgba(224,74,74,0.58);--hero-node-pulse:rgba(224,74,74,0.58);--hero-node-rest:rgba(255,255,255,0.12);--hero-shadow:0 8px 24px rgba(0,0,0,0.35);
 }
 [data-theme="dark"]{
   color-scheme:dark;
   --surface:#0B0B0B;--surface-raised:#1A1A1A;--surface-band:#363636;
-  --ink:#FFFFFF;--ink-muted:#B8B8B8;--accent:#E57373;--on-band-muted:#D0D0D0;
+  --ink:#FFFFFF;--ink-muted:#B8B8B8;--accent:#F04E4E;--on-band-muted:#D0D0D0;
   --border-hairline:#2A2A2A;--border-strong:#8A8A8A;--focus-ring:#FFFFFF;--image-outline:#FFFFFF1A;
   --shadow-card:0 1px 2px rgba(0,0,0,0.45);--shadow-popover:0 8px 24px rgba(0,0,0,0.45);
   /* Official university colors tuned for dark surfaces */
@@ -87,9 +89,9 @@ a{color:inherit}
 html.kp-snap{scroll-padding-top:var(--hdr,var(--header-height))}
 .kp-snap .kp-hdr{position:sticky;top:0}
 
-/* hero — centered monumental display headline + wide architectural lineage stage (full-bleed background, zero 50/50 split) */
-.kp-hero{position:relative;z-index:2;overflow:visible;background:var(--surface-band);color:var(--on-band);border-bottom:1px solid var(--border-hairline);border-radius:var(--radius-sharp);padding-bottom:0}
-.kp-herobg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--surface-band)}
+/* hero — bold deep-black architectural stage + animated crimson circuit network */
+.kp-hero{position:relative;z-index:2;overflow:visible;background:var(--brand-black);color:var(--on-band);border-bottom:1px solid var(--border-hairline);border-radius:var(--radius-sharp);padding-bottom:0}
+.kp-herobg{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--brand-black)}
 .kp-herobg svg{display:block;width:100%;height:100%}
 .kp-hero .txt{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-4);max-width:960px;margin-inline:auto;padding:var(--space-7) max(var(--gutter),env(safe-area-inset-left)) var(--space-6) max(var(--gutter),env(safe-area-inset-right))}
 .kp-hero .kp-lead{color:var(--on-band-muted)}
@@ -112,17 +114,17 @@ html.kp-snap{scroll-padding-top:var(--hdr,var(--header-height))}
 .dg-s{fill:var(--ink-muted);font:400 13px var(--font-body)}
 .dg-s.root{fill:var(--node-root-muted)}
 
-/* hero search & suggestions — DS-05: tokens only, shadow-popover on dropdown menu only, preserve focus-ring */
+/* hero search & suggestions — bold 56px high-contrast search bar */
 .kp-herosearch{position:relative;z-index:4;display:grid;gap:var(--space-2)}
 .kp-herosearch .row{display:flex;gap:var(--space-2)}
 .kp-combo{position:relative;flex:1 1 auto;min-width:0;display:flex}
-.kp-herosearch input{width:100%;min-width:0;height:var(--control-height);padding:0 var(--space-4);background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);font:400 16px/24px var(--font-body);-webkit-appearance:none;appearance:none;scroll-margin-top:calc(var(--hdr,var(--header-height)) + var(--space-4));transition:border-color var(--duration-base) var(--ease-out)}
-.kp-herosearch input::placeholder{color:var(--ink-muted);opacity:1}
-.kp-herosearch input:hover{border-color:var(--ink)}
-.kp-herosearch input:focus-visible{outline:2px solid var(--on-band);outline-offset:2px}
-.kp-herosearch .kp-btn{flex:none;height:var(--control-height);min-height:var(--control-height);padding-inline:var(--space-5)}
-@media(max-width:400px){.kp-herosearch .kp-btn{padding-inline:var(--space-4)}.kp-herosearch input{padding:0 var(--space-3)}}
-#homeSuggest{position:absolute;z-index:5;top:calc(100% + var(--space-1));left:0;right:0;margin:0;padding:var(--space-1);list-style:none;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--shadow-popover);max-height:min(280px,50vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
+.kp-herosearch input{width:100%;min-width:0;height:56px;padding:0 var(--space-4);background:var(--logo-plate);color:var(--brand-black);border:2px solid var(--logo-plate);border-radius:var(--radius-md);font:400 18px/24px var(--font-body);-webkit-appearance:none;appearance:none;box-shadow:var(--hero-shadow);scroll-margin-top:calc(var(--hdr,var(--header-height)) + var(--space-4));transition:border-color var(--duration-base) var(--ease-out),box-shadow var(--duration-base) var(--ease-out)}
+.kp-herosearch input::placeholder{color:var(--brand-charcoal);opacity:1}
+.kp-herosearch input:hover{border-color:var(--accent)}
+.kp-herosearch input:focus-visible{outline:2px solid var(--on-band);outline-offset:2px;border-color:var(--brand-red)}
+.kp-herosearch .kp-btn{flex:none;height:56px;min-height:56px;padding-inline:var(--space-5);box-shadow:var(--hero-shadow)}
+@media(max-width:400px){.kp-herosearch .kp-btn{padding-inline:var(--space-4)}.kp-herosearch input{font-size:16px;padding:0 var(--space-3)}}
+#homeSuggest{position:absolute;z-index:5;top:calc(100% + var(--space-1));left:0;right:0;margin:0;padding:var(--space-1);list-style:none;background:var(--surface);color:var(--ink);border:1px solid var(--border-strong);border-radius:var(--radius-md);box-shadow:var(--hero-shadow);max-height:min(280px,50vh);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y}
 #homeSuggest[hidden]{display:none}
 #homeSuggest li{display:flex;flex-direction:column;gap:0;padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);cursor:pointer;min-height:var(--hit-min);justify-content:center;transition:background-color var(--duration-base) var(--ease-out)}
 #homeSuggest li b{font:700 16px/24px var(--font-body)}
@@ -131,16 +133,16 @@ html.kp-snap{scroll-padding-top:var(--hdr,var(--header-height))}
 #homeSuggest li.none{cursor:default;color:var(--ink-muted);font-size:14px;line-height:20px}
 #homeSuggest li.none:hover{background:none}
 
-/* subtle static hero background geometry (uses tokens, zero ambient animation) */
-.kp-herobg .hb-panel{fill:var(--on-band);fill-opacity:.025;stroke:var(--on-band);stroke-opacity:.06;stroke-width:1.5}
-.kp-herobg .hb-grid path{fill:none;stroke:var(--on-band);stroke-opacity:.05;stroke-width:1}
-.kp-herobg .hb-dots{opacity:.10}
-.kp-herobg .n{fill:none;stroke:var(--on-band);stroke-opacity:.10;stroke-width:1.5}
-.kp-herobg .base{stroke:var(--brand-red);stroke-opacity:.32;stroke-width:2}
-.kp-herobg .flow{stroke:var(--accent);stroke-width:2;stroke-opacity:.42}
-.kp-herobg .dash{stroke-width:1.5;stroke-dasharray:6 8}
-.kp-herobg .d-w{stroke:var(--on-band);stroke-opacity:.24}
-.kp-herobg .d-r,.kp-herobg .d-r2{stroke:var(--accent);stroke-opacity:.38}
+/* vivid animated hero background circuits */
+.kp-herobg .hb-panel{fill:var(--on-band);fill-opacity:.035;stroke:var(--on-band);stroke-opacity:.08;stroke-width:1.5}
+.kp-herobg .hb-grid path{fill:none;stroke:var(--on-band);stroke-opacity:.07;stroke-width:1}
+.kp-herobg .hb-dots{opacity:.16}
+.kp-herobg .n{fill:none;stroke:var(--hero-node-rest);stroke-width:1.5}
+.kp-herobg .base{stroke:var(--hero-base);stroke-width:2}
+.kp-herobg .flow{stroke:var(--hero-flow);stroke-width:2.5;stroke-dasharray:10 90;stroke-dashoffset:100;opacity:.92}
+.kp-herobg .dash{stroke-width:1.6;stroke-dasharray:6 8}
+.kp-herobg .d-w{stroke:var(--hero-dash-w)}
+.kp-herobg .d-r,.kp-herobg .d-r2{stroke:var(--hero-dash-r)}
 
 /* editorial below-the-fold sections — hairline ledgers & tinted specimen band (no repetitive gray card grids) */
 .kp-section{padding-block:var(--space-8)}
@@ -469,7 +471,44 @@ i[data-icon]{display:contents;font-style:normal}
   #founderList{padding:var(--space-5)}
 }
 
-/* DS-02 / Accessibility.md: disable all transitions, animations, and smooth scrolling under prefers-reduced-motion */
+/* restored hero & UI motions (gated strictly by prefers-reduced-motion:no-preference) */
+@media (prefers-reduced-motion:no-preference){
+  @keyframes kpUp{from{opacity:0;transform:translateY(12px)}}
+  @keyframes kpFade{from{opacity:0}}
+  @keyframes kpStripe{from{transform:scaleX(0)}}
+  @keyframes hbFlow{to{stroke-dashoffset:0}}
+  @keyframes hbMarch{to{stroke-dashoffset:-56}}
+  @keyframes hbDriftA{from{transform:translate(0,0)}to{transform:translate(10px,8px)}}
+  @keyframes hbDriftB{from{transform:translate(0,0)}to{transform:translate(-9px,10px)}}
+  @keyframes hbPulse{0%,100%{opacity:.08}50%{opacity:.26}}
+  @keyframes hbNode{0%,100%{stroke:var(--hero-node-rest)}50%{stroke:var(--hero-node-pulse)}}
+  .kp-hero .txt>*{animation:kpUp .6s var(--ease-out) both}
+  .kp-hero .txt>:nth-child(2){animation-delay:70ms}
+  .kp-hero .txt>:nth-child(3){animation-delay:140ms}
+  .kp-hero .txt>:nth-child(4){animation-delay:210ms}
+  .kp-hero .txt>:nth-child(5){animation-delay:280ms}
+  .kp-hero .kp-stripes{transform-origin:center;animation:kpStripe .7s var(--ease-out) both}
+  .kp-hero .pic svg>*{animation:kpFade .5s ease both;animation-delay:260ms}
+  .kp-hero .pic svg>g:nth-of-type(1){animation-delay:320ms}
+  .kp-hero .pic svg>g:nth-of-type(2){animation-delay:380ms}
+  .kp-hero .pic svg>g:nth-of-type(3){animation-delay:420ms}
+  .kp-hero .pic svg>g:nth-of-type(n+4){animation-delay:480ms}
+  .kp-btn{transition:transform .15s var(--ease-out),background-color var(--duration-base) var(--ease-out),border-color var(--duration-base) var(--ease-out),color var(--duration-base) var(--ease-out)}
+  .kp-btn:hover{transform:translateY(-1px)}
+  .kp-btn:active{transform:translateY(0) scale(.98)}
+  .kp-herobg .flow{animation:hbFlow 6s linear infinite}
+  .kp-herobg .f2{animation-duration:7.5s;animation-delay:-2s}
+  .kp-herobg .f3{animation-duration:9s;animation-delay:-4s}
+  .kp-herobg .f4{animation-duration:5s;animation-delay:-1s}
+  .kp-herobg .dash{animation:hbMarch 3.5s linear infinite}
+  .kp-herobg .d-r{animation-duration:4.5s}
+  .kp-herobg .p1,.kp-herobg .p3,.kp-herobg .p5{animation:hbDriftA 18s ease-in-out infinite alternate}
+  .kp-herobg .p2,.kp-herobg .p4{animation:hbDriftB 22s ease-in-out infinite alternate}
+  .kp-herobg .hb-dots{animation:hbPulse 5s ease-in-out infinite}
+  .kp-herobg .d2{animation-delay:-1.7s}.kp-herobg .d3{animation-delay:-3.4s}
+  .kp-herobg .n{animation:hbNode 7s ease-in-out infinite}
+  .kp-herobg .n2{animation-delay:-2s}.kp-herobg .n3{animation-delay:-4s}.kp-herobg .n4{animation-delay:-5.5s}
+}
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }

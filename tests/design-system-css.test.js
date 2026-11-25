@@ -92,8 +92,9 @@ test('kpib.css: enforces KPiB Design System rules (dark-mode logo, zero ambient 
   assert.match(CSS, /\[data-theme="dark"\] \.kp-plate,\.kp-ftr \.kp-plate\{position:relative;background:transparent\}/);
   assert.match(CSS, /\[data-theme="dark"\] \.kp-plate::after,\.kp-ftr \.kp-plate::after\{[^}]*background:var\(--on-band\)[^}]*-webkit-mask:url\("assets\/kpib-lockup\.png"\)/);
 
-  // DS-02: No @keyframes ambient/load animations, and reduced-motion disables animation + transition + scroll-behavior
-  assert.equal(CSS.includes('@keyframes'), false);
+  // Motion safety: all @keyframes are gated inside prefers-reduced-motion:no-preference, and reduced-motion disables animation + transition + scroll-behavior
+  const outsideMotionBlock = CSS.replace(/@media\s*\(prefers-reduced-motion:no-preference\)\s*\{[\s\S]*?\n\}/g, '');
+  assert.equal(outsideMotionBlock.includes('@keyframes'), false, 'All @keyframes must be gated inside @media (prefers-reduced-motion:no-preference)');
   assert.match(CSS, /@media\s*\(prefers-reduced-motion:reduce\)\s*\{[^}]*animation:none!important[^}]*transition:none!important[^}]*scroll-behavior:auto!important/);
 
   // DS-05: Zero raw #hex color literals outside the two theme token declaration blocks and data-URI SVGs
