@@ -3,14 +3,14 @@
 <head>
 <meta name="robots" content="noindex, nofollow, nosnippet">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kappa Pi Beta · Lineage Tree</title>
-<meta name="description" content="Explore Kappa Pi Beta founder branches by class dad and kids using line names.">
+<meta name="description" content="Explore Kappa Pi Beta founder branches by Big Brother or class dad across schools using line names.">
 <link rel="icon" href="assets/kpib-crest-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script>try{var t=localStorage.getItem('kpib-theme');if(t==='dark')document.documentElement.dataset.theme='dark';}catch(e){}</script>
-<link rel="stylesheet" href="kpib.css?v=59">
+<link rel="stylesheet" href="kpib.css?v=60">
 </head>
 <body class="page-app">
 <a class="kp-skip" href="#explorer">Skip to content</a>
@@ -21,7 +21,7 @@
 <details class="kp-menu"><summary><i data-icon="menu"></i>Menu</summary><nav class="kp-menu-list" data-component="nav" data-name="Mobile navigation" aria-label="Mobile"><a href="./"><i data-icon="home"></i>Home</a><a href="tree.html" aria-current="page"><i data-icon="tree"></i>Lineage tree</a><a href="table.html"><i data-icon="table"></i>Member table</a></nav></details></div>
 </div></header>
 <main>
-<div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b id="statMembers">559</b> members</span></p></div>
+<div class="app-title"><h1>Lineage tree</h1><p class="stats"><span><b id="statMembers">618</b> members</span></p></div>
 <section id="explorer" aria-label="Lineage explorer">
 <div class="tools">
 <nav class="view-tabs" aria-label="Roster views"><a href="tree.html" aria-current="page">Tree</a><a href="table.html" aria-label="Member table"><i data-icon="table"></i><span class="lbl">Table</span></a></nav>
@@ -63,122 +63,101 @@
 <script src="lineage-data.js?v=fa26c"></script>
 <script src="class-dads.js?v=fa26b"></script>
 <script src="relationships.js?v=1"></script>
+<script src="state-machines.js?v=1"></script>
 <script>
 'use strict';
+const NODE_WIDTH=206, NODE_HEIGHT=104;
+const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
 const schoolOf=id=>campuses[schoolIds[id]];
 const rootIds=[], floating=[];
 const children=records.map(()=>[]);
-// Two ways to draw the lineage: by Big Brother (default) or by class dad.
-let lineageMode='big';
-try{if(localStorage.getItem('kpib-lineage')==='dad') lineageMode='dad';}catch(e){}
 const parentOf=records.map(()=>null);
-function buildLineage(){
+const nodesById=new Map();
+const pick=id=>document.getElementById(id);
+const select=pick('branch'), canvas=pick('canvas'), svg=canvas.querySelector('svg');
+const caption=pick('caption'), matches=pick('matches'), query=pick('query');
+const founderList=pick('founderList'), connectionsButton=pick('connections'), connectionsPanel=pick('connectionsPanel');
+const viewToggle=pick('viewToggle'), memberPanel=pick('member'), viewControls=pick('viewControls'), desktopMember=pick('desktopMember');
+const orientation=pick('orientation'), lineageSelect=pick('lineage'), parentButton=pick('parent'), modeButton=pick('mode');
+
+document.getElementById('statMembers').textContent=records.length;
+const desktopQuery=matchMedia('(min-width:701px) and (min-height:521px) and (pointer:fine),(min-width:740px) and (min-height:580px)');
+let initialLineage='big', initialDepth='auto';
+try{if(localStorage.getItem('kpib-lineage')==='dad') initialLineage='dad';}catch(e){}
+try{if(localStorage.getItem('kpib-depth')==='full') initialDepth='full';}catch(e){}
+
+const treeMachine=kpibMachines.createTreeMachine({
+  isPhone:!desktopQuery.matches,
+  lineageMode:initialLineage,
+  depthMode:initialDepth,
+});
+
+function buildLineage(mode){
   rootIds.length=0;floating.length=0;
   children.forEach(list=>{list.length=0;});
   records.forEach(([,bigBrother,founder],id)=>{
-    const parent=lineageMode==='big'?bigBrother:classDadByMember[id];
+    const parent=mode==='big'?bigBrother:classDadByMember[id];
     parentOf[id]=parent;
     if(parent!==null) children[parent].push(id);
     else if(founder) rootIds.push(id);
     else floating.push(id);
   });
 }
-buildLineage();
-const dadWord=()=>lineageMode==='big'?'Big Brother':'Class dad';
-const kidsOf=id=>lineageMode==='big'?children[id]:kidsByMember[id];
-const nodesById=new Map();
-const pick=id=>document.getElementById(id);
-const select=pick('branch'), canvas=pick('canvas'), svg=canvas.querySelector('svg');
-const caption=pick('caption'), matches=pick('matches'), query=pick('query');
-const OVERVIEW=-1, UNRESOLVED=-2, FOUNDERS=-3;
-// "phone" means the compact layout: small screens, plus short touch screens such as phones and tablets in landscape.
-document.getElementById("statMembers").textContent=records.length;
-const desktopQuery=matchMedia('(min-width:701px) and (min-height:521px) and (pointer:fine),(min-width:701px) and (min-height:821px)');
-const phone={get matches(){return !desktopQuery.matches;},addEventListener:(type,handler)=>desktopQuery.addEventListener(type,handler)};
-const founderList=pick('founderList');
-const connectionsButton=pick('connections');
-const connectionsPanel=pick('connectionsPanel');
-const viewToggle=pick('viewToggle');
-const memberPanel=pick('member');
-const viewControls=pick('viewControls');
-const desktopMember=pick('desktopMember');
-const closeView=()=>viewToggle.setAttribute('aria-expanded','false');
-function syncView(){
-  viewToggle.hidden=!phone.matches;
-  if(phone.matches) viewControls.insertBefore(memberPanel,viewControls.querySelector('.menu-key'));
-  else desktopMember.append(memberPanel);
-  closeView();
+buildLineage(treeMachine.getState().lineageMode);
+
+const dadWord=mode=>mode==='big'?'Big Brother':'Class dad';
+const kidsOf=(id,mode)=>mode==='big'?children[id]:kidsByMember[id];
+const selectedOf=view=>view.type==='member-tree'||view.type==='member-generations'?view.memberId:null;
+const branchValueOf=view=>view.type==='founders'?FOUNDERS:view.type==='overview'?OVERVIEW:view.type==='unresolved'?UNRESOLVED:view.branchRoot;
+
+function syncBranchOptions(isPhone){
+  select.replaceChildren();
+  select.add(new Option(isPhone?'Choose a founder':'Full organization',isPhone?FOUNDERS:OVERVIEW));
+  for(const id of rootIds) select.add(new Option(records[id][0]+' · '+records[id][3],id));
+  if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
 }
-syncView();
-phone.addEventListener('change',syncView);
-viewToggle.addEventListener('click',()=>{
-  const opening=viewToggle.getAttribute('aria-expanded')!=='true';
-  if(opening) matches.replaceChildren();
-  viewToggle.setAttribute('aria-expanded',String(opening));
-});
-document.addEventListener('keydown',event=>{
-  if(event.key==='Escape'&&viewToggle.getAttribute('aria-expanded')==='true'){
-    closeView();
-    viewToggle.focus();
-  }
-});
-document.addEventListener('pointerdown',event=>{
-  if(!event.target.closest('.tools')) closeView();
-});
-// Default depth follows the screen: how many generations fit along the depth axis at a readable size.
-let lastDepth=5, drawnDepth=5;
-function defaultDepth(){
-  const vertical=orientation.value==='vertical';
+function syncChrome(state){
+  viewToggle.hidden=!state.isPhone;
+  if(state.isPhone) viewControls.insertBefore(memberPanel,viewControls.querySelector('.menu-key'));
+  else desktopMember.append(memberPanel);
+  viewToggle.setAttribute('aria-expanded',String(state.popover==='open'));
+  lineageSelect.value=state.lineageMode;
+  orientation.value=state.orientation;
+  select.value=String(branchValueOf(state.view));
+}
+
+for(const id of rootIds){
+  const card=document.createElement('button');
+  card.type='button';
+  const line=document.createElement('strong');line.textContent=records[id][0];
+  const name=document.createElement('span');name.textContent=records[id][3];
+  card.append(line,name);
+  card.addEventListener('click',()=>selectMember(id,true));
+  founderList.append(card);
+}
+document.querySelectorAll('[data-school-key]').forEach(list=>campuses.forEach((name,index)=>{
+  const item=document.createElement('li'),dot=document.createElement('span');
+  dot.className='school-dot d'+index;dot.setAttribute('aria-hidden','true');
+  item.append(dot,name);list.append(item);
+}));
+
+let lastDepth=5, drawnDepth=5, dimensions=[0,0], rootPoint=null;
+function defaultDepth(state){
+  const vertical=state.orientation==='vertical';
   const extent=vertical?canvas.clientHeight:canvas.clientWidth;
   if(!extent) return lastDepth;
-  const step=vertical?185:(phone.matches?NODE_WIDTH+44:400);
+  const step=vertical?185:(state.isPhone?NODE_WIDTH+44:400);
   lastDepth=Math.max(3,Math.min(7,Math.round(extent/(step*0.4))));
   return lastDepth;
 }
-let fullDepth=false;
-try{fullDepth=localStorage.getItem('kpib-depth')==='full';}catch(e){}
-let listView=false, branch=OVERVIEW, selected=null, full=false, dimensions=[0,0], rootPoint=null;
+
 const drawing=d3.select(svg);
 const scene=drawing.append('g');
 const zoom=d3.zoom().scaleExtent([0.002,3]).extent(()=>[[0,0],[canvas.clientWidth,canvas.clientHeight]])
   .filter(event=>!event.button&&(event.type!=='mousedown'||!event.target.closest('.node')))
   .on('zoom',event=>{scene.attr('transform',event.transform);pick('zoom').textContent=Math.round(event.transform.k*100)+'%';});
 drawing.call(zoom).on('dblclick.zoom',null);
-const member=pick('member'), parentButton=pick('parent'), modeButton=pick('mode');
-if(phone.matches) select.add(new Option('Choose a founder',FOUNDERS));
-if(!phone.matches) select.add(new Option('Full organization',OVERVIEW));
-for(const id of rootIds){
-  select.add(new Option(records[id][0]+' · '+records[id][3],id));
-  const card=document.createElement('button');
-  card.type='button';
-  const line=document.createElement('strong');
-  line.textContent=records[id][0];
-  const name=document.createElement('span');
-  name.textContent=records[id][3];
-  card.append(line,name);
-  card.addEventListener('click',()=>mark(id,true));
-  founderList.append(card);
-}
-if(floating.length) select.add(new Option('Binder-only branches',UNRESOLVED));
-const NODE_WIDTH=206, NODE_HEIGHT=104;
-document.querySelectorAll('[data-school-key]').forEach(list=>campuses.forEach((name,index)=>{
-  const item=document.createElement('li'),dot=document.createElement('span');
-  dot.className='school-dot d'+index;dot.setAttribute('aria-hidden','true');
-  item.append(dot,name);list.append(item);
-}));
-const orientation=pick('orientation');
-const lineageSelect=pick('lineage');
-lineageSelect.value=lineageMode;
-lineageSelect.addEventListener('change',()=>{
-  lineageMode=lineageSelect.value;
-  try{localStorage.setItem('kpib-lineage',lineageMode);}catch(e){}
-  buildLineage();closeView();
-  if(selected!==null){mark(selected,false);return;}
-  if(branch===UNRESOLVED&&!floating.length){show(phone.matches?FOUNDERS:OVERVIEW);return;}
-  describe();
-  if(branch!==FOUNDERS){draw();fit();}
-});
-if(phone.matches) orientation.value='horizontal';
+
 const names=id=>id===OVERVIEW?['Kappa Pi Beta','']:id===UNRESOLVED?['Unmatched branches','']:[records[id][0],records[id][3]];
 function rootOf(id){
   while(parentOf[id]!==null) id=parentOf[id];
@@ -186,11 +165,11 @@ function rootOf(id){
 }
 function founderPath(id){
   const path=[];
-  for(let member=id;member!==null;member=parentOf[member]) path.push(member);
+  for(let m=id;m!==null;m=parentOf[m]) path.push(m);
   return path.reverse();
 }
-function positionTree(hierarchy,vertical,overview){
-  const spacing=vertical?[NODE_WIDTH+30,185]:[125,overview?260:phone.matches?NODE_WIDTH+44:400];
+function positionTree(hierarchy,vertical,overview,isPhone){
+  const spacing=vertical?[NODE_WIDTH+30,185]:[125,overview?260:isPhone?NODE_WIDTH+44:400];
   d3.tree().nodeSize(spacing)(hierarchy);
   const nodes=hierarchy.descendants();
   const minBreadth=d3.min(nodes,d=>d.x);
@@ -206,52 +185,49 @@ function connectionPoints({source,target},vertical){
     ? {source:{x:source.left+NODE_WIDTH/2,y:source.centerY+NODE_HEIGHT/2},target:{x:target.left+NODE_WIDTH/2,y:target.centerY-NODE_HEIGHT/2}}
     : {source:{x:source.left+NODE_WIDTH,y:source.centerY},target:{x:target.left,y:target.centerY}};
 }
-function draw(){
-  const focused=selected!==null&&!full;
+function draw(state){
+  const view=state.view;
+  const selected=selectedOf(view);
+  const focused=view.type==='member-tree'&&view.scope==='downstream';
   const path=selected===null?[]:founderPath(selected);
-  const nextOnPath=new Map(path.slice(0,-1).map((id,i)=>[id,path[i+1]]));
   const ancestry=new Set(path);
-  const rootId=focused?selected:branch;
-  const depthLimit=fullDepth?Infinity:defaultDepth();
+  const rootId=focused?selected:branchValueOf(view);
+  const baseDepth=state.depthMode==='full'?Infinity:defaultDepth(state);
+  const depthLimit=view.type==='member-tree'&&view.scope==='branch'?Math.max(baseDepth,path.length):baseDepth;
   const depthOf=new Map([[rootId,0]]);
   const hidden=new Map();
-  const below=id=>children[id].reduce((sum,kid)=>sum+1+below(kid),0);
-  drawnDepth=depthLimit;
+  const kidsFor=id=>focused&&id===selected?kidsOf(id,state.lineageMode):children[id];
+  const below=id=>kidsFor(id).reduce((sum,kid)=>sum+1+below(kid),0);
+  drawnDepth=baseDepth;
   const hierarchy=d3.hierarchy(rootId,id=>{
-    if(id===OVERVIEW) return rootIds;
-    if(id===UNRESOLVED) return floating;
+    if(id===OVERVIEW){for(const r of rootIds) depthOf.set(r,1);return rootIds;}
+    if(id===UNRESOLVED){for(const f of floating) depthOf.set(f,1);return floating;}
     const depth=depthOf.get(id);
-    if(depth>=depthLimit){if(children[id].length) hidden.set(id,below(id));return null;}
-    for(const kid of children[id]) depthOf.set(kid,depth+1);
-    return children[id];
+    const list=kidsFor(id);
+    if(depth>=depthLimit){if(list.length) hidden.set(id,below(id));return null;}
+    for(const kid of list) depthOf.set(kid,depth+1);
+    return list;
   });
-  const vertical=orientation.value==='vertical';
-  const nodes=positionTree(hierarchy,vertical,branch===OVERVIEW);
+  const vertical=state.orientation==='vertical';
+  const nodes=positionTree(hierarchy,vertical,view.type==='overview',state.isPhone);
   rootPoint={x:nodes[0].left+NODE_WIDTH/2,y:nodes[0].centerY,vertical};
   dimensions=[d3.max(nodes,d=>d.left)+NODE_WIDTH+18,d3.max(nodes,d=>d.centerY)+NODE_HEIGHT/2+18];
   const links=hierarchy.links();
   const isCross=({source,target})=>source.data>=0&&schoolOf(source.data)!==schoolOf(target.data);
   const isPath=({source,target})=>ancestry.has(source.data)&&ancestry.has(target.data);
   const connector=(vertical?d3.linkVertical():d3.linkHorizontal()).x(p=>p.x).y(p=>p.y);
-  const labelX=d=>{
-    const points=connectionPoints(d,vertical);
-    return (points.source.x+points.target.x)/2+(vertical?9:0);
-  };
-  const labelY=d=>{
-    const points=connectionPoints(d,vertical);
-    return (points.source.y+points.target.y)/2-7;
-  };
+  const labelX=d=>{const p=connectionPoints(d,vertical);return (p.source.x+p.target.x)/2+(vertical?9:0);};
+  const labelY=d=>{const p=connectionPoints(d,vertical);return (p.source.y+p.target.y)/2-7;};
   scene.selectAll('.edge').data(links,d=>d.target.data).join('path')
     .attr('class',d=>'edge'+(isCross(d)?' cross-school':'')+(isPath(d)?' ancestry':''))
     .attr('d',d=>connector(connectionPoints(d,vertical)))
     .lower();
   const labels=scene.selectAll('.link-name').data(
-    focused?(phone.matches&&!vertical?links.filter(isCross):links.filter(d=>d.source.data>=0)):links.filter(isCross),d=>d.target.data
+    focused?(state.isPhone&&!vertical?links.filter(isCross):links.filter(d=>d.source.data>=0)):links.filter(isCross),d=>d.target.data
   ).join(enter=>{const label=enter.append('text').attr('class','link-name').attr('text-anchor','middle');label.append('tspan').attr('class','connector-name');label.append('tspan').attr('class','transition').attr('dy',14);return label;})
     .attr('x',labelX).attr('y',labelY).attr('text-anchor',vertical?'start':'middle');
   labels.select('.connector-name').text(d=>records[d.source.data][3]);
-  labels.select('.transition').attr('x',labelX)
-    .text(d=>isCross(d)?schoolOf(d.target.data):'');
+  labels.select('.transition').attr('x',labelX).text(d=>isCross(d)?schoolOf(d.target.data):'');
   const cards=scene.selectAll('.node').data(nodes,d=>d.data).join(enter=>{
     const item=enter.append('g').attr('class','node');
     item.append('title');
@@ -270,8 +246,8 @@ function draw(){
     .attr('class',d=>'node'+(d.data===rootId?' root':'')+(d.data===selected?' selected':'')+(ancestry.has(d.data)?' on-path':''))
     .attr('tabindex',d=>d.data>=0?0:null).attr('role',d=>d.data>=0?'button':null)
     .attr('aria-label',d=>[...names(d.data),...(crossings[d.data]??[])].filter(Boolean).join(' · '))
-    .on('click',(event,d)=>{if(!event.defaultPrevented&&d.data>=0) mark(d.data,true);})
-    .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();mark(d.data,true);}});
+    .on('click',(event,d)=>{if(!event.defaultPrevented&&d.data>=0) selectMember(d.data,true);})
+    .on('keydown',(event,d)=>{if(d.data>=0&&(event.key==='Enter'||event.key===' ')){event.preventDefault();selectMember(d.data,true);}});
   cards.select('.school-bar').attr('class',d=>'school-bar '+(d.data>=0?'s'+schoolIds[d.data]:'sx'));
   cards.select('title').text(d=>[...names(d.data),schoolOf(d.data),...(crossings[d.data]??[]),hidden.has(d.data)?hidden.get(d.data)+' more below. Click to open.':''].filter(Boolean).join(' · '));
   const short=(value,length)=>value.length>length?value.slice(0,length-1)+'…':value;
@@ -291,9 +267,7 @@ function fit(){
   const w=canvas.clientWidth,h=canvas.clientHeight;
   if(!w||!h) return;
   const fitted=Math.max(.002,Math.min(1,(w-24)/dimensions[0],(h-24)/dimensions[1]));
-  // On a phone, never shrink below a readable size (about 72%): anchor the root and let the person pan.
-  // Big trees open as a whole-tree overview (pinch to zoom in); small ones stay readable.
-  const readable=phone.matches&&fitted>=.25;
+  const readable=treeMachine.getState().isPhone&&fitted>=.25;
   const scale=readable?Math.max(fitted,.72):fitted;
   let x=(w-dimensions[0]*scale)/2,y=(h-dimensions[1]*scale)/2;
   if(readable&&rootPoint){
@@ -303,17 +277,18 @@ function fit(){
   }
   drawing.call(zoom.transform,d3.zoomIdentity.translate(x,y).scale(scale));
 }
-const listActive=()=>listView&&selected!==null;
-const generationName=n=>(lineageMode==='big'?['Littles','Grand-littles','Great-grand-littles']:['Kids','Grandkids','Great-grandkids','Great-great-grandkids'])[n]??'Generation '+(n+1);
-function renderGenerations(){
+const generationName=(n,mode)=>(mode==='big'?['Littles','Grand-littles','Great-grand-littles']:['Kids','Grandkids','Great-grandkids','Great-great-grandkids'])[n]??'Generation '+(n+1);
+function renderGenerations(state){
+  const selected=state.view.memberId;
+  const mode=state.lineageMode;
   const box=pick('generations');
   box.replaceChildren();
   const levels=[],seen=new Set([selected]);
-  let row=kidsOf(selected).filter(id=>!seen.has(id));
+  let row=kidsOf(selected,mode).filter(id=>!seen.has(id));
   while(row.length){
     row.forEach(id=>seen.add(id));
     levels.push(row);
-    row=[...new Set(row.flatMap(id=>kidsOf(id)))].filter(id=>!seen.has(id));
+    row=[...new Set(row.flatMap(id=>kidsOf(id,mode)))].filter(id=>!seen.has(id));
   }
   const total=levels.reduce((sum,level)=>sum+level.length,0);
   const heading=document.createElement('h2');
@@ -323,7 +298,7 @@ function renderGenerations(){
     const group=document.createElement('details');
     group.open=index<2;
     const title=document.createElement('summary');
-    title.textContent=generationName(index)+' · '+ids.length;
+    title.textContent=generationName(index,mode)+' · '+ids.length;
     group.append(title);
     const list=document.createElement('ul');
     for(const id of ids){
@@ -333,19 +308,21 @@ function renderGenerations(){
       const real=document.createElement('span');real.textContent=records[id][3];
       const meta=document.createElement('span'),dot=document.createElement('i');
       dot.className='school-dot d'+schoolIds[id];dot.setAttribute('aria-hidden','true');
-      meta.append(dot,[schoolOf(id),crossings[id][0],index>0?(lineageMode==='big'?'Big Brother: '+records[parentOf[id]][0]:dadsByMember[id].length?'Class dad: '+dadsByMember[id].join(', '):''):''].filter(Boolean).join(' · '));
+      meta.append(dot,[schoolOf(id),crossings[id][0],index>0?(mode==='big'?'Big Brother: '+records[parentOf[id]][0]:dadsByMember[id].length?'Class dad: '+dadsByMember[id].join(', '):''):''].filter(Boolean).join(' · '));
       button.append(line,real,meta);
-      button.addEventListener('click',()=>mark(id,false));
+      button.addEventListener('click',()=>selectMember(id,false));
       item.append(button);list.append(item);
     }
     group.append(list);box.append(group);
   });
   box.scrollTop=0;
 }
-function describe(){
-  const choosing=branch===FOUNDERS;
+function describe(state){
+  const view=state.view;
+  const choosing=view.type==='founders';
+  const showList=view.type==='member-generations';
+  const selected=selectedOf(view);
   document.body.classList.toggle('diagram-open',!choosing);
-  const showList=listActive()&&!choosing;
   founderList.hidden=!choosing;
   canvas.hidden=choosing||showList;
   pick('generations').hidden=!showList;
@@ -354,10 +331,10 @@ function describe(){
   document.querySelectorAll('.toggle').forEach(el=>{el.hidden=showList;});
   pick('viewTree').setAttribute('aria-pressed',String(!showList));
   pick('viewList').setAttribute('aria-pressed',String(showList));
-  member.hidden=selected===null;
+  memberPanel.hidden=selected===null;
   connectionsButton.hidden=selected===null;
-  pick('overview').hidden=choosing||(!phone.matches&&branch===OVERVIEW);
-  pick('overview').innerHTML=kpibIcon('users')+(phone.matches?'All founders':'Full organization');
+  pick('overview').hidden=choosing||(!state.isPhone&&view.type==='overview');
+  pick('overview').innerHTML=kpibIcon('users')+(state.isPhone?'All founders':'Full organization');
   if(selected===null){
     caption.textContent=choosing?'Select a founder or search for a member.':'Full organization. Search or choose a branch to read names.';
     return;
@@ -365,103 +342,169 @@ function describe(){
   const [line,,,actual]=records[selected];
   const parent=parentOf[selected];
   pick('memberName').textContent=actual;
-  const count=children[selected].length;
-  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' '+(lineageMode==='big'?(count===1?'little':'littles'):(count===1?'kid':'kids'));
+  const count=kidsOf(selected,state.lineageMode).length;
+  pick('memberMeta').textContent=line+' · '+schoolOf(selected)+' · '+crossings[selected].join(' · ')+' · '+count+' '+(state.lineageMode==='big'?(count===1?'little':'littles'):(count===1?'kid':'kids'));
   parentButton.hidden=parent===null;
   parentButton.replaceChildren();
-  if(parent!==null){parentButton.insertAdjacentHTML('afterbegin',kpibIcon('up'));parentButton.append(dadWord()+' · '+records[parent][3]);}
-  modeButton.checked=!full;pick('depth').checked=fullDepth;
-  if(showList) pick('depthNote').hidden=true;
-  if(showList){renderGenerations();caption.textContent='A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';return;}
-  caption.textContent=full?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use '+dadWord()+' to move up a level. Drag to pan. Pinch or use the zoom controls.';
+  if(parent!==null){parentButton.insertAdjacentHTML('afterbegin',kpibIcon('up'));parentButton.append(dadWord(state.lineageMode)+' · '+records[parent][3]);}
+  modeButton.checked=view.scope==='downstream';
+  pick('depth').checked=state.depthMode==='full';
+  if(showList){
+    pick('depthNote').hidden=true;
+    renderGenerations(state);
+    caption.textContent=state.lineageMode==='big'
+      ?'A Big Brother\'s littles are the next generation. Tap a member to see their littles.'
+      :'A class dad\'s class is his kids, and their classes are the next generation. Tap a member to see their kids.';
+    return;
+  }
+  caption.textContent=view.scope==='branch'?'Full founder branch, with the path to the founder highlighted. Drag to pan. Pinch or use the zoom controls.':'Showing this member and everyone downstream of them. Use '+dadWord(state.lineageMode)+' to move up a level. Drag to pan. Pinch or use the zoom controls.';
 }
-function openConnections(){
-  const id=selected;
-  if(id===null) return;
+function renderConnections(state){
+  const id=selectedOf(state.view);
   const [line,,,name]=records[id];
   pick('connectionsTitle').textContent=name;
   pick('connectionsMeta').textContent=[line,schoolOf(id),...crossings[id]].join(' · ');
   const content=pick('connectionsBody');
   content.replaceChildren();
   function addGroup(title,ids,ordered,empty){
-    const heading=document.createElement('h3');
-    heading.textContent=title;
-    content.append(heading);
-    if(!ids.length){
-      const message=document.createElement('p');
-      message.textContent=empty;
-      content.append(message);
-      return;
-    }
+    const heading=document.createElement('h3');heading.textContent=title;content.append(heading);
+    if(!ids.length){const message=document.createElement('p');message.textContent=empty;content.append(message);return;}
     const list=document.createElement(ordered?'ol':'ul');
     for(const relation of ids){
-      const item=document.createElement('li');
-      const link=document.createElement('button');
-      link.type='button';
-      link.textContent=records[relation][3];
-      const detail=document.createElement('small');
-      detail.textContent=records[relation][0]+' · '+schoolOf(relation);
+      const item=document.createElement('li'),link=document.createElement('button');
+      link.type='button';link.textContent=records[relation][3];
+      const detail=document.createElement('small');detail.textContent=records[relation][0]+' · '+schoolOf(relation);
       link.append(detail);
-      link.addEventListener('click',()=>{
-        connectionsPanel.close();
-        mark(relation,true);
-      });
-      item.append(link);
-      list.append(item);
+      link.addEventListener('click',()=>{connectionsPanel.close();selectMember(relation,true);});
+      item.append(link);list.append(item);
     }
     content.append(list);
   }
-  addGroup(lineageMode==='big'?'Littles':'Kids',children[id],false,'None recorded.');
+  addGroup(state.lineageMode==='big'?'Littles':'Kids',kidsOf(id,state.lineageMode),false,'None recorded.');
   const ancestry=founderPath(id).reverse().slice(1);
-  if(lineageMode==='dad'&&classDadIdsByMember[id].length>1) addGroup('Class dads',classDadIdsByMember[id],false,'');
+  if(state.lineageMode==='dad'&&classDadIdsByMember[id].length>1) addGroup('Class dads',classDadIdsByMember[id],false,'');
   addGroup('Path back to the founder',ancestry,true,'This member is a founder.');
-  closeView();
   connectionsPanel.showModal();
 }
-connectionsButton.addEventListener('click',openConnections);
 function focusNode(id,moveFocus=false){
   const node=nodesById.get(id);
   if(!node) return;
   drawing.call(zoom.transform,d3.zoomIdentity.translate(canvas.clientWidth/2-node.x,canvas.clientHeight/2-node.y));
   if(moveFocus) node.element.focus({preventScroll:true});
 }
-function frame(id,moveFocus=false){
-  if(full){focusNode(id,moveFocus);return;}
+function frame(state,moveFocus=false){
+  const id=selectedOf(state.view);
+  if(state.view.type==='member-tree'&&state.view.scope==='branch'){focusNode(id,moveFocus);return;}
   fit();
   if(moveFocus) nodesById.get(id)?.element.focus({preventScroll:true});
 }
-function show(id){
-  if(id>=0){mark(id,false);return;}
-  branch=id;selected=null;select.value=String(id);
-  query.value='';matches.replaceChildren();
-  describe();
-  if(branch!==FOUNDERS){draw();fit();}
+
+function syncUrl(state){
+  try{
+    const id=selectedOf(state.view);
+    const nextUrl=id!==null?'?member='+id:location.pathname||'tree.html';
+    history.replaceState(null,'',nextUrl);
+  }catch(e){}
 }
-function mark(id,moveFocus){
-  const target=rootOf(id);
-  branch=target;selected=id;select.value=String(branch);
+function renderAll(state,opts={}){
+  syncChrome(state);
+  syncUrl(state);
+  describe(state);
+  if(state.view.type!=='founders'&&state.view.type!=='member-generations'){
+    draw(state);
+    if(selectedOf(state.view)!==null) frame(state,Boolean(opts.moveFocus));
+    else fit();
+  }
+}
+
+function selectMember(id,moveFocus){
   matches.replaceChildren();
-  describe();
-  if(!listActive()){draw();frame(id,moveFocus);}
+  const next=treeMachine.send({type:'SELECT_MEMBER',memberId:id,branchRoot:rootOf(id)});
+  renderAll(next,{moveFocus});
 }
-select.addEventListener('change',()=>{closeView();show(Number(select.value));});
-orientation.addEventListener('change',()=>{
-  closeView();
-  if(branch===FOUNDERS) return;
-  draw();
-  if(selected===null) fit();
-  else frame(selected);
+function showRoot(id){
+  if(id>=0){selectMember(id,false);return;}
+  query.value='';matches.replaceChildren();
+  const next=id===UNRESOLVED
+    ? treeMachine.send({type:'SHOW_UNRESOLVED',hasFloating:floating.length>0})
+    : treeMachine.send({type:'SHOW_OVERVIEW'});
+  renderAll(next);
+}
+
+desktopQuery.addEventListener('change',()=>{
+  const next=treeMachine.send({type:'VIEWPORT_CHANGED',isPhone:!desktopQuery.matches});
+  syncBranchOptions(next.isPhone);
+  renderAll(next);
 });
-parentButton.addEventListener('click',()=>mark(parentOf[selected],true));
-pick('depth').addEventListener('change',()=>{fullDepth=pick('depth').checked;try{localStorage.setItem('kpib-depth',fullDepth?'full':'5');}catch(e){}draw();describe();if(selected!==null)frame(selected);else fit();});
-modeButton.addEventListener('change',()=>{full=!modeButton.checked;draw();describe();frame(selected);});
-function setList(on){
-  if(listView===on) return;
-  listView=on;closeView();describe();
-  if(!on&&selected!==null){draw();frame(selected);}
-}
-pick('viewTree').addEventListener('click',()=>setList(false));
-pick('viewList').addEventListener('click',()=>setList(true));
+viewToggle.addEventListener('click',()=>{
+  const next=treeMachine.send({type:'TOGGLE_POPOVER'});
+  if(next.popover==='open') matches.replaceChildren();
+  viewToggle.setAttribute('aria-expanded',String(next.popover==='open'));
+});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&treeMachine.getState().popover==='open'){
+    treeMachine.send({type:'CLOSE_POPOVER'});
+    viewToggle.setAttribute('aria-expanded','false');
+    viewToggle.focus();
+  }
+});
+document.addEventListener('pointerdown',event=>{
+  if(!event.target.closest('.tools')){
+    treeMachine.send({type:'CLOSE_POPOVER'});
+    viewToggle.setAttribute('aria-expanded','false');
+  }
+});
+lineageSelect.addEventListener('change',()=>{
+  const mode=lineageSelect.value;
+  try{localStorage.setItem('kpib-lineage',mode);}catch(e){}
+  buildLineage(mode);
+  const cur=treeMachine.getState();
+  const selected=selectedOf(cur.view);
+  const next=treeMachine.send({
+    type:'SET_LINEAGE_MODE',
+    lineageMode:mode,
+    hasFloating:floating.length>0,
+    branchRoot:selected!==null?rootOf(selected):null,
+  });
+  syncBranchOptions(next.isPhone);
+  renderAll(next);
+});
+select.addEventListener('change',()=>showRoot(Number(select.value)));
+orientation.addEventListener('change',()=>{
+  const next=treeMachine.send({type:'SET_ORIENTATION',orientation:orientation.value});
+  syncChrome(next);
+  if(next.view.type==='founders'||next.view.type==='member-generations') return;
+  draw(next);
+  if(selectedOf(next.view)===null) fit();
+  else frame(next);
+});
+parentButton.addEventListener('click',()=>selectMember(parentOf[selectedOf(treeMachine.getState().view)],true));
+pick('depth').addEventListener('change',()=>{
+  const depthMode=pick('depth').checked?'full':'auto';
+  try{localStorage.setItem('kpib-depth',depthMode==='full'?'full':'5');}catch(e){}
+  const next=treeMachine.send({type:'SET_DEPTH_MODE',depthMode});
+  renderAll(next);
+});
+modeButton.addEventListener('change',()=>{
+  const next=treeMachine.send({type:'SET_SCOPE',scope:modeButton.checked?'downstream':'branch'});
+  renderAll(next);
+});
+pick('viewTree').addEventListener('click',()=>{
+  const prev=treeMachine.getState();
+  const next=treeMachine.send({type:'SET_VIEW_MODE',mode:'tree'});
+  if(next!==prev) renderAll(next);
+});
+pick('viewList').addEventListener('click',()=>{
+  const prev=treeMachine.getState();
+  const next=treeMachine.send({type:'SET_VIEW_MODE',mode:'generations'});
+  if(next!==prev) renderAll(next);
+});
+connectionsButton.addEventListener('click',()=>{
+  const next=treeMachine.send({type:'OPEN_CONNECTIONS'});
+  if(next.connections==='open'){syncChrome(next);renderConnections(next);}
+});
+connectionsPanel.addEventListener('close',()=>treeMachine.send({type:'CLOSE_CONNECTIONS'}));
+connectionsPanel.addEventListener('click',event=>{if(event.target===connectionsPanel) connectionsPanel.close();});
 pick('zoomOut').addEventListener('click',()=>drawing.call(zoom.scaleBy,.8));
 pick('zoomIn').addEventListener('click',()=>drawing.call(zoom.scaleBy,1.25));
 pick('fit').addEventListener('click',fit);
@@ -473,17 +516,21 @@ canvas.addEventListener('keydown',event=>{
   const step=48/d3.zoomTransform(svg).k;
   drawing.call(zoom.translateBy,direction[0]*step,direction[1]*step);
 });
-pick('overview').addEventListener('click',()=>{closeView();show(phone.matches?FOUNDERS:OVERVIEW);query.focus();});
+pick('overview').addEventListener('click',()=>{
+  showRoot(treeMachine.getState().isPhone?FOUNDERS:OVERVIEW);
+  query.focus();
+});
 query.addEventListener('input',()=>matches.replaceChildren());
 query.addEventListener('keydown',event=>{if(event.key==='Escape') matches.replaceChildren();});
 pick('find').addEventListener('submit',event=>{
   event.preventDefault();
-  closeView();
+  const st=treeMachine.send({type:'CLOSE_POPOVER'});
+  viewToggle.setAttribute('aria-expanded',String(st.popover==='open'));
   const term=normalizeMemberQuery(query.value);
   matches.replaceChildren();
-  if(!term)return;
+  if(!term) return;
   const found=records.map((record,id)=>({name:record[0],record,id})).filter(({record})=>matchesMember(record,term));
-  if(found.length===1){mark(found[0].id,true);return;}
+  if(found.length===1){selectMember(found[0].id,true);return;}
   const label=document.createElement('span');
   label.textContent=found.length?found.length+' matches'+(found.length>16?' · Refine your search to see more.':''):'No matching names.';
   matches.append(label);
@@ -492,19 +539,26 @@ pick('find').addEventListener('submit',event=>{
     const actual=document.createElement('strong');actual.textContent=records[id][3];
     const line=document.createElement('span');line.textContent=name;
     result.append(actual,line);
-    result.addEventListener('click',()=>mark(id,true));matches.append(result);
+    result.addEventListener('click',()=>selectMember(id,true));matches.append(result);
   }
 });
+
+syncBranchOptions(treeMachine.getState().isPhone);
 const memberLink=new URLSearchParams(location.search).get('member');
 const linkedMember=memberLink!==null&&/^\d+$/.test(memberLink)?Number(memberLink):null;
-if(linkedMember!==null&&linkedMember<records.length) mark(linkedMember,false);
-else show(phone.matches?FOUNDERS:OVERVIEW);
+if(linkedMember!==null&&linkedMember<records.length) selectMember(linkedMember,false);
+else renderAll(treeMachine.getState());
 const startQuery=new URLSearchParams(location.search).get('q');
 if(startQuery&&linkedMember===null){query.value=startQuery;document.getElementById('find').requestSubmit();}
 new ResizeObserver(()=>{
-  if(branch===OVERVIEW){fit();return;}
-  if(!fullDepth&&!listActive()&&branch!==FOUNDERS&&canvas.clientWidth&&defaultDepth()!==drawnDepth){draw();if(selected!==null) frame(selected);else fit();}
+  const st=treeMachine.getState();
+  if(st.view.type==='overview'){fit();return;}
+  if(st.depthMode!=='full'&&st.view.type!=='member-generations'&&st.view.type!=='founders'&&canvas.clientWidth&&defaultDepth(st)!==drawnDepth){
+    draw(st);
+    if(selectedOf(st.view)!==null) frame(st);
+    else fit();
+  }
 }).observe(canvas);
 </script>
-<script src="kpib.js?v=5"></script>
+<script src="kpib.js?v=6"></script>
 </body></html>
